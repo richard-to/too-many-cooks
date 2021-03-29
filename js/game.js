@@ -87,7 +87,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 var players
 var activePlayer
 var item
-var ingredients = []
+var items
+var ingredients
 var worldLayer
 
 function preload() {
@@ -116,29 +117,42 @@ function create() {
   players = this.physics.add.group({
     bounceY: 0.2,
     collideWorldBounds: true,
-  })
-  this.physics.add.collider(players, worldLayer)
-  players.addMultiple([
+  }).addMultiple([
     new Player(this, 64, 0, 0),
     new Player(this, 2580, 0, 1),
   ])
-
+  this.physics.add.collider(players, worldLayer)
 
   activePlayer = players.getChildren()[0]
 
   players.getChildren()[1].setFlipX(true)
 
+  items = this.physics.add.group({
+    angularVelocity: 0,
+    allowGravity: false,
+    immovable: true,
+  })
+
+  ingredients = this.physics.add.group({
+    allowGravity: true,
+    bounceY: 0.2,
+    immovable: false,
+    collideWorldBounds: true,
+  })
+  this.physics.add.collider(ingredients, worldLayer)
+  this.physics.add.overlap(players, ingredients, pickupIngredient, null, this)
+
   this.cameras.main.startFollow(activePlayer, true)
   this.cameras.main.setZoom(SCALE)
 
   this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE).on('down', () => {
-    activePlayer = playerGroup.getChildren()[0]
+    activePlayer = players.getChildren()[0]
     this.cameras.main.startFollow(activePlayer, true)
   })
 
   this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO).on('down', () => {
     activePlayer = players.getChildren()[1]
-    this.cameras.main.startFollow(players, true)
+    this.cameras.main.startFollow(activePlayer, true)
   })
 }
 
@@ -146,32 +160,33 @@ function grabItemFromBlock(sprite, tile) {
   if (sprite !== activePlayer) {
     return
   }
-  const spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+
   // Can't use sprite.body.blocked.down with this approach, so we'll calculate relative position
   const isAboveBlock = sprite.y < tile.y * tile.height
-  if (!item && isAboveBlock && Phaser.Input.Keyboard.JustDown(spacebar)) {
+  const SPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+  if (!item && isAboveBlock && Phaser.Input.Keyboard.JustDown(SPACE)) {
     const tileMeta = INGREDIENT_TILE_MAP[tile.index]
     item = this.physics.add
       .sprite(sprite.x + tileMeta.xPad, sprite.y - sprite.height + tileMeta.yPad, 'assets', tileMeta.name)
       .setFlipY(tileMeta.flipY)
-      .setImmovable(true)
       .setData('type', TYPE_INGREDIENT)
       .setData('meta', tileMeta)
-    item.body.setAllowGravity(false)
-    this.physics.add.collider(item, worldLayer)
-    this.physics.add.overlap(players, item, pickupIngredient, null, this)
-    ingredients.push(item)
+    items.add(item)
   }
 }
 
-function pickupIngredient(ingredient, player) {
+function pickupIngredient(player, ingredient) {
   if (player !== activePlayer) {
     return
   }
-  const spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+
+  const SPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   const X = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X)
+
   const ingMeta = ingredient.data.values.meta
+
   if (Phaser.Input.Keyboard.JustDown(X)) {
+
     if (item) {
       const meta = item.data.values.meta
       if (
@@ -207,51 +222,37 @@ function pickupIngredient(ingredient, player) {
 
         if (burgerType) {
           tempItem = item
+
           item = this.physics.add
           .sprite(player.x, player.y - player.height + 30, 'assets', burgerType)
-          .setImmovable(true)
           .setData('type', TYPE_BURGER)
           .setData('meta', {
             name: burgerType,
             xPad: 0,
             yPad: 30,
           })
-          item.body.setAllowGravity(false)
-          this.physics.add.collider(item, worldLayer)
-          ingredients.push(item)
-          this.physics.add.overlap(players, item, pickupIngredient, null, this)
+          items.add(item)
 
           // Clean up merged items
+          items.remove(tempItem)
+          ingredients.remove(ingredient)
           tempItem.destroy()
           ingredient.destroy()
-          ingredients = ingredients.filter(ingredient => ingredient.body)
         }
       }
     }
-  } else if (Phaser.Input.Keyboard.JustDown(spacebar)) {
-    if (item) {
-      item.setImmovable(false).setBounce(0.2)
-      item.body.setAllowGravity(true).setCollideWorldBounds(true)
-      item.body.angularVelocity = 500
-      if (player.flipX) {
-        item.setVelocityX(-350)
-      } else {
-        item.setVelocityX(350)
-      }
-      item = null
-    } else if (!item) {
-      ingredient.x = player.x + ingMeta.xPad
-      ingredient.y = player.y - player.height + ingMeta.yPad
-      ingredient.setFlipY(ingMeta.flipY)
-      ingredient.setImmovable(true)
-      ingredient.body.setAllowGravity(false)
-      ingredient.body.angularVelocity = 0
-      ingredient.setAngle(0)
-      item = ingredient
-    }
+  } else if (!item && Phaser.Input.Keyboard.JustDown(SPACE)) {
+    ingredients.remove(ingredient)
+    items.add(ingredient)
+
+    ingredient.x = player.x + ingMeta.xPad
+    ingredient.y = player.y - player.height + ingMeta.yPad
+    ingredient.angle = 0
+    ingredient.setFlipY(ingMeta.flipY)
+
+    item = ingredient
   }
 }
-function update() {}
 
 function update() {
   const cursors = this.input.keyboard.createCursorKeys()
@@ -272,13 +273,28 @@ function update() {
     activePlayer.setVelocityY(-575)
   }
 
+  const spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+  if (item && Phaser.Input.Keyboard.JustDown(spacebar)) {
+    ingredients.add(item)
+
+    item.body.angularVelocity = 500
+    if (activePlayer.flipX) {
+      item.setVelocityX(-350)
+    } else {
+      item.setVelocityX(350)
+    }
+
+    items.remove(item)
+    item = null
+  }
+
   // Position item on activePlayer's head
   if (item) {
     item.x = activePlayer.x + item.data.values.meta.xPad
     item.y = activePlayer.y - activePlayer.height + item.data.values.meta.yPad
   }
 
-  ingredients.forEach(ingredient => {
+  ingredients.getChildren().forEach(ingredient => {
     if (ingredient.body && ingredient.body.blocked.down) {
       ingredient.body.angularVelocity = 0
       ingredient.setVelocityX(0)
