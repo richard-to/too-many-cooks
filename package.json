@@ -4,6 +4,7 @@
   "description": "Multiplayer platformer game",
   "main": "index.js",
   "scripts": {
+    "start": "parcel index.html assets/* -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,8 @@
   "homepage": "https://github.com/richard-to/too-many-cooks#readme",
   "dependencies": {
     "phaser": "^3.54.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.2"
   }
 }

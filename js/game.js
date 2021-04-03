@@ -108,11 +108,11 @@ var worldLayer
 
 // Preload our assets
 function preload() {
-  this.load.image('sky', 'assets/sky.png')
-  this.load.image('tiles', 'assets/tiles.png')
-  this.load.tilemapTiledJSON('map', 'assets/level-0.json')
-  this.load.multiatlas('players', 'assets/players.json', 'assets')
-  this.load.multiatlas('assets', 'assets/assets.json', 'assets')
+  this.load.image('sky', '/assets/sky.png')
+  this.load.image('tiles', '/assets/tiles.png')
+  this.load.tilemapTiledJSON('map', '/assets/level-0.json')
+  this.load.multiatlas('players', '/assets/players.json', 'assets')
+  this.load.multiatlas('assets', '/assets/assets.json', 'assets')
 }
 
 // Initialize the game
