@@ -4,7 +4,7 @@
   "description": "Multiplayer platformer game",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html assets/* -p 8000",
+    "start": "parcel client/public/index.html client/public/assets/* -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,9 +18,12 @@
   },
   "homepage": "https://github.com/richard-to/too-many-cooks#readme",
   "dependencies": {
-    "phaser": "^3.54.1"
+    "@geckos.io/client": "^1.7.2",
+    "@geckos.io/server": "^1.7.2",
+    "phaser": "^3.54.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.7",
     "parcel": "^2.0.0-beta.2"
   }
 }

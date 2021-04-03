@@ -1,3 +1,5 @@
+import Phaser from 'phaser'
+
 // Size of level map (multiple number of cells by cell width/height)
 const LEVEL_HEIGHT = 1935
 const LEVEL_WIDTH = 2580
