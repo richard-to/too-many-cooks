@@ -42,6 +42,9 @@ class GameScene extends Scene {
     this.items.children.iterate((item) => {
       state += this.prepareToSync(item)
     })
+    this.ingredients.children.iterate((item) => {
+      state += this.prepareToSync(item)
+    })
     return state
   }
 
