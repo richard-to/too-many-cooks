@@ -96,6 +96,28 @@ class GameScene extends Scene {
       }
     }
 
+    const pickupIngredient = (sprite, ingredient) => {
+      if (sprite.type !== '1') {
+        return
+      }
+
+      if (!sprite.item && sprite.move.space) {
+        sprite.move.space = false
+
+        // Remove it from the ingredient physics group
+        this.ingredients.remove(ingredient)
+        // Add it to the item physics group which has different behavior
+        this.items.add(ingredient)
+
+        ingredient.x = sprite.x + 30
+        ingredient.y = sprite.y - sprite.body.height + 30
+        ingredient.angle = 0
+        ingredient.setFlipY(false)
+
+        sprite.item = ingredient
+      }
+    }
+
     // Add collisions to tile map
     const worldLayer = levelMap.createDynamicLayer('level-0', tiles)
       .setCollisionByProperty({ collides: true })
@@ -106,6 +128,8 @@ class GameScene extends Scene {
 
     this.physics.add.collider(this.ingredients, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
+
+    this.physics.add.overlap(this.playersGroup, this.ingredients, pickupIngredient, null, this)
 
     this.io.onConnection((channel) => {
       channel.onDisconnect(() => {
