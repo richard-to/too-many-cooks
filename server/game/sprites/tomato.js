@@ -9,10 +9,7 @@ class Tomato extends Phaser.Physics.Arcade.Sprite {
     this.prevX = -1
     this.prevY = -1
 
-    this.flipX = false
-
     this.dead = false
-
     this.anim = false
     this.type = '2'
     this.playerId = playerId
@@ -52,6 +49,15 @@ class Tomato extends Phaser.Physics.Arcade.Sprite {
     this.move = move
   }
 
+  throw(flipX) {
+    this.body.angularVelocity = 500
+    if (flipX) {
+      this.setVelocityX(-350)
+    } else {
+      this.setVelocityX(350)
+    }
+  }
+
   setMovePosition(x, y) {
     this.x = x
     this.y = y
@@ -59,6 +65,7 @@ class Tomato extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     if (this.body.onFloor()) {
+      this.thrown = false
       this.body.angularVelocity = 0
       this.setVelocityX(0)
     }

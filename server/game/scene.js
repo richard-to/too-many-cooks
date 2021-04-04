@@ -31,7 +31,7 @@ class GameScene extends Scene {
   prepareToSync(player) {
     return `${player.type},${player.playerId},${Math.round(player.x).toString(
       36
-    )},${Math.round(player.y).toString(36)},${player.dead ? 1 : 0},${player.flipX ? 1 : 0},${player.anim ? 1 : 0},`
+    )},${Math.round(player.y).toString(36)},${player.dead ? 1 : 0},${player.flipX ? 1 : 0},${player.anim ? 1 : 0},${player.angle},`
   }
 
   getState() {
@@ -59,6 +59,13 @@ class GameScene extends Scene {
       immovable: true,
     })
 
+    this.ingredients = this.physics.add.group({
+      allowGravity: true,
+      bounceY: 0.2,
+      immovable: false,
+      collideWorldBounds: true,
+    })
+
     this.playersGroup = this.physics.add.group({
       bounceY: 0.2,
       collideWorldBounds: true,
@@ -76,12 +83,13 @@ class GameScene extends Scene {
       // Can't use sprite.body.blocked.down with this approach, so we'll calculate relative position
       const isAboveBlock = sprite.y < tile.y * tile.height
       if (!sprite.item && isAboveBlock && sprite.move.space) {
+        sprite.move.space = false
         const ids = this.getId()
         const item = new Tomato(
           this,
           ids,
           sprite.x + 30,
-          sprite.y - sprite.height + 30,
+          sprite.y - sprite.body.height + 30,
         )
         sprite.item = item
         this.items.add(item)
@@ -96,7 +104,8 @@ class GameScene extends Scene {
       .setTileIndexCallback(3, grabItemFromBlock, this)
       .setTileIndexCallback(4, grabItemFromBlock, this)
 
-  this.physics.add.collider(this.playersGroup, worldLayer)
+    this.physics.add.collider(this.ingredients, worldLayer)
+    this.physics.add.collider(this.playersGroup, worldLayer)
 
     this.io.onConnection((channel) => {
       channel.onDisconnect(() => {
@@ -156,6 +165,19 @@ class GameScene extends Scene {
     })
 
     this.items.children.iterate((item) => {
+      let x = Math.abs(item.x - item.prevX) > 0.5
+      let y = Math.abs(item.y - item.prevY) > 0.5
+      let dead = item.dead != item.prevDead
+      if (x || y || dead) {
+        if (dead || !item.dead) {
+          updates += this.prepareToSync(item)
+        }
+      }
+      item.postUpdate()
+    })
+
+
+    this.ingredients.children.iterate((item) => {
       let x = Math.abs(item.x - item.prevX) > 0.5
       let y = Math.abs(item.y - item.prevY) > 0.5
       let dead = item.dead != item.prevDead

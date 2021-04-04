@@ -74,11 +74,11 @@ export class GameScene extends Scene {
       const parsedUpdates = []
 
       const n = updateParts.length
-      if (n % 7 !== 0) {
+      if (n % 8 !== 0) {
         return []
       }
 
-      for (let i = 0; i < n; i += 7) {
+      for (let i = 0; i < n; i += 8) {
         parsedUpdates.push({
           spriteType: updateParts[i + 0],
           playerId: updateParts[i + 1],
@@ -87,6 +87,7 @@ export class GameScene extends Scene {
           dead: updateParts[i + 4] === "1" ? true : false,
           flipX: updateParts[i + 5] === "1" ? true : false,
           anim: updateParts[i + 6] === "1" ? true : false,
+          angle: parseInt(updateParts[i + 7]),
         })
       }
 
@@ -95,14 +96,14 @@ export class GameScene extends Scene {
 
     const updatesHandler = updates => {
       updates.forEach(gameObject => {
-        const { spriteType, playerId, x, y, dead, flipX, anim } = gameObject
+        const { spriteType, playerId, x, y, dead, flipX, anim, angle } = gameObject
         const alpha = dead ? 0 : 1
 
         if (has(this.objects, playerId)) {
           // if the gameObject does already exist, update the gameObject
           let sprite = this.objects[playerId].sprite
           sprite.setAlpha(alpha).setFlipX(flipX)
-          sprite.setPosition(x, y)
+          sprite.setPosition(x, y).setAngle(angle)
           if (anim) {
             sprite.anims.play(sprite.animWalkKey, true)
           }
@@ -128,7 +129,7 @@ export class GameScene extends Scene {
               sprite: new Tomato(this, playerId, x || 200, y || 200),
               playerId: playerId
             }
-            newGameObject.sprite.setAlpha(alpha)
+            newGameObject.sprite.setAlpha(alpha).setAngle(angle)
             this.objects = { ...this.objects, [playerId]: newGameObject }
           }
         }

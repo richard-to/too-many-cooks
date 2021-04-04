@@ -91,7 +91,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (this.item) {
-      this.item.setMovePosition(this.x, this.y - this.height - 60)
+      this.item.setMovePosition(this.x, this.y - this.body.height + 30)
+    }
+
+    if (this.item && this.move.space) {
+      this.scene.ingredients.add(this.item)
+      this.item.throw(this.flipX)
+      this.scene.items.remove(this.item)
+      this.item = null
     }
   }
 
