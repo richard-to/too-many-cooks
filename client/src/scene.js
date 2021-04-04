@@ -4,6 +4,7 @@ import { has, sample } from 'lodash'
 import { Scene } from 'phaser'
 
 import Player from './sprites/player'
+import Tomato from './sprites/tomato'
 import Controls from './cursors'
 
 // Size of level map (multiple number of cells by cell width/height)
@@ -63,22 +64,29 @@ export class GameScene extends Scene {
     levelMap.createStaticLayer('level-0', tiles)
 
     const parseUpdates = updates => {
-      if (typeof updates === undefined || updates === '') return []
+      if (typeof updates === undefined || updates === '') {
+        return []
+      }
 
       // parse
       const updateParts = updates.split(',')
+      updateParts.pop()
       const parsedUpdates = []
 
       const n = updateParts.length
+      if (n % 7 !== 0) {
+        return []
+      }
 
-      for (let i = 0; i < n; i += 6) {
+      for (let i = 0; i < n; i += 7) {
         parsedUpdates.push({
-          playerId: updateParts[i + 0],
-          x: parseInt(updateParts[i + 1], 36),
-          y: parseInt(updateParts[i + 2], 36),
-          dead: updateParts[i + 3] === "1" ? true : false,
-          flipX: updateParts[i + 4] === "1" ? true : false,
-          anim: updateParts[i + 5] === "1" ? true : false,
+          spriteType: updateParts[i + 0],
+          playerId: updateParts[i + 1],
+          x: parseInt(updateParts[i + 2], 36),
+          y: parseInt(updateParts[i + 3], 36),
+          dead: updateParts[i + 4] === "1" ? true : false,
+          flipX: updateParts[i + 5] === "1" ? true : false,
+          anim: updateParts[i + 6] === "1" ? true : false,
         })
       }
 
@@ -87,7 +95,7 @@ export class GameScene extends Scene {
 
     const updatesHandler = updates => {
       updates.forEach(gameObject => {
-        const { playerId, x, y, dead, flipX, anim } = gameObject
+        const { spriteType, playerId, x, y, dead, flipX, anim } = gameObject
         const alpha = dead ? 0 : 1
 
         if (has(this.objects, playerId)) {
@@ -101,19 +109,27 @@ export class GameScene extends Scene {
         } else {
           const prefix = sample(PLAYER_PREFIXES)
           // if the gameObject does NOT exist, create a new gameObject
-          let newGameObject = {
-            sprite: new Player(this, playerId, x || 200, y || 200, prefix),
-            playerId: playerId
-          }
-          newGameObject.sprite.setAlpha(alpha).setFlipX(flipX)
-          if (anim) {
-            newGameObject.sprite.anims.play(newGameObject.sprite.animWalkKey, true)
-          }
-
-          this.objects = { ...this.objects, [playerId]: newGameObject }
-          if (this.playerId && this.playerId.toString() === playerId) {
-            this.cameras.main.startFollow(newGameObject.sprite, true)
-            this.cameras.main.setZoom(SCALE)
+          if (spriteType === '1') {
+            let newGameObject = {
+              sprite: new Player(this, playerId, x || 200, y || 200, prefix),
+              playerId: playerId
+            }
+            newGameObject.sprite.setAlpha(alpha).setFlipX(flipX)
+            if (anim) {
+              newGameObject.sprite.anims.play(newGameObject.sprite.animWalkKey, true)
+            }
+            this.objects = { ...this.objects, [playerId]: newGameObject }
+            if (this.playerId !== undefined && this.playerId.toString() === playerId) {
+              this.cameras.main.startFollow(newGameObject.sprite, true)
+              this.cameras.main.setZoom(SCALE)
+            }
+          } else if (spriteType === '2') {
+            let newGameObject = {
+              sprite: new Tomato(this, playerId, x || 200, y || 200),
+              playerId: playerId
+            }
+            newGameObject.sprite.setAlpha(alpha)
+            this.objects = { ...this.objects, [playerId]: newGameObject }
           }
         }
       })

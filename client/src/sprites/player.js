@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 
-const TYPE_PLAYER = 'Player'
+const TYPE_PLAYER = '1'
 
 
 export default class Player extends Phaser.GameObjects.Sprite {

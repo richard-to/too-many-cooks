@@ -4,6 +4,7 @@ const geckos = require('@geckos.io/server').default
 const { Scene } = require('phaser')
 
 const Player = require('./sprites/player')
+const Tomato = require('./sprites/tomato')
 
 // Size of level map (multiple number of cells by cell width/height)
 const LEVEL_HEIGHT = 1935
@@ -13,7 +14,7 @@ const LEVEL_WIDTH = 2580
 class GameScene extends Scene {
   constructor() {
     super({ key: 'GameScene' })
-    this.playerId = 0
+    this.playerId = 1
   }
 
   init() {
@@ -28,15 +29,18 @@ class GameScene extends Scene {
   }
 
   prepareToSync(player) {
-    return `${player.playerId},${Math.round(player.x).toString(
+    return `${player.type},${player.playerId},${Math.round(player.x).toString(
       36
-    )},${Math.round(player.y).toString(36)},${player.dead ? 1 : 0},${player.flipX ? 1 : 0},${player.anim ? 1 : 0}`
+    )},${Math.round(player.y).toString(36)},${player.dead ? 1 : 0},${player.flipX ? 1 : 0},${player.anim ? 1 : 0},`
   }
 
   getState() {
     let state = ''
     this.playersGroup.children.iterate((player) => {
       state += this.prepareToSync(player)
+    })
+    this.items.children.iterate((item) => {
+      state += this.prepareToSync(item)
     })
     return state
   }
@@ -49,21 +53,49 @@ class GameScene extends Scene {
   create() {
     this.physics.world.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT)
 
+    this.items = this.physics.add.group({
+      angularVelocity: 0,
+      allowGravity: false,
+      immovable: true,
+    })
+
+    this.playersGroup = this.physics.add.group({
+      bounceY: 0.2,
+      collideWorldBounds: true,
+    })
+
     const levelMap = this.make.tilemap({ key: 'map' })
     const tiles = levelMap.addTilesetImage('tiles', 'tiles', 129, 129)
+
+
+    const grabItemFromBlock = (sprite, tile) => {
+      if (sprite.type !== '1') {
+        return
+      }
+
+      // Can't use sprite.body.blocked.down with this approach, so we'll calculate relative position
+      const isAboveBlock = sprite.y < tile.y * tile.height
+      if (!sprite.item && isAboveBlock && sprite.move.space) {
+        const ids = this.getId()
+        const item = new Tomato(
+          this,
+          ids,
+          sprite.x + 30,
+          sprite.y - sprite.height + 30,
+        )
+        sprite.item = item
+        this.items.add(item)
+      }
+    }
 
     // Add collisions to tile map
     const worldLayer = levelMap.createDynamicLayer('level-0', tiles)
       .setCollisionByProperty({ collides: true })
-      //.setTileIndexCallback(1, grabItemFromBlock, this)
-      //.setTileIndexCallback(2, grabItemFromBlock, this)
-      //.setTileIndexCallback(3, grabItemFromBlock, this)
-      //.setTileIndexCallback(4, grabItemFromBlock, this)
+      .setTileIndexCallback(1, grabItemFromBlock, this)
+      .setTileIndexCallback(2, grabItemFromBlock, this)
+      .setTileIndexCallback(3, grabItemFromBlock, this)
+      .setTileIndexCallback(4, grabItemFromBlock, this)
 
-  this.playersGroup = this.physics.add.group({
-    bounceY: 0.2,
-    collideWorldBounds: true,
-  })
   this.physics.add.collider(this.playersGroup, worldLayer)
 
     this.io.onConnection((channel) => {
@@ -122,6 +154,19 @@ class GameScene extends Scene {
       }
       player.postUpdate()
     })
+
+    this.items.children.iterate((item) => {
+      let x = Math.abs(item.x - item.prevX) > 0.5
+      let y = Math.abs(item.y - item.prevY) > 0.5
+      let dead = item.dead != item.prevDead
+      if (x || y || dead) {
+        if (dead || !item.dead) {
+          updates += this.prepareToSync(item)
+        }
+      }
+      item.postUpdate()
+    })
+
 
     if (updates.length > 0) {
       this.io.room().emit('updateObjects', [updates])

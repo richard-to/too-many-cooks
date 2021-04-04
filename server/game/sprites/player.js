@@ -14,10 +14,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.dead = false
 
     this.anim = false
-
+    this.type = '1'
     this.playerId = playerId
     this.move = {}
 
+    this.item = null
 
     this.setDummy(dummy)
 
@@ -56,13 +57,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   setMove(data) {
-    let int = parseInt(data, 36)
+    let moveCode = parseInt(data, 36)
 
     let move = {
-      left: int === 1 || int === 5,
-      right: int === 2 || int === 6,
-      up: int === 4 || int === 6 || int === 5,
-      none: int === 8
+      left: moveCode === 1 || moveCode === 5 || moveCode === 9 || moveCode === 13,
+      right: moveCode === 2 || moveCode === 6 || moveCode === 10 || moveCode === 14,
+      up: moveCode === 4 || moveCode === 6 || moveCode === 5 || moveCode === 12 || moveCode === 13 || moveCode === 14,
+      space: moveCode === 8 || moveCode === 9 || moveCode === 10 || moveCode === 12 || moveCode === 13 || moveCode === 14,
+      none: moveCode === 16,
     }
 
     this.move = move
@@ -86,6 +88,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.move.up && this.body.onFloor()) {
       this.setVelocityY(-575)
       this.anim = false
+    }
+
+    if (this.item) {
+      this.item.setMovePosition(this.x, this.y - this.height - 60)
     }
   }
 
