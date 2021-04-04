@@ -2,7 +2,8 @@
 
 ## Usage
 
-```
+```sh
 yarn install
-yarn start
+yarn start  // Start client
+yarn server:start // Start game server
 ```
