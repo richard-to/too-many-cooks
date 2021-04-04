@@ -1,3 +1,5 @@
+// Note: This is the old single player script, which is only being used as a reference
+//       file until the rest of the logic is ported over to the client/server format.
 import Phaser from 'phaser'
 
 // Size of level map (multiple number of cells by cell width/height)
