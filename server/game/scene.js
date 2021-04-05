@@ -3,18 +3,21 @@ const path = require('path')
 const geckos = require('@geckos.io/server').default
 const { Scene } = require('phaser')
 
+const { Settings, SpriteType, TileType } = require('./enums')
 const Player = require('./sprites/player')
-const Tomato = require('./sprites/tomato')
+const { Bun, Cow, Lettuce, Tomato } = require('./sprites/items')
 
-// Size of level map (multiple number of cells by cell width/height)
-const LEVEL_HEIGHT = 1935
-const LEVEL_WIDTH = 2580
-
+const tileIndexMap = {
+  [TileType.COW_BOX]: Cow,
+  [TileType.BUN_BOX]: Bun,
+  [TileType.LETTUCE_BOX]: Lettuce,
+  [TileType.TOMATO_BOX]: Tomato,
+}
 
 class GameScene extends Scene {
   constructor() {
     super({ key: 'GameScene' })
-    this.playerId = 1
+    this.entityID = 1
   }
 
   init() {
@@ -24,14 +27,14 @@ class GameScene extends Scene {
     this.io.addServer(this.game.server)
   }
 
-  getId() {
-    return this.playerId++
+  getID() {
+    return this.entityID++
   }
 
-  prepareToSync(player) {
-    return `${player.type},${player.playerId},${Math.round(player.x).toString(
-      36
-    )},${Math.round(player.y).toString(36)},${player.dead ? 1 : 0},${player.flipX ? 1 : 0},${player.anim ? 1 : 0},${player.angle},`
+  prepareToSync(e) {
+    const x = Math.round(e.x).toString(Settings.RADIX)
+    const y = Math.round(e.y).toString(Settings.RADIX)
+    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},`
   }
 
   getState() {
@@ -39,10 +42,10 @@ class GameScene extends Scene {
     this.playersGroup.children.iterate((player) => {
       state += this.prepareToSync(player)
     })
-    this.items.children.iterate((item) => {
+    this.itemsGroup.children.iterate((item) => {
       state += this.prepareToSync(item)
     })
-    this.ingredients.children.iterate((item) => {
+    this.ingredientsGroup.children.iterate((item) => {
       state += this.prepareToSync(item)
     })
     return state
@@ -54,15 +57,15 @@ class GameScene extends Scene {
   }
 
   create() {
-    this.physics.world.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT)
+    this.physics.world.setBounds(0, 0, Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
 
-    this.items = this.physics.add.group({
+    this.itemsGroup = this.physics.add.group({
       angularVelocity: 0,
       allowGravity: false,
       immovable: true,
     })
 
-    this.ingredients = this.physics.add.group({
+    this.ingredientsGroup = this.physics.add.group({
       allowGravity: true,
       bounceY: 0.2,
       immovable: false,
@@ -75,11 +78,10 @@ class GameScene extends Scene {
     })
 
     const levelMap = this.make.tilemap({ key: 'map' })
-    const tiles = levelMap.addTilesetImage('tiles', 'tiles', 129, 129)
-
+    const tiles = levelMap.addTilesetImage('tiles', 'tiles', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
 
     const grabItemFromBlock = (sprite, tile) => {
-      if (sprite.type !== '1') {
+      if (sprite.type !== SpriteType.PLAYER) {
         return
       }
 
@@ -87,20 +89,15 @@ class GameScene extends Scene {
       const isAboveBlock = sprite.y < tile.y * tile.height
       if (!sprite.item && isAboveBlock && sprite.move.space) {
         sprite.move.space = false
-        const ids = this.getId()
-        const item = new Tomato(
-          this,
-          ids,
-          sprite.x + 30,
-          sprite.y - sprite.body.height + 30,
-        )
+        const item = new tileIndexMap[tile.index](this, this.getID())
+        item.positionOnPlayer(sprite)
         sprite.item = item
-        this.items.add(item)
+        this.itemsGroup.add(item)
       }
     }
 
     const pickupIngredient = (sprite, ingredient) => {
-      if (sprite.type !== '1') {
+      if (sprite.type !== SpriteType.PLAYER) {
         return
       }
 
@@ -108,13 +105,10 @@ class GameScene extends Scene {
         sprite.move.space = false
 
         // Remove it from the ingredient physics group
-        this.ingredients.remove(ingredient)
+        this.ingredientsGroup.remove(ingredient)
         // Add it to the item physics group which has different behavior
-        this.items.add(ingredient)
-
-        ingredient.x = sprite.x + 30
-        ingredient.y = sprite.y - sprite.body.height + 30
-        ingredient.angle = 0
+        this.itemsGroup.add(ingredient)
+        ingredient.positionOnPlayer(sprite)
         ingredient.setFlipY(false)
 
         sprite.item = ingredient
@@ -124,53 +118,54 @@ class GameScene extends Scene {
     // Add collisions to tile map
     const worldLayer = levelMap.createDynamicLayer('level-0', tiles)
       .setCollisionByProperty({ collides: true })
-      .setTileIndexCallback(1, grabItemFromBlock, this)
-      .setTileIndexCallback(2, grabItemFromBlock, this)
-      .setTileIndexCallback(3, grabItemFromBlock, this)
-      .setTileIndexCallback(4, grabItemFromBlock, this)
+      .setTileIndexCallback(TileType.COW_BOX, grabItemFromBlock, this)
+      .setTileIndexCallback(TileType.BUN_BOX, grabItemFromBlock, this)
+      .setTileIndexCallback(TileType.LETTUCE_BOX, grabItemFromBlock, this)
+      .setTileIndexCallback(TileType.TOMATO_BOX, grabItemFromBlock, this)
 
-    this.physics.add.collider(this.ingredients, worldLayer)
+    this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
 
-    this.physics.add.overlap(this.playersGroup, this.ingredients, pickupIngredient, null, this)
+    this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, pickupIngredient, null, this)
 
     this.io.onConnection((channel) => {
       channel.onDisconnect(() => {
         console.log('Disconnect user ' + channel.id)
+        let disconnectedPlayer = null
         this.playersGroup.children.each((player) => {
-          if (player.playerId === channel.playerId) {
-            player.kill()
+          if (player.entityID === channel.entityID) {
+            disconnectedPlayer = player
           }
         })
-        channel.room.emit('removePlayer', channel.playerId)
+        if (disconnectedPlayer) {
+          this.playersGroup.remove(disconnectedPlayer)
+          disconnectedPlayer.removeEvents()
+          disconnectedPlayer.destroy()
+        }
+        channel.room.emit('removePlayer', channel.entityID)
       })
 
-      channel.on('getId', () => {
-        channel.playerId = this.getId()
-        channel.emit('getId', channel.playerId.toString(36))
+      channel.on('getID', () => {
+        channel.entityID = this.getID()
+        channel.emit('getID', channel.entityID.toString(Settings.RADIX))
       })
 
       channel.on('playerMove', (data) => {
         this.playersGroup.children.iterate((player) => {
-          if (player.playerId === channel.playerId) {
+          if (player.entityID === channel.entityID) {
             player.setMove(data)
           }
         })
       })
 
-      channel.on('addPlayer', (data) => {
-        let dead = this.playersGroup.getFirstDead()
-        if (dead) {
-          dead.revive(channel.playerId, false)
-        } else {
-          this.playersGroup.add(
-            new Player(
-              this,
-              channel.playerId,
-              Phaser.Math.RND.integerInRange(100, 700)
-            )
+      channel.on('addPlayer', () => {
+        this.playersGroup.add(
+          new Player(
+            this,
+            channel.entityID,
+            Phaser.Math.RND.integerInRange(0, Settings.LEVEL_WIDTH),
           )
-        }
+        )
       })
 
       channel.emit('ready')
@@ -179,46 +174,22 @@ class GameScene extends Scene {
 
   update() {
     let updates = ''
-    this.playersGroup.children.iterate((player) => {
-      let x = Math.abs(player.x - player.prevX) > 0.5
-      let y = Math.abs(player.y - player.prevY) > 0.5
-      let dead = player.dead != player.prevDead
-      if (x || y || dead) {
-        if (dead || !player.dead) {
-          updates += this.prepareToSync(player)
-        }
+
+    const syncSpriteData = (sprite) => {
+      let x = Math.abs(sprite.x - sprite.prevX) > 0.5
+      let y = Math.abs(sprite.y - sprite.prevY) > 0.5
+      if (x || y) {
+        updates += this.prepareToSync(sprite)
       }
-      player.postUpdate()
-    })
+      sprite.postUpdate()
+    }
 
-    this.items.children.iterate((item) => {
-      let x = Math.abs(item.x - item.prevX) > 0.5
-      let y = Math.abs(item.y - item.prevY) > 0.5
-      let dead = item.dead != item.prevDead
-      if (x || y || dead) {
-        if (dead || !item.dead) {
-          updates += this.prepareToSync(item)
-        }
-      }
-      item.postUpdate()
-    })
-
-
-    this.ingredients.children.iterate((item) => {
-      let x = Math.abs(item.x - item.prevX) > 0.5
-      let y = Math.abs(item.y - item.prevY) > 0.5
-      let dead = item.dead != item.prevDead
-      if (x || y || dead) {
-        if (dead || !item.dead) {
-          updates += this.prepareToSync(item)
-        }
-      }
-      item.postUpdate()
-    })
-
+    this.playersGroup.children.iterate(syncSpriteData)
+    this.itemsGroup.children.iterate(syncSpriteData)
+    this.ingredientsGroup.children.iterate(syncSpriteData)
 
     if (updates.length > 0) {
-      this.io.room().emit('updateObjects', [updates])
+      this.io.room().emit('updateEntities', [updates])
     }
   }
 }

@@ -1,3 +1,5 @@
+import { Settings } from './enums'
+
 export default class Cursors {
   constructor(scene, channel) {
     this.channel = channel
@@ -11,8 +13,8 @@ export default class Cursors {
       left: false,
       right: false,
       up: false,
-      none: true,
       space: false,
+      none: true,
     }
 
     if (this.cursors.left.isDown) {
@@ -38,15 +40,15 @@ export default class Cursors {
       move.left ||
       move.right ||
       move.up ||
-      move.none !== this.prevNoMovement ||
-      move.space !== this.prevSpace
+      move.space !== this.prevSpace ||
+      move.none !== this.prevNoMovement
     ) {
       let total = 0
       if (move.left) total += 1
       if (move.right) total += 2
       if (move.up) total += 4
       if (move.space) total += 8
-      let str36 = total.toString(36)
+      let str36 = total.toString(Settings.RADIX)
 
       this.channel.emit('playerMove', str36)
     }

@@ -3,26 +3,27 @@ import axios from 'axios'
 import { has, sample } from 'lodash'
 import { Scene } from 'phaser'
 
-import Player from './sprites/player'
-import Tomato from './sprites/tomato'
+import { Tomato, Bun, Cow, Lettuce, Player } from './sprites'
+import { Settings, SpriteType, PLAYER_PREFIXES } from './enums'
 import Controls from './cursors'
 
-// Size of level map (multiple number of cells by cell width/height)
-const LEVEL_HEIGHT = 1935
-const LEVEL_WIDTH = 2580
-
-const SCALE = 0.5
-
-const PLAYER_PREFIXES = ['g', 'b']
+const spriteMap = {
+  [SpriteType.BUN]: Bun,
+  [SpriteType.COW]: Cow,
+  [SpriteType.LETTUCE]: Lettuce,
+  [SpriteType.TOMATO]: Tomato,
+}
 
 export class BootScene extends Scene {
   constructor() {
     super({ key: 'BootScene' })
 
-    const channel = geckos({ port: 1444 })
+    const channel = geckos({ port: Settings.SERVER_PORT })
 
     channel.onConnect(error => {
-      if (error) console.error(error.message)
+      if (error) {
+        console.error(error.message)
+      }
 
       channel.on('ready', () => {
         this.scene.start('GameScene', { channel: channel })
@@ -34,8 +35,8 @@ export class BootScene extends Scene {
 export class GameScene extends Scene {
   constructor() {
     super({ key: 'GameScene' })
-    this.objects = {}
-    this.playerId
+    this.entities = {}
+    this.playerID
   }
 
   init({ channel }) {
@@ -54,94 +55,106 @@ export class GameScene extends Scene {
     new Controls(this, this.channel)
 
     // Set camera boundary
-    this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT)
+    this.cameras.main.setBounds(0, 0, Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
 
     // Add sky background
-    this.add.sprite(LEVEL_WIDTH / 2, LEVEL_HEIGHT / 2, 'sky').setDisplaySize(LEVEL_WIDTH, LEVEL_HEIGHT)
+    this.add
+      .sprite(Settings.LEVEL_WIDTH / 2, Settings.LEVEL_HEIGHT / 2, 'sky')
+      .setDisplaySize(Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
 
     const levelMap = this.make.tilemap({ key: 'map' })
-    const tiles = levelMap.addTilesetImage('tiles', 'tiles', 129, 129)
+    const tiles = levelMap.addTilesetImage('tiles', 'tiles', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
     levelMap.createStaticLayer('level-0', tiles)
 
     const parseUpdates = updates => {
-      if (typeof updates === undefined || updates === '') {
+      if (!updates) {
         return []
       }
+
+      const numParams = 8
 
       // parse
       const updateParts = updates.split(',')
-      updateParts.pop()
+      updateParts.pop() // Handle trailing comma
       const parsedUpdates = []
 
       const n = updateParts.length
-      if (n % 8 !== 0) {
+      if (n % numParams !== 0) {
         return []
       }
 
-      for (let i = 0; i < n; i += 8) {
+      for (let i = 0; i < n; i += numParams) {
         parsedUpdates.push({
           spriteType: updateParts[i + 0],
-          playerId: updateParts[i + 1],
-          x: parseInt(updateParts[i + 2], 36),
-          y: parseInt(updateParts[i + 3], 36),
-          dead: updateParts[i + 4] === "1" ? true : false,
-          flipX: updateParts[i + 5] === "1" ? true : false,
-          anim: updateParts[i + 6] === "1" ? true : false,
-          angle: parseInt(updateParts[i + 7]),
+          entityID: updateParts[i + 1],
+          x: parseInt(updateParts[i + 2], Settings.RADIX),
+          y: parseInt(updateParts[i + 3], Settings.RADIX),
+          flipX: updateParts[i + 4] === "1" ? true : false,
+          flipY: updateParts[i + 5] === "1" ? true : false,
+          angle: parseInt(updateParts[i + 6]),
+          anim: updateParts[i + 7] === "1" ? true : false,
         })
       }
-
       return parsedUpdates
     }
 
     const updatesHandler = updates => {
-      updates.forEach(gameObject => {
-        const { spriteType, playerId, x, y, dead, flipX, anim, angle } = gameObject
-        const alpha = dead ? 0 : 1
+      updates.forEach(entityData => {
+        const {
+          angle,
+          anim,
+          flipX,
+          flipY,
+          entityID,
+          spriteType,
+          x,
+          y,
+        } = entityData
 
-        if (has(this.objects, playerId)) {
-          // if the gameObject does already exist, update the gameObject
-          let sprite = this.objects[playerId].sprite
-          sprite.setAlpha(alpha).setFlipX(flipX)
-          sprite.setPosition(x, y).setAngle(angle)
+        if (has(this.entities, entityID)) {
+          // if the entityData does already exist, update the entity
+          let sprite = this.entities[entityID].sprite
+          sprite.setPosition(x, y).setFlip(flipX, flipY).setAngle(angle)
           if (anim) {
             sprite.anims.play(sprite.animWalkKey, true)
           }
         } else {
           const prefix = sample(PLAYER_PREFIXES)
-          // if the gameObject does NOT exist, create a new gameObject
-          if (spriteType === '1') {
-            let newGameObject = {
-              sprite: new Player(this, playerId, x || 200, y || 200, prefix),
-              playerId: playerId
+          // if the entityData does NOT exist, create a new entity
+          if (spriteType === SpriteType.PLAYER) {
+            let newEntity = {
+              sprite: new Player(this, entityID, x, y, prefix),
+              entityID: entityID,
             }
-            newGameObject.sprite.setAlpha(alpha).setFlipX(flipX)
+            newEntity.sprite.setFlip(flipX, flipY)
             if (anim) {
-              newGameObject.sprite.anims.play(newGameObject.sprite.animWalkKey, true)
+              newEntity.sprite.anims.play(newGameObject.sprite.animWalkKey, true)
             }
-            this.objects = { ...this.objects, [playerId]: newGameObject }
-            if (this.playerId !== undefined && this.playerId.toString() === playerId) {
-              this.cameras.main.startFollow(newGameObject.sprite, true)
-              this.cameras.main.setZoom(SCALE)
+            this.entities[entityID] = newEntity
+
+            // If this is the player's sprite, set the camera to follow the sprite
+            if (this.playerID && this.playerID.toString() === entityID) {
+              this.cameras.main.startFollow(newEntity.sprite, true)
+              this.cameras.main.setZoom(Settings.SCALE)
             }
-          } else if (spriteType === '2') {
-            let newGameObject = {
-              sprite: new Tomato(this, playerId, x || 200, y || 200),
-              playerId: playerId
+          } else if (spriteType > SpriteType.PLAYER) {
+            let newEntity = {
+              sprite: new spriteMap[spriteType](this, entityID, x, y),
+              entityID: entityID,
             }
-            newGameObject.sprite.setAlpha(alpha).setAngle(angle)
-            this.objects = { ...this.objects, [playerId]: newGameObject }
+            newEntity.sprite.setFlip(flipX, flipY).setAngle(angle)
+            this.entities[entityID] = newEntity
           }
         }
       })
     }
 
-    this.channel.on('updateObjects', updates => updatesHandler(parseUpdates(updates[0])))
+    this.channel.on('updateEntities', updates => updatesHandler(parseUpdates(updates[0])))
 
-    this.channel.on('removePlayer', playerId => {
+    this.channel.on('removePlayer', entityID => {
       try {
-        this.objects[playerId].sprite.destroy()
-        delete this.objects[playerId]
+        this.entities[entityID].sprite.destroy()
+        delete this.entities[entityID]
       } catch (error) {
         console.error(error.message)
       }
@@ -149,19 +162,17 @@ export class GameScene extends Scene {
 
     try {
       // Load current game state
-      let res = await axios.get(
-        `${location.protocol}//${location.hostname}:1444/getState`
-      )
+      let res = await axios.get(`${location.protocol}//${location.hostname}:${Settings.SERVER_PORT}/getState`)
 
       let parsedUpdates = parseUpdates(res.data.state)
       updatesHandler(parsedUpdates)
 
-      this.channel.on('getId', playerId36 => {
-        this.playerId = parseInt(playerId36, 36)
+      this.channel.on('getID', playerID36 => {
+        this.playerID = parseInt(playerID36, Settings.RADIX)
         this.channel.emit('addPlayer')
       })
 
-      this.channel.emit('getId')
+      this.channel.emit('getID')
     } catch (error) {
       console.error(error.message)
     }

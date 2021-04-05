@@ -1,70 +1,46 @@
+const { Settings, SpriteType } = require('../enums')
+
 class Player extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, playerId, x = 200, y = 200, dummy = false) {
+  constructor(scene, entityID, x = 200, y = 200) {
     super(scene, x, y, '')
-    scene.add.existing(this)
-    scene.physics.add.existing(this)
 
     this.scene = scene
 
+    scene.add.existing(this)
+    scene.physics.add.existing(this)
+
+    this.setCollideWorldBounds(true)
+
+    this.type = SpriteType.PLAYER
+    this.entityID = entityID
+    this.body.setSize(131, 121)
+
+    this.prevNoMovement = true
     this.prevX = -1
     this.prevY = -1
 
     this.flipX = false
 
-    this.dead = false
-
     this.anim = false
-    this.type = '1'
-    this.playerId = playerId
     this.move = {}
-
     this.item = null
-
-    this.setDummy(dummy)
-
-    this.body.setSize(131, 121)
-
-    this.prevNoMovement = true
-
-    this.setCollideWorldBounds(true)
 
     scene.events.on('update', this.update, this)
   }
 
-  setDummy(dummy) {
-    if (dummy) {
-      this.body.setBounce(1)
-      this.scene.time.addEvent({
-        delay: Phaser.Math.RND.integerInRange(45, 90) * 1000,
-        callback: () => this.kill()
-      })
-    } else {
-      this.body.setBounce(0)
-    }
-  }
-
-  kill() {
-    this.dead = true
-    this.setActive(false)
-  }
-
-  revive(playerId, dummy) {
-    this.playerId = playerId
-    this.dead = false
-    this.setActive(true)
-    this.setDummy(dummy)
-    this.setVelocity(0)
+  removeEvents() {
+    scene.events.off('update', this.update, this)
   }
 
   setMove(data) {
-    let moveCode = parseInt(data, 36)
+    let m = parseInt(data, Settings.RADIX)
 
     let move = {
-      left: moveCode === 1 || moveCode === 5 || moveCode === 9 || moveCode === 13,
-      right: moveCode === 2 || moveCode === 6 || moveCode === 10 || moveCode === 14,
-      up: moveCode === 4 || moveCode === 6 || moveCode === 5 || moveCode === 12 || moveCode === 13 || moveCode === 14,
-      space: moveCode === 8 || moveCode === 9 || moveCode === 10 || moveCode === 12 || moveCode === 13 || moveCode === 14,
-      none: moveCode === 16,
+      left: m === 1 || m === 5 || m === 9 || m === 13,
+      right: m === 2 || m === 6 || m === 10 || m === 14,
+      up: m === 4 || m === 6 || m === 5 || m === 12 || m === 13 || m === 14,
+      space: m === 8 || m === 9 || m === 10 || m === 12 || m === 13 || m === 14,
+      none: m === 16,
     }
 
     this.move = move
@@ -91,13 +67,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (this.item) {
-      this.item.setMovePosition(this.x, this.y - this.body.height + 30)
+      this.item.positionOnPlayer(this)
     }
 
     if (this.item && this.move.space) {
-      this.scene.ingredients.add(this.item)
+      this.scene.ingredientsGroup.add(this.item)
       this.item.throw(this.flipX)
-      this.scene.items.remove(this.item)
+      this.scene.itemsGroup.remove(this.item)
       this.item = null
     }
   }
@@ -105,7 +81,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   postUpdate() {
     this.prevX = this.x
     this.prevY = this.y
-    this.prevDead = this.dead
   }
 }
 

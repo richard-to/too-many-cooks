@@ -3,12 +3,13 @@ require('@geckos.io/phaser-on-nodejs')
 const Phaser = require('phaser')
 
 const GameScene = require('./scene')
+const Settings = require('./enums').Settings
 
 const config = {
   type: Phaser.HEADLESS,
   parent: 'phaser-game',
-  width: 1280,
-  height: 720,
+  width: Settings.SCREEN_WIDTH,
+  height: Settings.SCREEN_HEIGHT,
   banner: false,
   audio: false,
   scene: [GameScene],
