@@ -1,11 +1,12 @@
 const path = require('path')
 
 const geckos = require('@geckos.io/server').default
+const { sample } = require('lodash')
 const { Scene } = require('phaser')
 
-const { Settings, SpriteType, TileType } = require('./enums')
-const Player = require('./sprites/player')
+const { PlayerPrefix, Settings, SpriteType, TileType } = require('./enums')
 const { Bun, Cow, Lettuce, Tomato } = require('./sprites/items')
+const Player = require('./sprites/player')
 
 const tileIndexMap = {
   [TileType.COW_BOX]: Cow,
@@ -34,7 +35,7 @@ class GameScene extends Scene {
   prepareToSync(e) {
     const x = Math.round(e.x).toString(Settings.RADIX)
     const y = Math.round(e.y).toString(Settings.RADIX)
-    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},`
+    return `${e.type},${e.entityID},${e.prefix},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},`
   }
 
   getState() {
@@ -163,6 +164,7 @@ class GameScene extends Scene {
           new Player(
             this,
             channel.entityID,
+            sample(PlayerPrefix),
             Phaser.Math.RND.integerInRange(0, Settings.LEVEL_WIDTH),
           )
         )

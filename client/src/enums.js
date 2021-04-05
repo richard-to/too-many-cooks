@@ -12,8 +12,6 @@ export const Settings = deepFreeze({
   TILE_WIDTH: 129,
 })
 
-export const PLAYER_PREFIXES = deepFreeze(['g', 'b'])
-
 export const SpriteType = deepFreeze({
   PLAYER: '1',
   TOMATO: '2',

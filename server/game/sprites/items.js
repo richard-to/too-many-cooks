@@ -12,6 +12,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
 
     this.setCollideWorldBounds(true)
 
+    this.prefix = ''
     this.entityID = entityID
 
     this.xPad = 0

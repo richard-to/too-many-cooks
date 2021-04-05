@@ -1,10 +1,10 @@
 import geckos from '@geckos.io/client'
 import axios from 'axios'
-import { has, sample } from 'lodash'
+import { has } from 'lodash'
 import { Scene } from 'phaser'
 
 import { Tomato, Bun, Cow, Lettuce, Player } from './sprites'
-import { Settings, SpriteType, PLAYER_PREFIXES } from './enums'
+import { Settings, SpriteType } from './enums'
 import Controls from './cursors'
 
 const spriteMap = {
@@ -71,7 +71,7 @@ export class GameScene extends Scene {
         return []
       }
 
-      const numParams = 8
+      const numParams = 9
 
       // parse
       const updateParts = updates.split(',')
@@ -83,16 +83,17 @@ export class GameScene extends Scene {
         return []
       }
 
-      for (let i = 0; i < n; i += numParams) {
+      for (let i = 0; i < n;) {
         parsedUpdates.push({
-          spriteType: updateParts[i + 0],
-          entityID: updateParts[i + 1],
-          x: parseInt(updateParts[i + 2], Settings.RADIX),
-          y: parseInt(updateParts[i + 3], Settings.RADIX),
-          flipX: updateParts[i + 4] === "1" ? true : false,
-          flipY: updateParts[i + 5] === "1" ? true : false,
-          angle: parseInt(updateParts[i + 6]),
-          anim: updateParts[i + 7] === "1" ? true : false,
+          spriteType: updateParts[i++],
+          entityID: updateParts[i++],
+          prefix: updateParts[i++],
+          x: parseInt(updateParts[i++], Settings.RADIX),
+          y: parseInt(updateParts[i++], Settings.RADIX),
+          flipX: updateParts[i++] === "1" ? true : false,
+          flipY: updateParts[i++] === "1" ? true : false,
+          angle: parseInt(updateParts[i++]),
+          anim: updateParts[i++] === "1" ? true : false,
         })
       }
       return parsedUpdates
@@ -106,6 +107,7 @@ export class GameScene extends Scene {
           flipX,
           flipY,
           entityID,
+          prefix,
           spriteType,
           x,
           y,
@@ -119,11 +121,10 @@ export class GameScene extends Scene {
             sprite.anims.play(sprite.animWalkKey, true)
           }
         } else {
-          const prefix = sample(PLAYER_PREFIXES)
           // if the entityData does NOT exist, create a new entity
           if (spriteType === SpriteType.PLAYER) {
             let newEntity = {
-              sprite: new Player(this, entityID, x, y, prefix),
+              sprite: new Player(this, entityID, prefix, x, y),
               entityID: entityID,
             }
             newEntity.sprite.setFlip(flipX, flipY)

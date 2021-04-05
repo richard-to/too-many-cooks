@@ -1,6 +1,6 @@
 const deepFreeze = require('deep-freeze-strict')
 
-const PlayerPrefixes = deepFreeze(['g', 'b'])
+const PlayerPrefix = deepFreeze(['g', 'b'])
 
 const Settings = deepFreeze({
   LEVEL_HEIGHT: 1935,
@@ -30,7 +30,7 @@ const TileType = deepFreeze({
 })
 
 module.exports = {
-  PlayerPrefixes,
+  PlayerPrefix,
   Settings,
   SpriteType,
   TileType,

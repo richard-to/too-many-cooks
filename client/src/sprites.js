@@ -5,7 +5,7 @@ import { SpriteType } from './enums'
 
 
 export class Player extends Phaser.GameObjects.Sprite {
-  constructor(scene, entityID, x, y, prefix) {
+  constructor(scene, entityID, prefix, x, y) {
     super(scene, x, y, 'players', `${prefix}1.png`)
     this.entityID = entityID
     this.type = SpriteType.PLAYER
