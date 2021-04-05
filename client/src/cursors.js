@@ -5,6 +5,7 @@ export default class Cursors {
     this.channel = channel
     this.cursors = scene.input.keyboard.createCursorKeys()
     this.space = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+    this.xKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X)
     scene.events.on('update', this.update, this)
   }
 
@@ -14,6 +15,7 @@ export default class Cursors {
       right: false,
       up: false,
       space: false,
+      x: false,
       none: true,
     }
 
@@ -36,11 +38,18 @@ export default class Cursors {
       move.space = false
     }
 
+    if (Phaser.Input.Keyboard.JustDown(this.xKey)) {
+      move.x = true
+    } else {
+      move.x = false
+    }
+
     if (
       move.left ||
       move.right ||
       move.up ||
       move.space !== this.prevSpace ||
+      move.x !== this.prevX ||
       move.none !== this.prevNoMovement
     ) {
       let total = 0
@@ -48,11 +57,13 @@ export default class Cursors {
       if (move.right) total += 2
       if (move.up) total += 4
       if (move.space) total += 8
+      if (move.x) total += 16
       let str36 = total.toString(Settings.RADIX)
 
       this.channel.emit('playerMove', str36)
     }
     this.prevSpace = move.space
+    this.prevX = move.x
     this.prevNoMovement = move.none
   }
 }

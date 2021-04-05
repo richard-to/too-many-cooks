@@ -3,12 +3,32 @@ import axios from 'axios'
 import { has } from 'lodash'
 import { Scene } from 'phaser'
 
-import { Tomato, Bun, Cow, Lettuce, Player } from './sprites'
+import {
+  Bun,
+  BurgerBeef,
+  BurgerBeefLettuce,
+  BurgerBeefTomato,
+  BurgerBeefTomatoLettuce,
+  BurgerLettuce,
+  BurgerTomato,
+  BurgerTomatoLettuce,
+  Cow,
+  Lettuce,
+  Player,
+  Tomato,
+} from './sprites'
 import { Settings, SpriteType } from './enums'
 import Controls from './cursors'
 
 const spriteMap = {
   [SpriteType.BUN]: Bun,
+  [SpriteType.BURGER_BEEF]: BurgerBeef,
+  [SpriteType.BURGER_BEEF_TOMATO]: BurgerBeefTomato,
+  [SpriteType.BURGER_BEEF_LETTUCE]: BurgerBeefLettuce,
+  [SpriteType.BURGER_BEEF_TOMATO_LETTUCE]: BurgerBeefTomatoLettuce,
+  [SpriteType.BURGER_TOMATO]:  BurgerTomato,
+  [SpriteType.BURGER_TOMATO_LETTUCE]:  BurgerTomatoLettuce,
+  [SpriteType.BURGER_LETTUCE]:  BurgerLettuce,
   [SpriteType.COW]: Cow,
   [SpriteType.LETTUCE]: Lettuce,
   [SpriteType.TOMATO]: Tomato,

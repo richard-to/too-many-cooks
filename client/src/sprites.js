@@ -50,10 +50,74 @@ export class Cow extends Phaser.GameObjects.Sprite {
     scene.add.existing(this)
   }
 }
+
 export class Bun extends Phaser.GameObjects.Sprite {
   constructor(scene, entityID, x, y) {
     super(scene, x, y, 'assets', 'bun.png')
     this.type = SpriteType.BUN
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerBeef extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-beef.png')
+    this.type = SpriteType.BURGER_BEEF
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerBeefTomato extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-beef-tomato.png')
+    this.type = SpriteType.BURGER_BEEF_TOMATO
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerBeefLettuce extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-beef-lettuce.png')
+    this.type = SpriteType.BURGER_BEEF_LETTUCE
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerBeefTomatoLettuce extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-beef-tomato-lettuce.png')
+    this.type = SpriteType.BURGER_BEEF_TOMATO_LETTUCE
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerTomato extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-tomato.png')
+    this.type = SpriteType.BURGER_TOMATO
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerTomatoLettuce extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-tomato-lettuce.png')
+    this.type = SpriteType.BURGER_TOMATO_LETTUCE
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BurgerLettuce extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'burger-lettuce.png')
+    this.type = SpriteType.BURGER_LETTUCE
     this.entityID = entityID
     scene.add.existing(this)
   }

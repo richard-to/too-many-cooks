@@ -18,4 +18,11 @@ export const SpriteType = deepFreeze({
   LETTUCE: '3',
   COW: '4',
   BUN: '5',
+  BURGER_BEEF: '6',
+  BURGER_BEEF_TOMATO: '7',
+  BURGER_BEEF_LETTUCE: '8',
+  BURGER_BEEF_TOMATO_LETTUCE: '9',
+  BURGER_TOMATO: '10',
+  BURGER_TOMATO_LETTUCE: '11',
+  BURGER_LETTUCE: '12',
 })

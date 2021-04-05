@@ -37,11 +37,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     let m = parseInt(data, Settings.RADIX)
 
     let move = {
-      left: m === 1 || m === 5 || m === 9 || m === 13,
-      right: m === 2 || m === 6 || m === 10 || m === 14,
-      up: m === 4 || m === 6 || m === 5 || m === 12 || m === 13 || m === 14,
+      left: m === 1 || m === 5 || m === 9 || m === 13 || m === 17 || m === 21,
+      right: m === 2 || m === 6 || m === 10 || m === 14|| m === 18 || m === 22,
+      up: m === 4 || m === 6 || m === 5 || m === 12 || m === 13 || m === 14 || m === 20 || m === 21 || m === 22,
       space: m === 8 || m === 9 || m === 10 || m === 12 || m === 13 || m === 14,
-      none: m === 16,
+      x: m === 16 || m === 17 || m === 18 || m === 20 || m === 21 || m === 22,
+      none: m === 32,
     }
 
     this.move = move

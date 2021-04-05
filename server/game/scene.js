@@ -5,7 +5,19 @@ const { sample } = require('lodash')
 const { Scene } = require('phaser')
 
 const { PlayerPrefix, Settings, SpriteType, TileType } = require('./enums')
-const { Bun, Cow, Lettuce, Tomato } = require('./sprites/items')
+const {
+  Bun,
+  BurgerBeef,
+  BurgerBeefLettuce,
+  BurgerBeefTomato,
+  BurgerBeefTomatoLettuce,
+  BurgerLettuce,
+  BurgerTomato,
+  BurgerTomatoLettuce,
+  Cow,
+  Lettuce,
+  Tomato,
+} = require('./sprites/items')
 const Player = require('./sprites/player')
 
 const tileIndexMap = {
@@ -102,6 +114,62 @@ class GameScene extends Scene {
         return
       }
 
+      if (sprite.item && sprite.move.x) {
+        sprite.move.x = false
+
+        const item = sprite.item
+        let BurgerClass
+        // TODO: Refactor this ugly conditional
+        if (item.type < SpriteType.BUN && ingredient.type > SpriteType.COW) {
+          if (item.type === SpriteType.COW && ingredient.type === SpriteType.BUN) {
+            BurgerClass = BurgerBeef
+          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {
+            BurgerClass = BurgerBeefLettuce
+          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
+            BurgerClass = BurgerBeefTomato
+          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
+            BurgerClass = BurgerBeefTomatoLettuce
+          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BUN) {
+            BurgerClass = BurgerLettuce
+          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO_LETTUCE) {
+            BurgerClass = BurgerBeefLettuce
+          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
+            BurgerClass = BurgerTomatoLettuce
+          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO) {
+            BurgerClass = BurgerBeefTomatoLettuce
+          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BUN) {
+            BurgerClass = BurgerTomato
+          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF) {
+            BurgerClass = BurgerBeefTomato
+          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_LETTUCE) {
+            BurgerClass = BurgerTomatoLettuce
+          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF_LETTUCE) {
+            BurgerClass = BurgerBeefTomatoLettuce
+          }
+        }
+
+        if (BurgerClass) {
+          const newItem = new BurgerClass(this, this.getID())
+          newItem.positionOnPlayer(sprite)
+          this.itemsGroup.add(newItem)
+          sprite.item = newItem
+
+          this.io.room().emit('removePlayer', item.entityID)
+          this.io.room().emit('removePlayer', ingredient.entityID)
+
+          // Clean up merged items
+          item.removeEvents()
+          ingredient.removeEvents()
+
+          this.itemsGroup.remove(item)
+          this.ingredientsGroup.remove(ingredient)
+
+          item.destroy()
+          ingredient.destroy()
+        }
+        return
+      }
+
       if (!sprite.item && sprite.move.space) {
         sprite.move.space = false
 
@@ -113,6 +181,7 @@ class GameScene extends Scene {
         ingredient.setFlipY(false)
 
         sprite.item = ingredient
+        return
       }
     }
 

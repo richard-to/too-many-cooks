@@ -29,7 +29,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
   }
 
   removeEvents() {
-    scene.events.off('update', this.update, this)
+    this.scene.events.off('update', this.update, this)
   }
 
   positionOnPlayer(player) {
@@ -49,7 +49,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    if (this.body.onFloor()) {
+    if (this.body && this.body.onFloor()) {
       this.body.angularVelocity = 0
       this.setVelocityX(0)
     }
@@ -98,8 +98,72 @@ class Tomato extends Ingredient {
   }
 }
 
+class BurgerBeef extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_BEEF
+    this.body.setSize(126, 99)
+  }
+}
+
+class BurgerBeefTomato extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_BEEF_TOMATO
+    this.body.setSize(125, 115)
+  }
+}
+
+class BurgerBeefLettuce extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_BEEF_LETTUCE
+    this.body.setSize(124, 99)
+  }
+}
+
+class BurgerBeefTomatoLettuce extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_BEEF_TOMATO_LETTUCE
+    this.body.setSize(125, 115)
+  }
+}
+
+class BurgerTomato extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_TOMATO
+    this.body.setSize(118, 86)
+  }
+}
+
+class BurgerTomatoLettuce extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_TOMATO_LETTUCE
+    this.body.setSize(119, 90)
+  }
+}
+
+class BurgerLettuce extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BURGER_LETTUCE
+    this.body.setSize(118, 81)
+  }
+}
+
+
 module.exports = {
   Bun,
+  BurgerBeef,
+  BurgerBeefLettuce,
+  BurgerBeefTomato,
+  BurgerBeefTomatoLettuce,
+  BurgerLettuce,
+  BurgerTomato,
+  BurgerTomatoLettuce,
   Cow,
   Lettuce,
   Tomato,
