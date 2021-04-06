@@ -116,7 +116,6 @@ class GameScene extends Scene {
 
       if (sprite.item && sprite.move.x) {
         sprite.move.x = false
-
         const item = sprite.item
         let BurgerClass
         // TODO: Refactor this ugly conditional
@@ -125,13 +124,13 @@ class GameScene extends Scene {
             BurgerClass = BurgerBeef
           } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {
             BurgerClass = BurgerBeefLettuce
-          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
+          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO) {
             BurgerClass = BurgerBeefTomato
           } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
             BurgerClass = BurgerBeefTomatoLettuce
           } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BUN) {
             BurgerClass = BurgerLettuce
-          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO_LETTUCE) {
+          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF) {
             BurgerClass = BurgerBeefLettuce
           } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
             BurgerClass = BurgerTomatoLettuce

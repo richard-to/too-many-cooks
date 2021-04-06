@@ -105,7 +105,7 @@ export class GameScene extends Scene {
 
       for (let i = 0; i < n;) {
         parsedUpdates.push({
-          spriteType: updateParts[i++],
+          spriteType: parseInt(updateParts[i++]),
           entityID: updateParts[i++],
           prefix: updateParts[i++],
           x: parseInt(updateParts[i++], Settings.RADIX),
