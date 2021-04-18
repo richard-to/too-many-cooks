@@ -17,6 +17,7 @@ export const Settings = deepFreeze({
 })
 
 export const SpriteType = deepFreeze({
+  VIDEO_PLAYER: -1,
   PLAYER: 1,
   TOMATO: 2,
   LETTUCE: 3,

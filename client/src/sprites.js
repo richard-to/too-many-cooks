@@ -3,12 +3,14 @@ import Phaser from 'phaser'
 
 import { Settings, SpriteType } from './enums'
 
-
-export class Player extends Phaser.GameObjects.Video {
+/**
+ * VideoPlayer is a sub-component of the Player container
+ */
+export class VideoPlayer extends Phaser.GameObjects.Video {
   constructor(scene, entityID, x, y) {
-    super(scene, x, y, `Player${entityID}`)
+    super(scene, x, y, `VideoPlayer${entityID}`)
+    this.type = SpriteType.VIDEO_PLAYER
     this.entityID = entityID
-    this.type = SpriteType.PLAYER
     scene.add.existing(this)
   }
 
@@ -24,6 +26,38 @@ export class Player extends Phaser.GameObjects.Video {
     this.video.width = Settings.PLAYER_WIDTH
     this.video.height = Settings.PLAYER_HEIGHT
     this.video.autoplay = true
+    return this
+  }
+}
+
+export class Player extends Phaser.GameObjects.Container {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y)
+    this.type = SpriteType.PLAYER
+    this.entityID = entityID
+    scene.add.existing(this)
+
+    this.videoPlayer = new VideoPlayer(scene, entityID, 0, 0)
+    this.add(this.videoPlayer)
+  }
+  /**
+   * Set the player's video stream
+   *
+   * @param {MediaStream} stream
+   */
+  setStream(stream) {
+    this.videoPlayer.setStream(stream)
+    return this
+  }
+
+  setFlip(flip) {
+    this.videoPlayer.setFlip(flip)
+    return this
+  }
+
+  setAngle(angle) {
+    this.videoPlayer.setAngle(angle)
+    return this
   }
 }
 
