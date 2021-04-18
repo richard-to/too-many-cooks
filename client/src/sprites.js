@@ -1,26 +1,29 @@
 import Phaser from 'phaser'
 
 
-import { SpriteType } from './enums'
+import { Settings, SpriteType } from './enums'
 
 
-export class Player extends Phaser.GameObjects.Sprite {
-  constructor(scene, entityID, prefix, x, y) {
-    super(scene, x, y, 'players', `${prefix}1.png`)
+export class Player extends Phaser.GameObjects.Video {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, `Player${entityID}`)
     this.entityID = entityID
     this.type = SpriteType.PLAYER
     scene.add.existing(this)
+  }
 
-    // Walk animation
-    this.animWalkKey = `${prefix}-walk`
-    const frames = [
-      { key: 'players', frame: `${prefix}1.png` },
-      { key: 'players', frame: `${prefix}2.png` },
-      { key: 'players', frame: `${prefix}3.png` },
-      { key: 'players', frame: `${prefix}4.png` },
-      { key: 'players', frame: `${prefix}1.png` },
-    ]
-    scene.anims.create({ key: this.animWalkKey, frames: frames, frameRate: 12 })
+  /**
+   * Set the player's video stream
+   *
+   * @param {MediaStream} stream
+   */
+  setStream(stream) {
+    this.video = document.createElement("video")
+    this.video.playsInline = true
+    this.video.srcObject = stream
+    this.video.width = Settings.PLAYER_WIDTH
+    this.video.height = Settings.PLAYER_HEIGHT
+    this.video.autoplay = true
   }
 }
 

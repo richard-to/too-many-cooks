@@ -1,8 +1,12 @@
 import deepFreeze from 'deep-freeze-strict'
 
 export const Settings = deepFreeze({
+  ENABLE_AUDIO: false,
+  ENABLE_VIDEO: true,
   LEVEL_HEIGHT: 1935,
   LEVEL_WIDTH: 2580,
+  PLAYER_WIDTH: 150,
+  PLAYER_HEIGHT: 200,
   RADIX: 36,
   SCALE: 0.5,
   SCREEN_HEIGHT: 720,

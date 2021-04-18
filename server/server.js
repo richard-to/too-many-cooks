@@ -26,8 +26,12 @@ app.get('/', (req, res) => {
 app.get('/getState', (_req, res) => {
   try {
     let gameScene = game.scene.keys['GameScene']
-    return res.json({ state: gameScene.getState() })
+    return res.json({
+      state: gameScene.getState(),
+      channelEntityMap: gameScene.getChannelEntityMap(),
+    })
   } catch (error) {
+    console.error(error)
     return res.status(500).json({ error: error.message })
   }
 })

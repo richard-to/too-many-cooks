@@ -1,10 +1,9 @@
 const path = require('path')
 
 const geckos = require('@geckos.io/server').default
-const { sample } = require('lodash')
 const { Scene } = require('phaser')
 
-const { PlayerPrefix, Settings, SpriteType, TileType } = require('./enums')
+const { Settings, SpriteType, TileType } = require('./enums')
 const {
   Bun,
   BurgerBeef,
@@ -35,6 +34,8 @@ class GameScene extends Scene {
 
   init() {
     this.io = geckos({
+      enableAudio: Settings.ENABLE_AUDIO,
+      enableVideo: Settings.ENABLE_VIDEO,
       iceServers: [],
     })
     this.io.addServer(this.game.server)
@@ -47,7 +48,18 @@ class GameScene extends Scene {
   prepareToSync(e) {
     const x = Math.round(e.x).toString(Settings.RADIX)
     const y = Math.round(e.y).toString(Settings.RADIX)
-    return `${e.type},${e.entityID},${e.prefix},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},`
+    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},`
+  }
+
+  /**
+   * Gets a mapping of channel ID to entity ID to help map audio/video streams to the correct player
+   */
+  getChannelEntityMap() {
+    const channelEntityMap = {}
+    this.io.connectionsManager.getConnections().forEach(conn => {
+      channelEntityMap[conn.channel.id] = conn.channel.entityID
+    })
+    return channelEntityMap
   }
 
   getState() {
@@ -197,7 +209,7 @@ class GameScene extends Scene {
 
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, pickupIngredient, null, this)
 
-    this.io.onConnection((channel) => {
+    this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
         console.log('Disconnect user ' + channel.id)
         let disconnectedPlayer = null
@@ -217,6 +229,9 @@ class GameScene extends Scene {
       channel.on('getID', () => {
         channel.entityID = this.getID()
         channel.emit('getID', channel.entityID.toString(Settings.RADIX))
+
+        // Notify everyone when someone joins the game so we can add their stream
+        channel.broadcast.emit('joinGame', `${channel.id},${channel.entityID}`, { reliable: true })
       })
 
       channel.on('playerMove', (data) => {
@@ -232,12 +247,15 @@ class GameScene extends Scene {
           new Player(
             this,
             channel.entityID,
-            sample(PlayerPrefix),
             Phaser.Math.RND.integerInRange(0, Settings.LEVEL_WIDTH),
           )
         )
       })
 
+      // Add a small delay to avoid a race condition with the ready event.
+      // Without the delay, the ready event may be emitted before the client
+      // has connected.
+      await new Promise(resolve => setTimeout(resolve, 500))
       channel.emit('ready')
     })
   }
