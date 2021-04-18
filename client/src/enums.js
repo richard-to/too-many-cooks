@@ -5,8 +5,8 @@ export const Settings = deepFreeze({
   ENABLE_VIDEO: true,
   LEVEL_HEIGHT: 1935,
   LEVEL_WIDTH: 2580,
-  PLAYER_WIDTH: 150,
-  PLAYER_HEIGHT: 200,
+  PLAYER_WIDTH: 140,
+  PLAYER_HEIGHT: 190,
   RADIX: 36,
   SCALE: 0.5,
   SCREEN_HEIGHT: 720,
@@ -17,7 +17,7 @@ export const Settings = deepFreeze({
 })
 
 export const SpriteType = deepFreeze({
-  VIDEO_PLAYER: -1,
+  PLAYER_VIDEO: -1,
   PLAYER: 1,
   TOMATO: 2,
   LETTUCE: 3,

@@ -16,7 +16,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     this.entityID = entityID
 
     this.xPad = 0
-    this.yPad = 30
+    this.yPad = 10
 
     this.prevNoMovement = true
     this.prevX = -1
@@ -59,6 +59,12 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     this.prevX = this.x
     this.prevY = this.y
   }
+
+  needsSync() {
+    const x = Math.abs(this.x - this.prevX) > 0.5
+    const y = Math.abs(this.y - this.prevY) > 0.5
+    return (x || y)
+  }
 }
 
 class Bun extends Ingredient {
@@ -78,7 +84,7 @@ class Cow extends Ingredient {
     this.defaultFlipY = true
 
     this.xPad = 30
-    this.yPad = 40
+    this.yPad = 30
   }
 }
 
@@ -87,6 +93,8 @@ class Lettuce extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.LETTUCE
     this.body.setSize(128, 104)
+
+    this.yPad = 5
   }
 }
 

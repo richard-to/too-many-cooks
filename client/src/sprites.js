@@ -6,10 +6,10 @@ import { Settings, SpriteType } from './enums'
 /**
  * VideoPlayer is a sub-component of the Player container
  */
-export class VideoPlayer extends Phaser.GameObjects.Video {
+export class PlayerVideo extends Phaser.GameObjects.Video {
   constructor(scene, entityID, x, y) {
-    super(scene, x, y, `VideoPlayer${entityID}`)
-    this.type = SpriteType.VIDEO_PLAYER
+    super(scene, x, y, `PlayerVideo${entityID}`)
+    this.type = SpriteType.PlayerVideo
     this.entityID = entityID
     scene.add.existing(this)
   }
@@ -20,7 +20,7 @@ export class VideoPlayer extends Phaser.GameObjects.Video {
    * @param {MediaStream} stream
    */
   setStream(stream) {
-    this.video = document.createElement("video")
+    this.video = document.createElement('video')
     this.video.playsInline = true
     this.video.srcObject = stream
     this.video.width = Settings.PLAYER_WIDTH
@@ -37,26 +37,53 @@ export class Player extends Phaser.GameObjects.Container {
     this.entityID = entityID
     scene.add.existing(this)
 
-    this.videoPlayer = new VideoPlayer(scene, entityID, 0, 0)
-    this.add(this.videoPlayer)
+    const shell = scene.add.sprite(0, 0, 'assets', 'container.png')
+    shell.active = false
+    this.add(shell)
+
+    this.magnet = scene.add.sprite(0, 0, 'assets', 'magnet.png')
+    this.magnet.y = (shell.height / -2) + (this.magnet.height / -2)
+    this.magnet.active = false
+    this.magnet.visible = false
+    this.add(this.magnet)
+
+    this.rocket = scene.add.sprite(0, 0, 'assets', 'rocket.png')
+    this.rocket.y = (shell.height / 2) + (this.rocket.height / 2)
+    this.rocket.active = false
+    this.rocket.visible = false
+    this.add(this.rocket)
+
+    this.video = new PlayerVideo(scene, entityID, 1, 1)
+    this.add(this.video)
   }
+
   /**
    * Set the player's video stream
    *
    * @param {MediaStream} stream
    */
   setStream(stream) {
-    this.videoPlayer.setStream(stream)
+    this.video.setStream(stream)
     return this
   }
 
   setFlip(flip) {
-    this.videoPlayer.setFlip(flip)
+    this.video.setFlip(flip)
     return this
   }
 
   setAngle(angle) {
-    this.videoPlayer.setAngle(angle)
+    this.video.setAngle(angle)
+    return this
+  }
+
+  setHasItem(hasItem) {
+    this.magnet.visible = hasItem
+    return this
+  }
+
+  setIsJumping(isJumping) {
+    this.rocket.visible = isJumping
     return this
   }
 }

@@ -18,7 +18,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.prevNoMovement = true
     this.prevX = -1
     this.prevY = -1
-
+    this.prevVelocityY = 0
+    this.prevHasItem = false
     this.flipX = false
 
     this.anim = false
@@ -82,6 +83,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   postUpdate() {
     this.prevX = this.x
     this.prevY = this.y
+    this.prevVelocityY = this.body.velocity.y
+    this.prevHasItem = this.item !== null
+  }
+
+  needsSync() {
+    const x = Math.abs(this.x - this.prevX) > 0.5
+    const y = Math.abs(this.y - this.prevY) > 0.5
+    const vy = (
+      (this.prevVelocityY >= Settings.SHOW_ROCKET_VY && this.body.velocity.y < Settings.SHOW_ROCKET_VY) ||
+      (this.prevVelocityY < Settings.SHOW_ROCKET_VY && this.body.velocity.y >= Settings.SHOW_ROCKET_VY)
+    )
+    const i = this.prevHasItem !== (this.item !== null)
+    return (x || y || vy || i)
   }
 }
 

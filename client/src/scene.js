@@ -164,7 +164,7 @@ export class GameScene extends Scene {
         return []
       }
 
-      const numParams = 8
+      const numParams = 10
 
       // parse
       const updateParts = updates.split(',')
@@ -186,6 +186,8 @@ export class GameScene extends Scene {
           flipY: updateParts[i++] === "1" ? true : false,
           angle: parseInt(updateParts[i++]),
           anim: updateParts[i++] === "1" ? true : false,
+          isJumping: updateParts[i++] === "1" ? true : false,
+          hasItem: updateParts[i++] === "1" ? true : false,
         })
       }
       return parsedUpdates
@@ -195,9 +197,11 @@ export class GameScene extends Scene {
       updates.forEach(entityData => {
         const {
           angle,
+          entityID,
           flipX,
           flipY,
-          entityID,
+          hasItem,
+          isJumping,
           spriteType,
           x,
           y,
@@ -207,6 +211,9 @@ export class GameScene extends Scene {
           // if the entityData does already exist, update the entity
           let sprite = this.entities[entityID].sprite
           sprite.setPosition(x, y).setFlip(flipX, flipY).setAngle(angle)
+          if (sprite.type === SpriteType.PLAYER) {
+            sprite.setIsJumping(isJumping).setHasItem(hasItem)
+          }
         } else {
           // if the entityData does NOT exist, create a new entity
           if (spriteType === SpriteType.PLAYER) {
@@ -250,12 +257,12 @@ export class GameScene extends Scene {
     })
 
     this.channel.on('addTrack', async () => {
-      // - Listen for add track even which is forwarded by the channel
+      // - Listen for add track event which is forwarded by the channel
       // - Since this event listener is added after connection, we will miss the first few events, which is OK
       //   since we call this.updatePlayerStreams() during initialization
 
       // We wait 0.5 seconds before updating the player streams since there seems to be a small delay between when
-      // the on track event is triggered and when the connection/stream map is updated on the server.
+      // the ontrack event is triggered and when the connection/stream map is updated on the server.
       await new Promise(resolve => setTimeout(resolve, 1000))
       this.updatePlayerStreams()
     })

@@ -14,6 +14,7 @@ const Settings = deepFreeze({
   SCREEN_HEIGHT: 720,
   SCREEN_WIDTH: 1280,
   SERVER_PORT: 1444,
+  SHOW_ROCKET_VY: -200, // Show rocket when y velocity is > -200
   TILE_HEIGHT: 129,
   TILE_WIDTH: 129,
 })

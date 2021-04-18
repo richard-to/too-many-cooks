@@ -48,7 +48,8 @@ class GameScene extends Scene {
   prepareToSync(e) {
     const x = Math.round(e.x).toString(Settings.RADIX)
     const y = Math.round(e.y).toString(Settings.RADIX)
-    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},`
+    const j = e.body.velocity.y < Settings.SHOW_ROCKET_VY ? 1:0 // is jumping
+    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},${j},${e.item ? 1:0},`
   }
 
   /**
@@ -264,9 +265,7 @@ class GameScene extends Scene {
     let updates = ''
 
     const syncSpriteData = (sprite) => {
-      let x = Math.abs(sprite.x - sprite.prevX) > 0.5
-      let y = Math.abs(sprite.y - sprite.prevY) > 0.5
-      if (x || y) {
+      if (sprite.needsSync()) {
         updates += this.prepareToSync(sprite)
       }
       sprite.postUpdate()
