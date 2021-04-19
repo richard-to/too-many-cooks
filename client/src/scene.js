@@ -5,6 +5,7 @@ import { Scene } from 'phaser'
 
 import {
   Bun,
+  BunBox,
   BurgerBeef,
   BurgerBeefLettuce,
   BurgerBeefTomato,
@@ -13,15 +14,19 @@ import {
   BurgerTomato,
   BurgerTomatoLettuce,
   Cow,
+  CowBox,
   Lettuce,
+  LettuceBox,
   Player,
   Tomato,
+  TomatoBox,
 } from './sprites'
 import { Settings, SpriteType } from './enums'
 import Controls from './cursors'
 
 const spriteMap = {
   [SpriteType.BUN]: Bun,
+  [SpriteType.BUN_BOX]: BunBox,
   [SpriteType.BURGER_BEEF]: BurgerBeef,
   [SpriteType.BURGER_BEEF_TOMATO]: BurgerBeefTomato,
   [SpriteType.BURGER_BEEF_LETTUCE]: BurgerBeefLettuce,
@@ -30,8 +35,11 @@ const spriteMap = {
   [SpriteType.BURGER_TOMATO_LETTUCE]:  BurgerTomatoLettuce,
   [SpriteType.BURGER_LETTUCE]:  BurgerLettuce,
   [SpriteType.COW]: Cow,
+  [SpriteType.COW_BOX]: CowBox,
   [SpriteType.LETTUCE]: Lettuce,
+  [SpriteType.LETTUCE_BOX]: LettuceBox,
   [SpriteType.TOMATO]: Tomato,
+  [SpriteType.TOMATO_BOX]: TomatoBox,
 }
 
 export class BootScene extends Scene {
@@ -79,7 +87,7 @@ export class BootScene extends Scene {
   makeOptimizedStream(stream) {
     // Create a video element to hold the stream that we will pass to the canvas
     const playerVideo = document.createElement("video")
-    playerVideo.playsinline = true
+    playerVideo.playsInline = true
     playerVideo.srcObject = stream
     playerVideo.width = stream.getVideoTracks()[0].getSettings().width
     playerVideo.height = stream.getVideoTracks()[0].getSettings().height
@@ -139,8 +147,8 @@ export class GameScene extends Scene {
 
   preload() {
     this.load.image('sky', '/assets/sky.png')
-    this.load.image('tiles', '/assets/tiles.png')
-    this.load.tilemapTiledJSON('map', '/assets/level-0.json')
+    this.load.image('platform', '/assets/platform.png')
+    this.load.tilemapTiledJSON('map', '/assets/level-1.json')
     this.load.multiatlas('assets', '/assets/assets.json', 'assets')
   }
 
@@ -156,8 +164,8 @@ export class GameScene extends Scene {
       .setDisplaySize(Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
 
     const levelMap = this.make.tilemap({ key: 'map' })
-    const tiles = levelMap.addTilesetImage('tiles', 'tiles', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
-    levelMap.createStaticLayer('level-0', tiles)
+    const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
+    levelMap.createStaticLayer('platform', tiles)
 
     const parseUpdates = updates => {
       if (!updates) {

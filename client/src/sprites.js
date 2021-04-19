@@ -88,6 +88,42 @@ export class Player extends Phaser.GameObjects.Container {
   }
 }
 
+export class TomatoBox extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'block-tomato.png')
+    this.type = SpriteType.TOMATO_BOX
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class LettuceBox extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'block-lettuce.png')
+    this.type = SpriteType.LETTUCE_BOX
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class CowBox extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'block-beef.png')
+    this.type = SpriteType.COW_BOX
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
+export class BunBox extends Phaser.GameObjects.Sprite {
+  constructor(scene, entityID, x, y) {
+    super(scene, x, y, 'assets', 'block-bread.png')
+    this.type = SpriteType.BUN_BOX
+    this.entityID = entityID
+    scene.add.existing(this)
+  }
+}
+
 export class Tomato extends Phaser.GameObjects.Sprite {
   constructor(scene, entityID, x, y) {
     super(scene, x, y, 'assets', 'tomato.png')

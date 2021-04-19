@@ -63,7 +63,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.anim = false
     }
 
-    if (this.move.up && this.body.onFloor()) {
+    if (this.move.up && (this.body.onFloor() || this.body.touching.down)) {
       this.setVelocityY(-575)
       this.anim = false
     }

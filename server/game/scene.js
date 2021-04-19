@@ -3,7 +3,9 @@ const path = require('path')
 const geckos = require('@geckos.io/server').default
 const { Scene } = require('phaser')
 
-const { Settings, SpriteType, TileType } = require('./enums')
+const { Settings, SpriteType } = require('./enums')
+
+const SpriteItems = require('./sprites/items')
 const {
   Bun,
   BurgerBeef,
@@ -19,11 +21,12 @@ const {
 } = require('./sprites/items')
 const Player = require('./sprites/player')
 
-const tileIndexMap = {
-  [TileType.COW_BOX]: Cow,
-  [TileType.BUN_BOX]: Bun,
-  [TileType.LETTUCE_BOX]: Lettuce,
-  [TileType.TOMATO_BOX]: Tomato,
+
+const boxMap = {
+  [SpriteType.COW_BOX]: Cow,
+  [SpriteType.BUN_BOX]: Bun,
+  [SpriteType.LETTUCE_BOX]: Lettuce,
+  [SpriteType.TOMATO_BOX]: Tomato,
 }
 
 class GameScene extends Scene {
@@ -65,6 +68,9 @@ class GameScene extends Scene {
 
   getState() {
     let state = ''
+    this.boxesGroup.children.iterate((box) => {
+      state += this.prepareToSync(box)
+    })
     this.playersGroup.children.iterate((player) => {
       state += this.prepareToSync(player)
     })
@@ -78,12 +84,18 @@ class GameScene extends Scene {
   }
 
   preload() {
-    this.load.image('tiles', path.join(__dirname, '../../dist/assets/tiles.png'))
-    this.load.tilemapTiledJSON('map', path.join(__dirname, '../../dist/assets/level-0.json'))
+    this.load.image('platform', path.join(__dirname, '../../dist/assets/platform.png'))
+    this.load.tilemapTiledJSON('map', path.join(__dirname, '../../dist/assets/level-1.json'))
   }
 
   create() {
     this.physics.world.setBounds(0, 0, Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
+
+    this.boxesGroup = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
+      collideWorldBounds: true,
+    })
 
     this.itemsGroup = this.physics.add.group({
       angularVelocity: 0,
@@ -104,18 +116,16 @@ class GameScene extends Scene {
     })
 
     const levelMap = this.make.tilemap({ key: 'map' })
-    const tiles = levelMap.addTilesetImage('tiles', 'tiles', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
+    const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
 
-    const grabItemFromBlock = (sprite, tile) => {
+    const grabItemFromBlock = (sprite, box) => {
       if (sprite.type !== SpriteType.PLAYER) {
         return
       }
 
-      // Can't use sprite.body.blocked.down with this approach, so we'll calculate relative position
-      const isAboveBlock = sprite.y < tile.y * tile.height
-      if (!sprite.item && isAboveBlock && sprite.move.space) {
+      if (!sprite.item && sprite.move.space && sprite.body.touching.down && box.body.touching.up) {
         sprite.move.space = false
-        const item = new tileIndexMap[tile.index](this, this.getID())
+        const item = new boxMap[box.type](this, this.getID())
         item.positionOnPlayer(sprite)
         sprite.item = item
         this.itemsGroup.add(item)
@@ -198,16 +208,17 @@ class GameScene extends Scene {
     }
 
     // Add collisions to tile map
-    const worldLayer = levelMap.createDynamicLayer('level-0', tiles)
-      .setCollisionByProperty({ collides: true })
-      .setTileIndexCallback(TileType.COW_BOX, grabItemFromBlock, this)
-      .setTileIndexCallback(TileType.BUN_BOX, grabItemFromBlock, this)
-      .setTileIndexCallback(TileType.LETTUCE_BOX, grabItemFromBlock, this)
-      .setTileIndexCallback(TileType.TOMATO_BOX, grabItemFromBlock, this)
+    const worldLayer = levelMap.createDynamicLayer('platform', tiles).setCollision(1)
+
+    // Add ingredient boxes
+    levelMap.getObjectLayer('boxes')['objects'].forEach(box => {
+      this.boxesGroup.add(new SpriteItems[box.name](this, this.getID(), box.x, box.y))
+    })
 
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
-
+    this.physics.add.collider(this.ingredientsGroup, this.boxesGroup)
+    this.physics.add.collider(this.playersGroup, this.boxesGroup, grabItemFromBlock, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, pickupIngredient, null, this)
 
     this.io.onConnection(async (channel) => {
@@ -271,6 +282,7 @@ class GameScene extends Scene {
       sprite.postUpdate()
     }
 
+    this.boxesGroup.children.iterate(syncSpriteData)
     this.playersGroup.children.iterate(syncSpriteData)
     this.itemsGroup.children.iterate(syncSpriteData)
     this.ingredientsGroup.children.iterate(syncSpriteData)

@@ -1,6 +1,52 @@
 const { SpriteType } = require('../enums')
 
 
+class IngredientBox extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, x, y, '')
+    this.scene = scene
+    scene.add.existing(this)
+    scene.physics.add.existing(this)
+
+    this.entityID = entityID
+    this.body.setSize(127, 127)
+  }
+
+  postUpdate() {}
+
+  needsSync() {
+    return false
+  }
+}
+
+class BunBox extends IngredientBox {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.BUN_BOX
+  }
+}
+
+class TomatoBox extends IngredientBox {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.TOMATO_BOX
+  }
+}
+
+class LettuceBox extends IngredientBox {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.LETTUCE_BOX
+  }
+}
+
+class CowBox extends IngredientBox {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.COW_BOX
+  }
+}
+
 class Ingredient extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, entityID, x = -100, y = -100) {
     super(scene, x, y, '')
@@ -12,7 +58,6 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
 
     this.setCollideWorldBounds(true)
 
-    this.prefix = ''
     this.entityID = entityID
 
     this.xPad = 0
@@ -72,6 +117,7 @@ class Bun extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.BUN
     this.body.setSize(118, 77)
+    this.yPad = 20
   }
 }
 
@@ -80,9 +126,7 @@ class Cow extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.COW
     this.body.setSize(162, 185)
-
     this.defaultFlipY = true
-
     this.xPad = 30
     this.yPad = 30
   }
@@ -93,8 +137,7 @@ class Lettuce extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.LETTUCE
     this.body.setSize(128, 104)
-
-    this.yPad = 5
+    this.yPad = 10
   }
 }
 
@@ -103,6 +146,7 @@ class Tomato extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.TOMATO
     this.body.setSize(95, 76)
+    this.yPad = 25
   }
 }
 
@@ -119,6 +163,7 @@ class BurgerBeefTomato extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.BURGER_BEEF_TOMATO
     this.body.setSize(125, 115)
+    this.yPad = 5
   }
 }
 
@@ -135,6 +180,7 @@ class BurgerBeefTomatoLettuce extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.BURGER_BEEF_TOMATO_LETTUCE
     this.body.setSize(125, 115)
+    this.yPad = 5
   }
 }
 
@@ -159,12 +205,14 @@ class BurgerLettuce extends Ingredient {
     super(scene, entityID, x, y)
     this.type = SpriteType.BURGER_LETTUCE
     this.body.setSize(118, 81)
+    this.yPad = 15
   }
 }
 
 
 module.exports = {
   Bun,
+  BunBox,
   BurgerBeef,
   BurgerBeefLettuce,
   BurgerBeefTomato,
@@ -173,6 +221,9 @@ module.exports = {
   BurgerTomato,
   BurgerTomatoLettuce,
   Cow,
+  CowBox,
   Lettuce,
+  LettuceBox,
   Tomato,
+  TomatoBox,
 }
