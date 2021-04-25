@@ -269,7 +269,7 @@ export class GameScene extends Scene {
       // - Since this event listener is added after connection, we will miss the first few events, which is OK
       //   since we call this.updatePlayerStreams() during initialization
 
-      // We wait 0.5 seconds before updating the player streams since there seems to be a small delay between when
+      // We wait 1 second before updating the player streams since there seems to be a small delay between when
       // the ontrack event is triggered and when the connection/stream map is updated on the server.
       await new Promise(resolve => setTimeout(resolve, 1000))
       this.updatePlayerStreams()

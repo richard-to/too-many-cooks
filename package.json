@@ -5,6 +5,7 @@
   "scripts": {
     "start": "parcel client/public/index.html client/public/assets/* -p 8000",
     "server:start": "nodemon server/server.js",
+    "build": "parcel build client/public/index.html client/public/assets/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -24,14 +24,19 @@ npm run-script build
 # Link the @geckos.io/common package
 cd packages/common
 yarn link
+npm install
 
 # Link the @geckos.io/client package
 cd ../client
 yarn link
+yarn link "@geckos.io/common"
+npm install
 
 # Link the @geckos.io/server package
 cd ../server
 yarn link
+yarn link "@geckos.io/common"
+npm install
 ```
 
 Now you can set up the Too Many Cooks repository:
