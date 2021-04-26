@@ -18,13 +18,10 @@ git checkout with-streams
 # Install dependencies
 npm install
 
-# Build all the packages
-npm run-script build
-
 # Link the @geckos.io/common package
 cd packages/common
 yarn link
-npm install
+npm
 
 # Link the @geckos.io/client package
 cd ../client
@@ -37,6 +34,9 @@ cd ../server
 yarn link
 yarn link "@geckos.io/common"
 npm install
+
+# Build all the packages
+npm run-script build
 ```
 
 Now you can set up the Too Many Cooks repository:
@@ -46,22 +46,22 @@ Now you can set up the Too Many Cooks repository:
 git clone git@github.com:richard-to/too-many-cooks.git
 cd too-many-cooks
 
-# Install dependencies
-yarn install
-
 # Link geckos.io forked packages
 yarn link @geckos.io/common
 yarn link @geckos.io/client
 yarn link @geckos.io/server
+
+# Install dependencies
+yarn install
 ```
 
 Run game server
 
 ```sh
-# Build frontend client
+# Build frontend client (window 1)
 yarn start
 
-# Start game server
+# Start game server (window 2)
 yarn server:start
 ```
 

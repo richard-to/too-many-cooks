@@ -55,6 +55,12 @@ export class BootScene extends Scene {
       const channel = geckos({
         port: Settings.SERVER_PORT,
         stream: this.makeOptimizedStream(stream),
+        iceServers: [
+          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun2.l.google.com:19302' },
+          { urls: 'stun:stun3.l.google.com:19302' },
+          { urls: 'stun:stun4.l.google.com:19302' },
+        ],
       })
 
       channel.onConnect(error => {

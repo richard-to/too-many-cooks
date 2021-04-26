@@ -1,8 +1,8 @@
 import deepFreeze from 'deep-freeze-strict'
 
 export const Settings = deepFreeze({
-  ENABLE_AUDIO: false,
-  ENABLE_VIDEO: true,
+  ENABLE_AUDIO: parseInt(process.env.ENABLE_AUDIO),
+  ENABLE_VIDEO: parseInt(process.env.ENABLE_VIDEO),
   LEVEL_HEIGHT: 2100,
   LEVEL_WIDTH: 3200,
   PLAYER_WIDTH: 140,
@@ -11,7 +11,7 @@ export const Settings = deepFreeze({
   SCALE: 0.5,
   SCREEN_HEIGHT: 720,
   SCREEN_WIDTH: 1280,
-  SERVER_PORT: 1444,
+  SERVER_PORT: parseInt(process.env.EXTERNAL_SERVER_PORT),
   TILE_HEIGHT: 30,
   TILE_WIDTH: 160,
 })

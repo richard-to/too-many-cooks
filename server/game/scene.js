@@ -39,7 +39,12 @@ class GameScene extends Scene {
     this.io = geckos({
       enableAudio: Settings.ENABLE_AUDIO,
       enableVideo: Settings.ENABLE_VIDEO,
-      iceServers: [],
+      iceServers: [
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+      ],
     })
     this.io.addServer(this.game.server)
   }
