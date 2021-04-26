@@ -1,5 +1,5 @@
+import { isNil } from 'lodash'
 import Phaser from 'phaser'
-
 
 import { Settings, SpriteType } from './enums'
 
@@ -65,6 +65,13 @@ export class Player extends Phaser.GameObjects.Container {
   setStream(stream) {
     this.video.setStream(stream)
     return this
+  }
+
+  /**
+   * Checks if the player has a video stream set or not
+   */
+  hasStream() {
+    return !isNil(this.video.video)
   }
 
   setFlip(flip) {

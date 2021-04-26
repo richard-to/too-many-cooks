@@ -46,6 +46,9 @@ Now you can set up the Too Many Cooks repository:
 git clone git@github.com:richard-to/too-many-cooks.git
 cd too-many-cooks
 
+# Create a .env file
+cp .env.example .env
+
 # Link geckos.io forked packages
 yarn link @geckos.io/common
 yarn link @geckos.io/client

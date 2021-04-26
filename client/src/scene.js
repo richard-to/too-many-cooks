@@ -353,7 +353,7 @@ export class GameScene extends Scene {
         }
 
         // Only add a stream if the entity is not already connected to video
-        if (!this.entities[entityID].sprite.video) {
+        if (!this.entities[entityID].sprite.hasStream()) {
           this.entities[entityID].sprite.setStream(new MediaStream([transceiver.receiver.track]))
         }
       })

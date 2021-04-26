@@ -1,6 +1,9 @@
 # System generated files
 .DS_STORE
 
+# Environment variables
+.env
+
 # Build
 dist
 
