@@ -21,7 +21,7 @@ npm install
 # Link the @geckos.io/common package
 cd packages/common
 yarn link
-npm
+npm install
 
 # Link the @geckos.io/client package
 cd ../client
