@@ -1,8 +1,17 @@
 # System generated files
 .DS_STORE
 
+# Environment variables
+.env
+
+# Build
+dist
+
 # Node
+.parcel-cache
 node_modules
+yarn-error.log
 
 # VSCode
 *.code-workspace
+.vscode

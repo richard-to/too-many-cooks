@@ -2,8 +2,10 @@
   "name": "too-many-cooks",
   "version": "0.0.1",
   "description": "Multiplayer platformer game",
-  "main": "index.js",
   "scripts": {
+    "start": "parcel client/public/index.html client/public/assets/* -p 8000",
+    "server:start": "nodemon server/server.js",
+    "build": "parcel build client/public/index.html client/public/assets/*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +19,20 @@
   },
   "homepage": "https://github.com/richard-to/too-many-cooks#readme",
   "dependencies": {
-    "phaser": "^3.54.1"
+    "@geckos.io/client": "^1.7.2",
+    "@geckos.io/phaser-on-nodejs": "^1.2.3",
+    "@geckos.io/server": "^1.7.2",
+    "axios": "^0.21.1",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "deep-freeze-strict": "^1.1.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.21",
+    "phaser": "3.23.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "parcel": "^2.0.0-beta.2"
   }
 }
