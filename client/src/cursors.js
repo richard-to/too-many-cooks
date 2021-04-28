@@ -27,7 +27,7 @@ export default class Cursors {
       move.none = false
     }
 
-    if (this.cursors.up.isDown) {
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
       move.up = true
       move.none = false
     }
