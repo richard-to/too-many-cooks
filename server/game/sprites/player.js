@@ -26,6 +26,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.move = {}
     this.item = null
 
+    this.jumpCount = 0
+    this.consecutiveJumps = 1
+
     scene.events.on('update', this.update, this)
   }
 
@@ -49,6 +52,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
+    const onFloor = this.body.onFloor()
+
     if (this.move.left) {
       this.setFlipX(true)
       this.setVelocityX(-200)
@@ -63,9 +68,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.anim = false
     }
 
-    if (this.move.up && (this.body.onFloor() || this.body.touching.down)) {
+    if ((onFloor || this.body.touching.down || this.jumpCount < this.consecutiveJumps) && this.move.up) {
       this.setVelocityY(-575)
       this.anim = false
+      this.jumpCount += 1
+    }
+
+    if (onFloor  || this.body.touching.down ) {
+      this.jumpCount = -1
     }
 
     if (this.item) {

@@ -1,5 +1,6 @@
 import Phaser, { Game } from 'phaser'
-import { BootScene, GameScene } from './scene'
+
+import { BootScene, PlayScene, PreloadScene } from './scenes'
 import { Settings } from './enums'
 
 const config = {
@@ -10,7 +11,7 @@ const config = {
     width: Settings.SCREEN_WIDTH,
     height: Settings.SCREEN_HEIGHT,
   },
-  scene: [BootScene, GameScene],
+  scene: [PreloadScene, BootScene, PlayScene],
 }
 
 window.addEventListener('load', () => {
