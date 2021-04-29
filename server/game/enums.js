@@ -34,6 +34,7 @@ const SpriteType = deepFreeze({
   BURGER_TOMATO: 14,
   BURGER_TOMATO_LETTUCE: 15,
   BURGER_LETTUCE: 16,
+  ESCALATOR: 17,
 })
 
 module.exports = {

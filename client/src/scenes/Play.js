@@ -16,6 +16,7 @@ import {
   CowBox,
   Lettuce,
   LettuceBox,
+  Escalator,
   Player,
   Tomato,
   TomatoBox,
@@ -39,6 +40,7 @@ const spriteMap = {
   [SpriteType.LETTUCE_BOX]: LettuceBox,
   [SpriteType.TOMATO]: Tomato,
   [SpriteType.TOMATO_BOX]: TomatoBox,
+  [SpriteType.ESCALATOR]: Escalator,
 }
 
 class Play extends Phaser.Scene {

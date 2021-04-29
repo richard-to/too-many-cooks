@@ -20,7 +20,7 @@ const {
   Tomato,
 } = require('./sprites/items')
 const Player = require('./sprites/player')
-
+const Escalator = require('./sprites/escalator')
 
 const boxMap = {
   [SpriteType.COW_BOX]: Cow,
@@ -117,6 +117,12 @@ class GameScene extends Scene {
 
     this.playersGroup = this.physics.add.group({
       bounceY: 0.2,
+      collideWorldBounds: true,
+    })
+
+    this.movingPlatforms = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
       collideWorldBounds: true,
     })
 
@@ -219,10 +225,16 @@ class GameScene extends Scene {
     levelMap.getObjectLayer('boxes')['objects'].forEach(box => {
       this.boxesGroup.add(new SpriteItems[box.name](this, this.getID(), box.x, box.y))
     })
+    // Add moving platforms
+    levelMap.getObjectLayer('moving_platform')['objects'].forEach(escalator => {
+      this.movingPlatforms.add(new Escalator(this, this.getID(), escalator.x, escalator.y))
+    })
 
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
     this.physics.add.collider(this.ingredientsGroup, this.boxesGroup)
+    this.physics.add.collider(this.ingredientsGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
+    this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.boxesGroup, grabItemFromBlock, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, pickupIngredient, null, this)
 
@@ -288,12 +300,20 @@ class GameScene extends Scene {
     }
 
     this.boxesGroup.children.iterate(syncSpriteData)
+    this.movingPlatforms.children.iterate(syncSpriteData)
     this.playersGroup.children.iterate(syncSpriteData)
     this.itemsGroup.children.iterate(syncSpriteData)
     this.ingredientsGroup.children.iterate(syncSpriteData)
 
     if (updates.length > 0) {
       this.io.room().emit('updateEntities', [updates])
+    }
+  }
+
+  onEscalatorLanding(initiator, escalator) {
+    if (!initiator.onEscalator) {
+      initiator.onEscalator = true
+      initiator.escalator = escalator
     }
   }
 }
