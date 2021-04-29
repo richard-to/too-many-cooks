@@ -1,0 +1,398 @@
+{
+	"textures": [
+		{
+			"image": "assets.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 256,
+				"h": 1154
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "beef.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 162,
+						"h": 185
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 162,
+						"h": 185
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 162,
+						"h": 185
+					}
+				},
+				{
+					"filename": "magnet.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 90,
+						"h": 43
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 90,
+						"h": 43
+					},
+					"frame": {
+						"x": 165,
+						"y": 1,
+						"w": 90,
+						"h": 43
+					}
+				},
+				{
+					"filename": "rocket.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 53,
+						"h": 86
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 53,
+						"h": 86
+					},
+					"frame": {
+						"x": 165,
+						"y": 46,
+						"w": 53,
+						"h": 86
+					}
+				},
+				{
+					"filename": "container.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 160,
+						"h": 210
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 160,
+						"h": 210
+					},
+					"frame": {
+						"x": 1,
+						"y": 188,
+						"w": 160,
+						"h": 210
+					}
+				},
+				{
+					"filename": "lettuce.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 128,
+						"h": 104
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 128,
+						"h": 104
+					},
+					"frame": {
+						"x": 1,
+						"y": 400,
+						"w": 128,
+						"h": 104
+					}
+				},
+				{
+					"filename": "burger-beef-lettuce.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 124,
+						"h": 99
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 124,
+						"h": 99
+					},
+					"frame": {
+						"x": 131,
+						"y": 400,
+						"w": 124,
+						"h": 99
+					}
+				},
+				{
+					"filename": "burger-tomato-lettuce.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 119,
+						"h": 90
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 119,
+						"h": 90
+					},
+					"frame": {
+						"x": 131,
+						"y": 501,
+						"w": 119,
+						"h": 90
+					}
+				},
+				{
+					"filename": "block-beef.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 127,
+						"h": 127
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 127,
+						"h": 127
+					},
+					"frame": {
+						"x": 1,
+						"y": 506,
+						"w": 127,
+						"h": 127
+					}
+				},
+				{
+					"filename": "burger-beef-tomato-lettuce.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 125,
+						"h": 115
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 125,
+						"h": 115
+					},
+					"frame": {
+						"x": 130,
+						"y": 593,
+						"w": 125,
+						"h": 115
+					}
+				},
+				{
+					"filename": "block-bread.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 127,
+						"h": 127
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 127,
+						"h": 127
+					},
+					"frame": {
+						"x": 1,
+						"y": 635,
+						"w": 127,
+						"h": 127
+					}
+				},
+				{
+					"filename": "burger-beef-tomato.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 125,
+						"h": 115
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 125,
+						"h": 115
+					},
+					"frame": {
+						"x": 130,
+						"y": 710,
+						"w": 125,
+						"h": 115
+					}
+				},
+				{
+					"filename": "block-lettuce.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 127,
+						"h": 127
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 127,
+						"h": 127
+					},
+					"frame": {
+						"x": 1,
+						"y": 764,
+						"w": 127,
+						"h": 127
+					}
+				},
+				{
+					"filename": "burger-tomato.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 118,
+						"h": 86
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 118,
+						"h": 86
+					},
+					"frame": {
+						"x": 130,
+						"y": 827,
+						"w": 118,
+						"h": 86
+					}
+				},
+				{
+					"filename": "block-tomato.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 127,
+						"h": 127
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 127,
+						"h": 127
+					},
+					"frame": {
+						"x": 1,
+						"y": 893,
+						"w": 127,
+						"h": 127
+					}
+				},
+				{
+					"filename": "burger-lettuce.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 118,
+						"h": 81
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 118,
+						"h": 81
+					},
+					"frame": {
+						"x": 130,
+						"y": 915,
+						"w": 118,
+						"h": 81
+					}
+				},
+				{
+					"filename": "bun.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 118,
+						"h": 77
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 118,
+						"h": 77
+					},
+					"frame": {
+						"x": 130,
+						"y": 998,
+						"w": 118,
+						"h": 77
+					}
+				},
+				{
+					"filename": "burger-beef.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 126,
+						"h": 99
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 126,
+						"h": 99
+					},
+					"frame": {
+						"x": 1,
+						"y": 1022,
+						"w": 126,
+						"h": 99
+					}
+				},
+				{
+					"filename": "tomato.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 95,
+						"h": 76
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 95,
+						"h": 76
+					},
+					"frame": {
+						"x": 129,
+						"y": 1077,
+						"w": 95,
+						"h": 76
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:af11f7683e8568b22944ee793d1d8851:ec856bb674eaaf6fd2484d64b26daa8f:a759b6bbc8381ac9c472b28f589ad0d6$"
+	}
+}
