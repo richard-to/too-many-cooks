@@ -22,4 +22,7 @@ export {
   Tomato,
 } from './ingredients'
 
+export { Escalator } from './Escalator'
+
 export { Player } from './Player'
+

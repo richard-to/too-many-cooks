@@ -75,7 +75,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (onFloor  || this.body.touching.down ) {
-      this.jumpCount = -1
+      this.jumpCount = 0
     }
 
     if (this.item) {

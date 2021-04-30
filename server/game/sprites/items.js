@@ -70,6 +70,9 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     this.anim = false
     this.move = {}
 
+    this.onEscalator = false
+    this.escalator = null
+
     scene.events.on('update', this.update, this)
   }
 
@@ -97,6 +100,13 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     if (this.body && this.body.onFloor()) {
       this.body.angularVelocity = 0
       this.setVelocityX(0)
+    }
+
+    if (this.onEscalator) {
+      this.body.angularVelocity = 0
+
+      this.onEscalator = false
+      this.escalator = null
     }
   }
 
