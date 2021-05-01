@@ -17,12 +17,16 @@ export {
 
 export {
   Bun,
+  ChoppedLettuce,
+  ChoppedTomato,
   Cow,
   Lettuce,
   Tomato,
 } from './ingredients'
 
 export { Escalator } from './Escalator'
+
+export { Knife } from './Knife'
 
 export { Player } from './Player'
 
