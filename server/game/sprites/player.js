@@ -26,6 +26,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.move = {}
     this.item = null
 
+    this.chopping = false
     this.jumpCount = 0
     this.consecutiveJumps = 1
 
@@ -53,6 +54,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   update() {
     const onFloor = this.body.onFloor()
+
+    // Player cannot move if they are chopping
+    if (this.chopping) {
+      return
+    }
 
     if (this.move.left) {
       this.setFlipX(true)
