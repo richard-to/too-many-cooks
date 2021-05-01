@@ -2,6 +2,8 @@ import axios from 'axios'
 import { has } from 'lodash'
 import Phaser from 'phaser'
 
+import OrdersDisplay from '../hud/OrdersDisplay'
+
 import {
   Bun,
   BunBox,
@@ -21,7 +23,7 @@ import {
   Tomato,
   TomatoBox,
 } from '../sprites'
-import { Settings, SpriteType } from '../enums'
+import { OrderType, Settings, SpriteType } from '../enums'
 import Controls from '../cursors'
 
 const spriteMap = {
@@ -52,6 +54,7 @@ class Play extends Phaser.Scene {
     this.channelEntityMap = {}
     this.entities = {}
     this.playerID = undefined
+    this.orders = []
   }
 
   init({ channel }) {
@@ -72,6 +75,16 @@ class Play extends Phaser.Scene {
     const levelMap = this.make.tilemap({ key: 'map' })
     const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
     levelMap.createStaticLayer('platform', tiles)
+
+    // Add fake orders for now to display in the left top corner
+    this.orders = [
+      OrderType.BURGER_BEEF,
+      OrderType.BURGER_TOMATO,
+      OrderType.BURGER_BEEF_TOMATO_LETTUCE,
+      OrderType.BURGER_BEEF_LETTUCE
+    ]
+
+    this.createOrdersContainer()
 
     const parseUpdates = updates => {
       if (!updates) {
@@ -260,6 +273,10 @@ class Play extends Phaser.Scene {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  createOrdersContainer() {
+    this.ordersDisplay = new OrdersDisplay(this, 0, 0, this.orders)
   }
 }
 

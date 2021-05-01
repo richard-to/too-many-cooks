@@ -1,5 +1,9 @@
 import deepFreeze from 'deep-freeze-strict'
 
+const SCALE = 0.5
+const SCREEN_HEIGHT = 720
+const SCREEN_WIDTH = 1280
+
 export const Settings = deepFreeze({
   ENABLE_AUDIO: parseInt(process.env.ENABLE_AUDIO),
   ENABLE_VIDEO: parseInt(process.env.ENABLE_VIDEO),
@@ -8,12 +12,20 @@ export const Settings = deepFreeze({
   PLAYER_WIDTH: 140,
   PLAYER_HEIGHT: 190,
   RADIX: 36,
-  SCALE: 0.5,
-  SCREEN_HEIGHT: 720,
-  SCREEN_WIDTH: 1280,
+  SCALE,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
   SERVER_PORT: parseInt(process.env.EXTERNAL_SERVER_PORT),
   TILE_HEIGHT: 30,
   TILE_WIDTH: 160,
+  RIGHT_TOP_CORNER: {
+    x: SCREEN_WIDTH / SCALE + (SCREEN_WIDTH - (SCREEN_WIDTH / SCALE )) / 2,
+    y: (SCREEN_HEIGHT - (SCREEN_HEIGHT / SCALE )) / 2,
+  },
+  LEFT_TOP_CORNER: {
+    x: (SCREEN_WIDTH - (SCREEN_WIDTH / SCALE )) / 2,
+    y: (SCREEN_HEIGHT - (SCREEN_HEIGHT / SCALE )) / 2,
+  }
 })
 
 export const SpriteType = deepFreeze({
@@ -35,4 +47,28 @@ export const SpriteType = deepFreeze({
   BURGER_TOMATO_LETTUCE: 15,
   BURGER_LETTUCE: 16,
   ESCALATOR: 17,
+})
+
+export const OrderType = deepFreeze({
+  BURGER_BEEF: {
+    frame: 'burger-beef.png',
+  },
+  BURGER_BEEF_TOMATO: {
+    frame: 'burger-beef-tomato.png',
+  },
+  BURGER_BEEF_LETTUCE: {
+    frame: 'burger-beef-lettuce.png',
+  },
+  BURGER_BEEF_TOMATO_LETTUCE: {
+    frame: 'burger-beef-tomato-lettuce.png',
+  },
+  BURGER_TOMATO: {
+    frame: 'burger-tomato.png',
+  },
+  BURGER_TOMATO_LETTUCE: {
+    frame: 'burger-tomato-lettuce.png',
+  },
+  BURGER_LETTUCE: {
+    frame: 'burger-lettuce.png',
+  },
 })

@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 
 import { SpriteType } from '../enums'
 import { PlayerVideo } from './video/Player'
+import HeadsUpDisplay from '../hud/HeadsUpDisplay';
 
 export class Player extends Phaser.GameObjects.Container {
   constructor(scene, entityID, x, y) {
@@ -29,6 +30,8 @@ export class Player extends Phaser.GameObjects.Container {
 
     this.video = new PlayerVideo(scene, entityID, 1, 1)
     this.add(this.video)
+
+    this.createHeadsUpDisplay(scene)
   }
 
   /**
@@ -66,5 +69,9 @@ export class Player extends Phaser.GameObjects.Container {
   setIsJumping(isJumping) {
     this.rocket.visible = isJumping
     return this
+  }
+
+  createHeadsUpDisplay(scene) {
+    this.hud = new HeadsUpDisplay(scene, 0, 0)
   }
 }
