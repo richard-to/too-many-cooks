@@ -15,3 +15,6 @@ yarn-error.log
 # VSCode
 *.code-workspace
 .vscode
+
+# Webstorm
+.idea
