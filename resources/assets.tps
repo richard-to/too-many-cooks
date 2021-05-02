@@ -365,6 +365,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">cow-cloner.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>43,46,87,93</rect>
+                <key>scale9Paddings</key>
+                <rect>43,46,87,93</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">knife.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -464,6 +479,7 @@
             <filename>chopped-lettuce.png</filename>
             <filename>chopped-tomato.png</filename>
             <filename>knife.png</filename>
+            <filename>cow-cloner.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
