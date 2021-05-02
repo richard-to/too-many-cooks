@@ -129,95 +129,6 @@ class GameScene extends Scene {
     const levelMap = this.make.tilemap({ key: 'map' })
     const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
 
-    const grabItemFromBlock = (sprite, box) => {
-      if (sprite.type !== SpriteType.PLAYER) {
-        return
-      }
-
-      if (!sprite.item && sprite.move.space && sprite.body.touching.down && box.body.touching.up) {
-        sprite.move.space = false
-        const item = new boxMap[box.type](this, this.getID())
-        item.positionOnPlayer(sprite)
-        sprite.item = item
-        this.itemsGroup.add(item)
-      }
-    }
-
-    const pickupIngredient = (sprite, ingredient) => {
-      if (sprite.type !== SpriteType.PLAYER) {
-        return
-      }
-
-      if (sprite.item && sprite.move.x) {
-        sprite.move.x = false
-        const item = sprite.item
-        let BurgerClass
-        // TODO: Refactor this ugly conditional
-        if (item.type < SpriteType.BUN && ingredient.type > SpriteType.COW) {
-          if (item.type === SpriteType.COW && ingredient.type === SpriteType.BUN) {
-            BurgerClass = BurgerBeef
-          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {
-            BurgerClass = BurgerBeefLettuce
-          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO) {
-            BurgerClass = BurgerBeefTomato
-          } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
-            BurgerClass = BurgerBeefTomatoLettuce
-          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BUN) {
-            BurgerClass = BurgerLettuce
-          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF) {
-            BurgerClass = BurgerBeefLettuce
-          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
-            BurgerClass = BurgerTomatoLettuce
-          } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO) {
-            BurgerClass = BurgerBeefTomatoLettuce
-          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BUN) {
-            BurgerClass = BurgerTomato
-          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF) {
-            BurgerClass = BurgerBeefTomato
-          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_LETTUCE) {
-            BurgerClass = BurgerTomatoLettuce
-          } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF_LETTUCE) {
-            BurgerClass = BurgerBeefTomatoLettuce
-          }
-        }
-
-        if (BurgerClass) {
-          const newItem = new BurgerClass(this, this.getID())
-          newItem.positionOnPlayer(sprite)
-          this.itemsGroup.add(newItem)
-          sprite.item = newItem
-
-          this.io.room().emit('removePlayer', item.entityID)
-          this.io.room().emit('removePlayer', ingredient.entityID)
-
-          // Clean up merged items
-          item.removeEvents()
-          ingredient.removeEvents()
-
-          this.itemsGroup.remove(item)
-          this.ingredientsGroup.remove(ingredient)
-
-          item.destroy()
-          ingredient.destroy()
-        }
-        return
-      }
-
-      if (!sprite.item && sprite.move.space) {
-        sprite.move.space = false
-
-        // Remove it from the ingredient physics group
-        this.ingredientsGroup.remove(ingredient)
-        // Add it to the item physics group which has different behavior
-        this.itemsGroup.add(ingredient)
-        ingredient.positionOnPlayer(sprite)
-        ingredient.setFlipY(false)
-
-        sprite.item = ingredient
-        return
-      }
-    }
-
     // Add collisions to tile map
     const worldLayer = levelMap.createDynamicLayer('platform', tiles).setCollision(1)
 
@@ -235,8 +146,8 @@ class GameScene extends Scene {
     this.physics.add.collider(this.ingredientsGroup, this.boxesGroup)
     this.physics.add.collider(this.ingredientsGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
-    this.physics.add.collider(this.playersGroup, this.boxesGroup, grabItemFromBlock, null, this)
-    this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, pickupIngredient, null, this)
+    this.physics.add.collider(this.playersGroup, this.boxesGroup, this.grabItemFromBlock, null, this)
+    this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)
 
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
@@ -287,6 +198,95 @@ class GameScene extends Scene {
       await new Promise(resolve => setTimeout(resolve, 500))
       channel.emit('ready')
     })
+  }
+
+  pickupIngredient = (sprite, ingredient) => {
+    if (sprite.type !== SpriteType.PLAYER) {
+      return
+    }
+
+    if (sprite.item && sprite.move.x) {
+      sprite.move.x = false
+      const item = sprite.item
+      let BurgerClass
+      // TODO: Refactor this ugly conditional
+      if (item.type < SpriteType.BUN && ingredient.type > SpriteType.COW) {
+        if (item.type === SpriteType.COW && ingredient.type === SpriteType.BUN) {
+          BurgerClass = BurgerBeef
+        } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {
+          BurgerClass = BurgerBeefLettuce
+        } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO) {
+          BurgerClass = BurgerBeefTomato
+        } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
+          BurgerClass = BurgerBeefTomatoLettuce
+        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BUN) {
+          BurgerClass = BurgerLettuce
+        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF) {
+          BurgerClass = BurgerBeefLettuce
+        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
+          BurgerClass = BurgerTomatoLettuce
+        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO) {
+          BurgerClass = BurgerBeefTomatoLettuce
+        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BUN) {
+          BurgerClass = BurgerTomato
+        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF) {
+          BurgerClass = BurgerBeefTomato
+        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_LETTUCE) {
+          BurgerClass = BurgerTomatoLettuce
+        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF_LETTUCE) {
+          BurgerClass = BurgerBeefTomatoLettuce
+        }
+      }
+
+      if (BurgerClass) {
+        const newItem = new BurgerClass(this, this.getID())
+        newItem.positionOnPlayer(sprite)
+        this.itemsGroup.add(newItem)
+        sprite.item = newItem
+
+        this.io.room().emit('removePlayer', item.entityID)
+        this.io.room().emit('removePlayer', ingredient.entityID)
+
+        // Clean up merged items
+        item.removeEvents()
+        ingredient.removeEvents()
+
+        this.itemsGroup.remove(item)
+        this.ingredientsGroup.remove(ingredient)
+
+        item.destroy()
+        ingredient.destroy()
+      }
+      return
+    }
+
+    if (!sprite.item && sprite.move.space) {
+      sprite.move.space = false
+
+      // Remove it from the ingredient physics group
+      this.ingredientsGroup.remove(ingredient)
+      // Add it to the item physics group which has different behavior
+      this.itemsGroup.add(ingredient)
+      ingredient.positionOnPlayer(sprite)
+      ingredient.setFlipY(false)
+
+      sprite.item = ingredient
+      return
+    }
+  }
+
+  grabItemFromBlock = (sprite, box) => {
+    if (sprite.type !== SpriteType.PLAYER) {
+      return
+    }
+
+    if (!sprite.item && sprite.move.space && sprite.body.touching.down && box.body.touching.up) {
+      sprite.move.space = false
+      const item = new boxMap[box.type](this, this.getID())
+      item.positionOnPlayer(sprite)
+      sprite.item = item
+      this.itemsGroup.add(item)
+    }
   }
 
   update() {
