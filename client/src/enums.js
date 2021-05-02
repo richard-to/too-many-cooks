@@ -7,8 +7,8 @@ const SCREEN_WIDTH = 1280
 export const Settings = deepFreeze({
   ENABLE_AUDIO: parseInt(process.env.ENABLE_AUDIO),
   ENABLE_VIDEO: parseInt(process.env.ENABLE_VIDEO),
-  LEVEL_HEIGHT: 2100,
-  LEVEL_WIDTH: 3200,
+  LEVEL_HEIGHT: 2550,
+  LEVEL_WIDTH: 5600,
   PLAYER_WIDTH: 140,
   PLAYER_HEIGHT: 190,
   RADIX: 36,

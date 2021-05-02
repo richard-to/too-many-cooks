@@ -154,8 +154,10 @@ class GameScene extends Scene {
       this.movingPlatforms.add(new Escalator(this, this.getID(), escalator.x, escalator.y))
     })
 
-    // TODO(richard-to): Temporarily hardcoding position
-    this.knivesGroup.add(new Knife(this, this.getID(), 1600, 620))
+    // Add knifes
+    levelMap.getObjectLayer('knives')['objects'].forEach(knife => {
+      this.knivesGroup.add(new Knife(this, this.getID(), knife.x, knife.y))
+    })
 
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)

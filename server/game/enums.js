@@ -3,8 +3,8 @@ const deepFreeze = require('deep-freeze-strict')
 const Settings = deepFreeze({
   ENABLE_AUDIO: parseInt(process.env.ENABLE_AUDIO),
   ENABLE_VIDEO: parseInt(process.env.ENABLE_VIDEO),
-  LEVEL_HEIGHT: 2100,
-  LEVEL_WIDTH: 3200,
+  LEVEL_HEIGHT: 2550,
+  LEVEL_WIDTH: 5600,
   PLAYER_WIDTH: 150,
   PLAYER_HEIGHT: 200,
   RADIX: 36,
