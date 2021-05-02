@@ -19,6 +19,6 @@ const config = {
       gravity: { y: 400 },
       debug: false,
     }
-  }
+  },
 }
 module.exports = config
