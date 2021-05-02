@@ -15,7 +15,10 @@ const {
   BurgerLettuce,
   BurgerTomato,
   BurgerTomatoLettuce,
+  ChoppedLettuce,
+  ChoppedTomato,
   Cow,
+  Knife,
   Lettuce,
   Tomato,
 } = require('./sprites/items')
@@ -119,11 +122,19 @@ class GameScene extends Scene {
       collideWorldBounds: true,
     })
 
+    this.knivesGroup = this.physics.add.group({
+      angularVelocity: 0,
+      allowGravity: false,
+      immovable: false,
+      collideWorldBounds: true,
+    })
+
     // Keep track of all groups so we can apply game state updates more easily
     this.groups = [
       this.boxesGroup,
       this.itemsGroup,
       this.ingredientsGroup,
+      this.knivesGroup,
       this.playersGroup,
       this.movingPlatforms,
     ]
@@ -143,6 +154,9 @@ class GameScene extends Scene {
       this.movingPlatforms.add(new Escalator(this, this.getID(), escalator.x, escalator.y))
     })
 
+    // TODO(richard-to): Temporarily hardcoding position
+    this.knivesGroup.add(new Knife(this, this.getID(), 1600, 620))
+
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
     this.physics.add.collider(this.ingredientsGroup, this.boxesGroup)
@@ -150,6 +164,7 @@ class GameScene extends Scene {
     this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.boxesGroup, this.grabItemFromBlock, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)
+    this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
@@ -200,6 +215,34 @@ class GameScene extends Scene {
       await new Promise(resolve => setTimeout(resolve, 500))
       channel.emit('ready')
     })
+  }
+
+  cutIngredient = (sprite, knife) => {
+    if (sprite.type !== SpriteType.PLAYER) {
+      return
+    }
+
+    // If the knife is chopping, we need to wait until it is finished
+    if (knife.chopping) {
+      return
+    }
+
+    const item = sprite.item
+    if (item && (item.type === SpriteType.LETTUCE || item.type === SpriteType.TOMATO) && sprite.move.x) {
+      sprite.move.x = false
+      sprite.item = null
+      // Set up chopping state
+      const ChoppedClass = (item.type === SpriteType.LETTUCE) ? ChoppedLettuce : ChoppedTomato
+      const choppedItem = new ChoppedClass(this, this.getID())
+      this.itemsGroup.add(choppedItem)
+      knife.setChopper(sprite, choppedItem)
+
+      // Clean up item since it has now been replaced with the chopped version
+      this.io.room().emit('removePlayer', item.entityID)
+      item.removeEvents()
+      this.itemsGroup.remove(item)
+      item.destroy()
+    }
   }
 
   pickupIngredient = (sprite, ingredient) => {
