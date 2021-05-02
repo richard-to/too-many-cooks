@@ -219,6 +219,105 @@ class BurgerLettuce extends Ingredient {
   }
 }
 
+class ChoppedLettuce extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.CHOPPED_LETTUCE
+    this.body.setSize(81, 68)
+    this.yPad = 25
+  }
+}
+
+class ChoppedTomato extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.CHOPPED_TOMATO
+    this.body.setSize(105, 87)
+    this.yPad = 25
+  }
+}
+
+class Knife extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, x, y, '')
+    this.scene = scene
+    this.type = SpriteType.KNIFE
+    scene.add.existing(this)
+    scene.physics.add.existing(this)
+
+    this.entityID = entityID
+    this.body.setSize(112, 76)
+
+    // Number of chops required to cut veggies
+    this.maxChopCount = 5
+
+    // Player chopping veggies
+    this.chopper = null
+
+    // Keep track of chop count
+    this.chopCount = 0
+
+    // When min angle is reached start chopping down
+    this.minAngle = 0
+    // When max angle is reached start chopping up
+    this.maxAngle = 70
+
+    // Default animation increment for chopping
+    this.defaultAngleIncrement = 5
+
+    // Angle increment changes when we're chopping up or down
+    this.angleIncrement = this.defaultAngleIncrement
+
+    scene.events.on('update', this.update, this)
+  }
+
+  update() {
+    // If no one is chopping, reset the knife position to default angle
+    if (!this.chopper) {
+      this.angle = this.minAngle
+      return
+    }
+
+    // - When the chop count is reached, the veggie has been chopped
+    // - This means the player can move again
+    // - They will also have now be holding the chopped veggie
+    if (this.chopCount === this.maxChopCount) {
+      this.choppedItem.positionOnPlayer(this.chopper)
+      this.chopper.item = this.choppedItem
+      this.chopper.chopping = false
+      this.chopper = null
+      this.chopCount = 0
+    }
+
+    if (this.angle > this.maxAngle) {
+      // Every completed down chop is a completed chop
+      this.chopCount++
+      // Switch to upward chop animation
+      this.angleIncrement = this.defaultAngleIncrement * -1
+    } else if (this.angle < this.minAngle) {
+      // Switch to down chop animation
+      this.angleIncrement = this.defaultAngleIncrement
+    }
+
+    // Update the chop animation
+    this.angle += this.angleIncrement
+  }
+
+  postUpdate() {}
+
+  needsSync() {
+    return true
+  }
+
+  setChopper(player, choppedItem) {
+    this.chopper = player
+    this.chopper.chopping = true
+    this.choppedItem = choppedItem
+    // TODO(richard-to): Fix hardcoded values
+    this.choppedItem.y = this.y + 20
+    this.choppedItem.x = this.x + 25
+  }
+}
 
 module.exports = {
   Bun,
@@ -230,8 +329,11 @@ module.exports = {
   BurgerLettuce,
   BurgerTomato,
   BurgerTomatoLettuce,
+  ChoppedLettuce,
+  ChoppedTomato,
   Cow,
   CowBox,
+  Knife,
   Lettuce,
   LettuceBox,
   Tomato,
