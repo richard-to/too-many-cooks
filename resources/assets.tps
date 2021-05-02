@@ -320,6 +320,36 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">chopped-lettuce.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>20,17,41,34</rect>
+                <key>scale9Paddings</key>
+                <rect>20,17,41,34</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">chopped-tomato.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>26,22,53,43</rect>
+                <key>scale9Paddings</key>
+                <rect>26,22,53,43</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">container.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -332,6 +362,21 @@
                 <rect>40,53,80,105</rect>
                 <key>scale9Paddings</key>
                 <rect>40,53,80,105</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">knife.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>28,19,56,38</rect>
+                <key>scale9Paddings</key>
+                <rect>28,19,56,38</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
@@ -416,6 +461,9 @@
             <filename>block-bread.png</filename>
             <filename>block-lettuce.png</filename>
             <filename>block-tomato.png</filename>
+            <filename>chopped-lettuce.png</filename>
+            <filename>chopped-tomato.png</filename>
+            <filename>knife.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

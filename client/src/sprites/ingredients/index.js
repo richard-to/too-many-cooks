@@ -1,4 +1,6 @@
 export { Bun } from './Bun'
 export { Cow } from './Cow'
+export { ChoppedLettuce } from './ChoppedLettuce'
+export { ChoppedTomato } from './ChoppedTomato'
 export { Lettuce } from './Lettuce'
 export { Tomato } from './Tomato'
