@@ -73,17 +73,10 @@ class GameScene extends Scene {
 
   getState() {
     let state = ''
-    this.boxesGroup.children.iterate((box) => {
-      state += this.prepareToSync(box)
-    })
-    this.playersGroup.children.iterate((player) => {
-      state += this.prepareToSync(player)
-    })
-    this.itemsGroup.children.iterate((item) => {
-      state += this.prepareToSync(item)
-    })
-    this.ingredientsGroup.children.iterate((item) => {
-      state += this.prepareToSync(item)
+    this.groups.forEach(group => {
+      group.children.iterate(obj => {
+        state += this.prepareToSync(obj)
+      })
     })
     return state
   }
@@ -125,6 +118,15 @@ class GameScene extends Scene {
       immovable: true,
       collideWorldBounds: true,
     })
+
+    // Keep track of all groups so we can apply game state updates more easily
+    this.groups = [
+      this.boxesGroup,
+      this.itemsGroup,
+      this.ingredientsGroup,
+      this.playersGroup,
+      this.movingPlatforms,
+    ]
 
     const levelMap = this.make.tilemap({ key: 'map' })
     const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
@@ -299,11 +301,9 @@ class GameScene extends Scene {
       sprite.postUpdate()
     }
 
-    this.boxesGroup.children.iterate(syncSpriteData)
-    this.movingPlatforms.children.iterate(syncSpriteData)
-    this.playersGroup.children.iterate(syncSpriteData)
-    this.itemsGroup.children.iterate(syncSpriteData)
-    this.ingredientsGroup.children.iterate(syncSpriteData)
+    this.groups.forEach(group => {
+      group.children.iterate(syncSpriteData)
+    })
 
     if (updates.length > 0) {
       this.io.room().emit('updateEntities', [updates])
