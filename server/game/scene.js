@@ -32,6 +32,22 @@ const boxMap = {
   [SpriteType.TOMATO_BOX]: Tomato,
 }
 
+const ingredientsSet = new Set([
+  SpriteType.CHOPPED_LETTUCE,
+  SpriteType.CHOPPED_TOMATO,
+  SpriteType.COW,
+])
+
+const burgersSet = new Set([
+  SpriteType.BUN,
+  SpriteType.BURGER_BEEF,
+  SpriteType.BURGER_BEEF_LETTUCE,
+  SpriteType.BURGER_BEEF_TOMATO,
+  SpriteType.BURGER_TOMATO,
+  SpriteType.BURGER_TOMATO_LETTUCE,
+  SpriteType.BURGER_LETTUCE,
+])
+
 class GameScene extends Scene {
   constructor() {
     super({ key: 'GameScene' })
@@ -257,7 +273,7 @@ class GameScene extends Scene {
       const item = sprite.item
       let BurgerClass
       // TODO: Refactor this ugly conditional
-      if (item.type < SpriteType.BUN && ingredient.type > SpriteType.COW) {
+      if (ingredientsSet.has(item.type) && burgersSet.has(ingredient.type)) {
         if (item.type === SpriteType.COW && ingredient.type === SpriteType.BUN) {
           BurgerClass = BurgerBeef
         } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {
@@ -266,21 +282,21 @@ class GameScene extends Scene {
           BurgerClass = BurgerBeefTomato
         } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
           BurgerClass = BurgerBeefTomatoLettuce
-        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BUN) {
+        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BUN) {
           BurgerClass = BurgerLettuce
-        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF) {
+        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BURGER_BEEF) {
           BurgerClass = BurgerBeefLettuce
-        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
+        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
           BurgerClass = BurgerTomatoLettuce
-        } else if (item.type === SpriteType.LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO) {
+        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO) {
           BurgerClass = BurgerBeefTomatoLettuce
-        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BUN) {
+        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BUN) {
           BurgerClass = BurgerTomato
-        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF) {
+        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BURGER_BEEF) {
           BurgerClass = BurgerBeefTomato
-        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_LETTUCE) {
+        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BURGER_LETTUCE) {
           BurgerClass = BurgerTomatoLettuce
-        } else if (item.type === SpriteType.TOMATO && ingredient.type === SpriteType.BURGER_BEEF_LETTUCE) {
+        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BURGER_BEEF_LETTUCE) {
           BurgerClass = BurgerBeefTomatoLettuce
         }
       }
