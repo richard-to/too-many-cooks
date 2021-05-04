@@ -18,7 +18,7 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
     this.setPosition(rightTopCorner.x - this.topPadding, rightTopCorner.y + this.rightPadding)
     this.setScrollFactor(0)
     this.setupList()
-    this.setDepth(1)
+    this.setDepth(2)
   }
 
   setupList() {

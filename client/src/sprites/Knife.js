@@ -8,7 +8,7 @@ export class Knife extends Phaser.GameObjects.Sprite {
     this.type = SpriteType.KNIFE
     this.entityID = entityID
     // Make sure knife is always in front of player and ingredients
-    this.depth = 50
+    this.setDepth(1)
     scene.add.existing(this)
   }
 }

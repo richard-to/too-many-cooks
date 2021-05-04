@@ -19,7 +19,7 @@ class HealthBar extends Phaser.GameObjects.Container {
     const leftTopCorner = Settings.LEFT_TOP_CORNER
     this.setPosition(leftTopCorner.x + this.topPadding, leftTopCorner.y + this.leftPadding)
     this.setScrollFactor(0)
-    this.setDepth(1)
+    this.setDepth(2)
     this.setupOrders()
   }
 
