@@ -1,5 +1,4 @@
 const { SpriteType } = require('../enums')
-const { random } = require('lodash')
 
 
 class IngredientBox extends Phaser.Physics.Arcade.Sprite {
@@ -172,10 +171,10 @@ class Cow extends Ingredient {
     // Logic for shooting a cow from the cloner
     // Randomly pick the x/y velocities so the cows fall in different directions
     this.body.angularVelocity = 500
-    this.setVelocityY(random(-600, -1000))
+    this.setVelocityY(Phaser.Math.Between(-600, -1000))
 
     // Random pick velocity and also randomly pick direction of velocity
-    this.setVelocityX(random(200, 600) * (random() ? 1 : -1))
+    this.setVelocityX(Phaser.Math.Between(200, 600) * (Phaser.Math.Between(0, 1) ? 1 : -1))
   }
 
   update(time) {
@@ -195,7 +194,7 @@ class Cow extends Ingredient {
       // TODO(richard-to): Improve cow movement logic
       // For now randomly pick a direction (left/right) after X milliseconds elapse
       if (this.timeFromLastMove + this.newMoveDelay <= time) {
-        this.moveLeft = random() ? true : false
+        this.moveLeft = Phaser.Math.Between(0, 1) ? true : false
         this.timeFromLastMove = time
       }
 
