@@ -30,6 +30,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.jumpCount = 0
     this.consecutiveJumps = 1
 
+    this.defaultVelocity = 300
+    this.cowVelocity = 150
+
     scene.events.on('update', this.update, this)
   }
 
@@ -64,16 +67,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       return
     }
 
+    // If a player is holding a cow, they will move slower
+    const velocity = (this.item && this.item.type === SpriteType.COW) ? this.cowVelocity : this.defaultVelocity
+
     if (this.move.left) {
       this.setFlipX(true)
-      this.setVelocityX(-200)
+      this.setVelocityX(velocity * -1)
       this.anim = true
     } else if (this.move.right) {
       this.setFlipX(false)
-      this.setVelocityX(200)
+      this.setVelocityX(velocity)
       this.anim = true
-    }
-    else {
+    } else {
       this.setVelocityX(0)
       this.anim = false
     }
