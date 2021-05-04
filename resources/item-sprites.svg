@@ -24,8 +24,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.0465222"
-     inkscape:cx="221.19525"
-     inkscape:cy="220.84745"
+     inkscape:cx="681.72523"
+     inkscape:cy="211.29253"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -802,6 +802,84 @@
        rx="7.4590521"
        ry="6.2015424"
        inkscape:export-filename="/Users/richard/chopped-lettuce.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#9da6b9;fill-opacity:1;fill-rule:evenodd;stroke:#5c6673;stroke-width:1.16442;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect10-1-5-3-9"
+       width="44.546196"
+       height="32.524746"
+       x="152.07182"
+       y="55.521584"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png" />
+    <path
+       style="fill:#f2f2f2;stroke:#503f3f;stroke-width:1.26525;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 166.58688,67.014807 c 7.30063,-7.67974 11.51989,-5.33377 15.46262,-2.08802 l 0.20629,18.988511 -8.33241,0.40324 c 0,0 -6.13382,-14.539931 -7.3365,-17.303731 z"
+       id="path1881-5-4"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:#ffe6d5;stroke:#ffb583;stroke-width:1.26525;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 182.25579,83.915298 -8.47162,0.68618 -1.60481,-3.70495 c 3.84002,-3.48994 7.83348,-2.44631 10.4012,-1.48314 z"
+       id="path2693-5-5"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <ellipse
+       style="fill:#4d4d4d;fill-opacity:1;stroke:#503f3f;stroke-width:1.26525;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3101-5-8-7"
+       cx="179.63094"
+       cy="69.349388"
+       rx="0.63539183"
+       ry="1.0009077"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <ellipse
+       style="fill:#4d4d4d;fill-opacity:1;stroke:#503f3f;stroke-width:1.26525;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3101-5-6-2-2"
+       cx="171.42821"
+       cy="71.113838"
+       rx="0.63539183"
+       ry="1.0009077"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:#f3f2e7;fill-opacity:1;stroke:#503f3f;stroke-width:1.26525;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 166.58688,67.014807 3.01811,-1.69769 -4.05558,-4.71577 z"
+       id="path3442-0-2"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:#f3f2e7;fill-opacity:1;stroke:#503f3f;stroke-width:1.26525;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 177.97381,65.568497 3.0181,-1.69767 -4.05558,-4.7158 z"
+       id="path3442-9-3-1"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       style="fill:#9da6b9;fill-opacity:1;stroke:#5c6673;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 155.12732,41.065095 34.80125,-0.770276 -4.74073,15.072333 -23.7647,-0.07038 z"
+       id="path1214"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#9da6b9;fill-opacity:1;stroke:none;stroke-width:0.862041;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3800"
+       width="22.621323"
+       height="8.3222513"
+       x="162.11269"
+       y="48.926041"
+       inkscape:export-filename="/Users/richard/Desktop/cow-cloner.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
   </g>

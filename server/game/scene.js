@@ -24,9 +24,9 @@ const {
 } = require('./sprites/items')
 const Player = require('./sprites/player')
 const Escalator = require('./sprites/escalator')
+const CowCloner = require('./sprites/cow_cloner')
 
 const boxMap = {
-  [SpriteType.COW_BOX]: Cow,
   [SpriteType.BUN_BOX]: Bun,
   [SpriteType.LETTUCE_BOX]: Lettuce,
   [SpriteType.TOMATO_BOX]: Tomato,
@@ -114,6 +114,19 @@ class GameScene extends Scene {
       collideWorldBounds: true,
     })
 
+    this.cowClonerGroup = this.physics.add.group({
+      allowGravity: false,
+      collideWorldBounds: true,
+      // Haven't figured out how to make the player push the cloner correctly
+      // using arcade physics. I'm not able to control the speed in which the
+      // the cloner gets pushed. So for now, going to manually control the
+      // logic for pushing cloner.
+      //
+      // One option may be to decrease the velocity of the player when they
+      // are pushing the cloner.
+      immovable: true,
+    })
+
     this.itemsGroup = this.physics.add.group({
       angularVelocity: 0,
       allowGravity: false,
@@ -153,6 +166,7 @@ class GameScene extends Scene {
       this.knivesGroup,
       this.playersGroup,
       this.movingPlatforms,
+      this.cowClonerGroup,
     ]
 
     const levelMap = this.make.tilemap({ key: 'map' })
@@ -175,12 +189,20 @@ class GameScene extends Scene {
       this.knivesGroup.add(new Knife(this, this.getID(), knife.x, knife.y))
     })
 
+    // Add cow cloners
+    levelMap.getObjectLayer('cow_cloners')['objects'].forEach(cloner => {
+      this.cowClonerGroup.add(new CowCloner(this, this.getID(), cloner.x + cloner.width / 2, cloner.y + cloner.height / 2))
+    })
+
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
+    this.physics.add.collider(this.cowClonerGroup, worldLayer)
     this.physics.add.collider(this.ingredientsGroup, this.boxesGroup)
     this.physics.add.collider(this.ingredientsGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.boxesGroup, this.grabItemFromBlock, null, this)
+    this.physics.add.collider(this.ingredientsGroup, this.cowClonerGroup)
+    this.physics.add.collider(this.playersGroup, this.cowClonerGroup, this.pushCloner, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
@@ -233,6 +255,20 @@ class GameScene extends Scene {
       await new Promise(resolve => setTimeout(resolve, 500))
       channel.emit('ready')
     })
+  }
+
+  pushCloner(initiator, cloner) {
+    if (initiator.type !== SpriteType.PLAYER) {
+      return
+    }
+
+    // Temporary workaround to control speed of pushing the cloner
+    // There is a bug where the cloner gets pushed through the wall
+    if (initiator.body.touching.left) {
+      cloner.x -= 0.5
+    } else if (initiator.body.touching.right) {
+      cloner.x += 0.5
+    }
   }
 
   cutIngredient = (sprite, knife) => {

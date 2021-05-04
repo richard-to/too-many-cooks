@@ -100,6 +100,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     if (this.body && this.body.onFloor()) {
       this.body.angularVelocity = 0
       this.setVelocityX(0)
+      this.setVelocityY(0)
     }
 
     if (this.onEscalator) {
@@ -139,6 +140,79 @@ class Cow extends Ingredient {
     this.defaultFlipY = true
     this.xPad = 30
     this.yPad = 30
+
+    // Randomly change direction after every X milliseconds
+    this.timeFromLastMove = 0
+    this.newMoveDelay = 4000
+
+    // If moveLeft is true, the cow will move left, otherwise move right
+    this.moveLeft = true
+
+    // Reference to cloner that the cow came from
+    // Mainly used to keep track of the cows that have been created by the cloner
+    // Not the best approach, so probably want to improve on this later
+    this.clonerSource = null
+  }
+
+  removeEvents() {
+    // TODO: May need to rename this function to be something more like clean up or something
+    super.removeEvents()
+    // Need to decrement cow count when the cow is removed from the game, this way new cows
+    // can be created
+    this.clonerSource.subtractCow()
+    this.clonerSource = null
+  }
+
+  setClonerSource(cloner) {
+    this.clonerSource = cloner
+  }
+
+  shootUp() {
+    // Logic for shooting a cow from the cloner
+    // Randomly pick the x/y velocities so the cows fall in different directions
+    this.body.angularVelocity = 500
+    this.setVelocityY(Phaser.Math.Between(-600, -1000))
+
+    // Random pick velocity and also randomly pick direction of velocity
+    this.setVelocityX(Phaser.Math.Between(200, 600) * (Phaser.Math.Between(0, 1) ? 1 : -1))
+  }
+
+  update(time) {
+    if (this.body && this.body.onFloor()) {
+      // When the cow lands it needs to:
+      //   - stop spinning
+      //   - land on its feet
+      //   - flipped so it's right side up (since it is upside down when a player holds it)
+      //   - stop horizontal movement
+      //   - stop vertical movement
+      this.body.angularVelocity = 0
+      this.angle = 0
+      this.flipY = false
+      this.setVelocityX(0)
+      this.setVelocityY(0)
+
+      // TODO(richard-to): Improve cow movement logic
+      // For now randomly pick a direction (left/right) after X milliseconds elapse
+      if (this.timeFromLastMove + this.newMoveDelay <= time) {
+        this.moveLeft = Phaser.Math.Between(0, 1) ? true : false
+        this.timeFromLastMove = time
+      }
+
+      if (this.moveLeft) {
+        this.setFlipX(true)
+        this.setVelocityX(-50)
+      } else {
+        this.setFlipX(false)
+        this.setVelocityX(50)
+      }
+    }
+
+    if (this.onEscalator) {
+      this.body.angularVelocity = 0
+
+      this.onEscalator = false
+      this.escalator = null
+    }
   }
 }
 

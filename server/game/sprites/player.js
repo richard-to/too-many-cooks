@@ -113,8 +113,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   needsSync() {
-    const x = Math.abs(this.x - this.prevX) > 0.5
-    const y = Math.abs(this.y - this.prevY) > 0.5
+    const x = Math.abs(this.x - this.prevX) >= 0.5
+    const y = Math.abs(this.y - this.prevY) >= 0.5
     const vy = (
       (this.prevVelocityY >= Settings.SHOW_ROCKET_VY && this.body.velocity.y < Settings.SHOW_ROCKET_VY) ||
       (this.prevVelocityY < Settings.SHOW_ROCKET_VY && this.body.velocity.y >= Settings.SHOW_ROCKET_VY)

@@ -24,6 +24,8 @@ export {
   Tomato,
 } from './ingredients'
 
+export { CowCloner } from './CowCloner'
+
 export { Escalator } from './Escalator'
 
 export { Knife } from './Knife'

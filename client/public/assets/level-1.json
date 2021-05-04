@@ -41,18 +41,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":17,
-                 "name":"CowBox",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":2797.12191726685,
-                 "y":2428.65351298316
-                }, 
-                {
-                 "height":0,
                  "id":19,
                  "name":"LettuceBox",
                  "point":true,
@@ -110,6 +98,28 @@
                  "width":0,
                  "x":4899.41884624613,
                  "y":1498.8611208769
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":7,
+         "name":"cow_cloners",
+         "objects":[
+                {
+                 "height":185,
+                 "id":35,
+                 "name":"CowCloner",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":173,
+                 "x":2688.23529411765,
+                 "y":2305.18884421718
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -199,11 +209,11 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":7,
- "nextobjectid":35,
+ "nextlayerid":8,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.6.0",
+ "tiledversion":"1.5.0",
  "tileheight":30,
  "tilesets":[
         {
@@ -221,6 +231,6 @@
         }],
  "tilewidth":160,
  "type":"map",
- "version":"1.6",
+ "version":1.5,
  "width":35
 }
