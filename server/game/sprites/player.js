@@ -57,6 +57,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Player cannot move if they are chopping
     if (this.chopping) {
+      // Reset sprite params to fix bug where a player activates chopping while jumping or moving
+      this.setVelocityX(0)
+      this.anim = false
+      this.jumpCount = 0
       return
     }
 
@@ -80,7 +84,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.jumpCount += 1
     }
 
-    if (onFloor  || this.body.touching.down ) {
+    if (onFloor || this.body.touching.down ) {
       this.jumpCount = 0
     }
 
