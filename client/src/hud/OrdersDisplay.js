@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 import { Settings } from '../enums'
 
-class HealthBar extends Phaser.GameObjects.Container {
+class OrdersDisplay extends Phaser.GameObjects.Container {
   constructor(scene, x, y, orders) {
     super(scene, x, y)
 
@@ -50,4 +50,4 @@ class HealthBar extends Phaser.GameObjects.Container {
   }
 }
 
-export default HealthBar
+export default OrdersDisplay

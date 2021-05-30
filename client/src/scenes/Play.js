@@ -65,6 +65,7 @@ class Play extends Phaser.Scene {
     this.entities = {}
     this.playerID = undefined
     this.orders = []
+    this.score = 0
   }
 
   init({ channel }) {
@@ -160,6 +161,7 @@ class Play extends Phaser.Scene {
               if (this.channel.stream) {
                 newEntity.sprite.setStream(this.channel.stream)
               }
+              newEntity.sprite.hud.updateScoreBoard(this.score)
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
             }
@@ -221,6 +223,13 @@ class Play extends Phaser.Scene {
       this.updateOrdersContainer()
     })
 
+    this.channel.on('updateScore', (score) => {
+      this.score = score
+      if (this.entities[this.playerID]) {
+        this.entities[this.playerID].sprite.hud.updateScoreBoard(this.score)
+      }
+    })
+
     try {
       // Load current game state
       let res = await axios.get(`${this.serverURL}/getState`)
@@ -237,6 +246,9 @@ class Play extends Phaser.Scene {
       // Parse orders
       this.parseOrders(res.data.orders)
       this.updateOrdersContainer()
+
+      // Set score
+      this.score = res.data.score
 
       // Set player ID from server
       this.channel.on('getID', playerID36 => {

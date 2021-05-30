@@ -226,6 +226,7 @@ class GameScene extends Scene {
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
     this.orders = new Orders(Array.from(burgersSet))
+    this.score = 0
 
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
@@ -304,6 +305,9 @@ class GameScene extends Scene {
     // Update order list with new item
     this.orders.fill()
     this.io.room().emit('updateOrders', this.orders.toArray())
+    // TODO: Handle scoring for different teams and also different orders
+    this.score += 1
+    this.io.room().emit('updateScore', this.score)
   }
 
   pushCloner(initiator, cloner) {

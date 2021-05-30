@@ -32,6 +32,7 @@ app.get('/getState', (_req, res) => {
       state: gameScene.getState(),
       channelEntityMap: gameScene.getChannelEntityMap(),
       orders: gameScene.orders.toArray(),
+      score: gameScene.score,
     })
   } catch (error) {
     console.error(error)
