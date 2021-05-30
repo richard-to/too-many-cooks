@@ -205,13 +205,9 @@ class Play extends Phaser.Scene {
       this.updatePlayerStreams()
     })
 
-    this.channel.on('updateOrders', orders => {
-      console.log(orders)
-    })
-
     this.channel.on('updateEntities', updates => updatesHandler(parseUpdates(updates[0])))
 
-    this.channel.on('removePlayer', entityID => {
+    this.channel.on('removeEntity', entityID => {
       try {
         this.entities[entityID].sprite.destroy()
         delete this.entities[entityID]

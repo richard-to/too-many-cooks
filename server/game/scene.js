@@ -241,7 +241,7 @@ class GameScene extends Scene {
           disconnectedPlayer.removeEvents()
           disconnectedPlayer.destroy()
         }
-        channel.room.emit('removePlayer', channel.entityID)
+        channel.room.emit('removeEntity', channel.entityID)
       })
 
       channel.on('getID', () => {
@@ -296,7 +296,7 @@ class GameScene extends Scene {
     initiator.item = null
 
     // Clean up delivered items
-    this.io.room().emit('removePlayer', item.entityID)
+    this.io.room().emit('removeEntity', item.entityID)
     item.removeEvents()
     this.itemsGroup.remove(item)
     item.destroy()
@@ -341,7 +341,7 @@ class GameScene extends Scene {
       knife.setChopper(sprite, choppedItem)
 
       // Clean up item since it has now been replaced with the chopped version
-      this.io.room().emit('removePlayer', item.entityID)
+      this.io.room().emit('removeEntity', item.entityID)
       item.removeEvents()
       this.itemsGroup.remove(item)
       item.destroy()
@@ -392,8 +392,8 @@ class GameScene extends Scene {
         this.itemsGroup.add(newItem)
         sprite.item = newItem
 
-        this.io.room().emit('removePlayer', item.entityID)
-        this.io.room().emit('removePlayer', ingredient.entityID)
+        this.io.room().emit('removeEntity', item.entityID)
+        this.io.room().emit('removeEntity', ingredient.entityID)
 
         // Clean up merged items
         item.removeEvents()
