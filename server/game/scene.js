@@ -203,7 +203,7 @@ class GameScene extends Scene {
       this.movingPlatforms.add(new Escalator(this, this.getID(), escalator.x, escalator.y))
     })
 
-    // Add knifes
+    // Add knives
     levelMap.getObjectLayer('knives')['objects'].forEach(knife => {
       this.knivesGroup.add(new Knife(this, this.getID(), knife.x, knife.y))
     })
