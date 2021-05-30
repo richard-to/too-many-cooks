@@ -1,6 +1,7 @@
 const path = require('path')
 
 const geckos = require('@geckos.io/server').default
+const { find } = require('lodash')
 const { Scene } = require('phaser')
 
 const { Settings, SpriteType } = require('./enums')
@@ -17,13 +18,13 @@ const {
   BurgerTomatoLettuce,
   ChoppedLettuce,
   ChoppedTomato,
-  Cow,
   Knife,
   Lettuce,
   Tomato,
 } = require('./sprites/items')
 const Player = require('./sprites/player')
 const Escalator = require('./sprites/escalator')
+const Face = require('./sprites/face')
 const CowCloner = require('./sprites/cow_cloner')
 
 const boxMap = {
@@ -76,7 +77,8 @@ class GameScene extends Scene {
     const x = Math.round(e.x).toString(Settings.RADIX)
     const y = Math.round(e.y).toString(Settings.RADIX)
     const j = e.body.velocity.y < Settings.SHOW_ROCKET_VY ? 1:0 // is jumping
-    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},${j},${e.item ? 1:0},`
+    const t = e.team ? e.team : 0
+    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},${j},${e.item ? 1:0},${t},`
   }
 
   /**
@@ -107,6 +109,12 @@ class GameScene extends Scene {
 
   create() {
     this.physics.world.setBounds(0, 0, Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
+
+    this.facesGroup = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
+      collideWorldBounds: true,
+    })
 
     this.boxesGroup = this.physics.add.group({
       allowGravity: false,
@@ -160,6 +168,7 @@ class GameScene extends Scene {
 
     // Keep track of all groups so we can apply game state updates more easily
     this.groups = [
+      this.facesGroup,
       this.boxesGroup,
       this.itemsGroup,
       this.ingredientsGroup,
@@ -174,6 +183,12 @@ class GameScene extends Scene {
 
     // Add collisions to tile map
     const worldLayer = levelMap.createDynamicLayer('platform', tiles).setCollision(1)
+
+    // Add faces
+    levelMap.getObjectLayer('faces')['objects'].forEach(face => {
+      const team = find(face.properties, {name: 'Team'})
+      this.facesGroup.add(new Face(this, this.getID(), face.x + face.width / 2, face.y + face.height / 2, team.value))
+    })
 
     // Add ingredient boxes
     levelMap.getObjectLayer('boxes')['objects'].forEach(box => {
@@ -201,6 +216,7 @@ class GameScene extends Scene {
     this.physics.add.collider(this.ingredientsGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.boxesGroup, this.grabItemFromBlock, null, this)
+    this.physics.add.collider(this.playersGroup, this.facesGroup)
     this.physics.add.collider(this.ingredientsGroup, this.cowClonerGroup)
     this.physics.add.collider(this.playersGroup, this.cowClonerGroup, this.pushCloner, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)

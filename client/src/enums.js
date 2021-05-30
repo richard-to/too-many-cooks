@@ -51,6 +51,7 @@ export const SpriteType = deepFreeze({
   CHOPPED_TOMATO: 19,
   CHOPPED_LETTUCE: 20,
   COW_CLONER: 21,
+  FACE: 22,
 })
 
 export const OrderType = deepFreeze({

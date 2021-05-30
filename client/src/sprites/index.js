@@ -23,12 +23,9 @@ export {
   Lettuce,
   Tomato,
 } from './ingredients'
-
 export { CowCloner } from './CowCloner'
-
 export { Escalator } from './Escalator'
-
+export { Face } from './Face'
 export { Knife } from './Knife'
-
 export { Player } from './Player'
 

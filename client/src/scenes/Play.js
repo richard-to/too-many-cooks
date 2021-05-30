@@ -19,10 +19,11 @@ import {
   Cow,
   CowBox,
   CowCloner,
+  Escalator,
+  Face,
   Knife,
   Lettuce,
   LettuceBox,
-  Escalator,
   Player,
   Tomato,
   TomatoBox,
@@ -45,12 +46,13 @@ const spriteMap = {
   [SpriteType.COW]: Cow,
   [SpriteType.COW_BOX]: CowBox,
   [SpriteType.COW_CLONER]: CowCloner,
+  [SpriteType.ESCALATOR]: Escalator,
+  [SpriteType.FACE]: Face,
   [SpriteType.KNIFE]: Knife,
   [SpriteType.LETTUCE]: Lettuce,
   [SpriteType.LETTUCE_BOX]: LettuceBox,
   [SpriteType.TOMATO]: Tomato,
   [SpriteType.TOMATO_BOX]: TomatoBox,
-  [SpriteType.ESCALATOR]: Escalator,
 }
 
 class Play extends Phaser.Scene {
@@ -99,7 +101,7 @@ class Play extends Phaser.Scene {
         return []
       }
 
-      const numParams = 10
+      const numParams = 11
 
       // parse
       const updateParts = updates.split(',')
@@ -123,6 +125,7 @@ class Play extends Phaser.Scene {
           anim: updateParts[i++] === "1" ? true : false,
           isJumping: updateParts[i++] === "1" ? true : false,
           hasItem: updateParts[i++] === "1" ? true : false,
+          team: parseInt(updateParts[i++]),
         })
       }
       return parsedUpdates
@@ -138,10 +141,10 @@ class Play extends Phaser.Scene {
           hasItem,
           isJumping,
           spriteType,
+          team,
           x,
           y,
         } = entityData
-
         if (has(this.entities, entityID)) {
           // if the entityData does already exist, update the entity
           let sprite = this.entities[entityID].sprite
@@ -167,6 +170,13 @@ class Play extends Phaser.Scene {
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
             }
+          } else if (spriteType === SpriteType.FACE) {
+            let newEntity = {
+              sprite: new spriteMap[spriteType](this, entityID, x, y, team),
+              entityID: entityID,
+            }
+            newEntity.sprite.setFlip(flipX, flipY).setAngle(angle)
+            this.entities[entityID] = newEntity
           } else if (spriteType > SpriteType.PLAYER) {
             let newEntity = {
               sprite: new spriteMap[spriteType](this, entityID, x, y),

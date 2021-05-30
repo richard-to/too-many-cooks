@@ -380,6 +380,26 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">face1-1.png</key>
+            <key type="filename">face1-2.png</key>
+            <key type="filename">face1-3.png</key>
+            <key type="filename">face2-1.png</key>
+            <key type="filename">face2-2.png</key>
+            <key type="filename">face2-3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>52,84,105,168</rect>
+                <key>scale9Paddings</key>
+                <rect>52,84,105,168</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">knife.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -480,6 +500,12 @@
             <filename>chopped-tomato.png</filename>
             <filename>knife.png</filename>
             <filename>cow-cloner.png</filename>
+            <filename>face1-1.png</filename>
+            <filename>face1-2.png</filename>
+            <filename>face1-3.png</filename>
+            <filename>face2-1.png</filename>
+            <filename>face2-2.png</filename>
+            <filename>face2-3.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

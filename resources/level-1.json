@@ -24,6 +24,51 @@
         }, 
         {
          "draworder":"topdown",
+         "id":8,
+         "name":"faces",
+         "objects":[
+                {
+                 "height":209,
+                 "id":44,
+                 "name":"Face",
+                 "properties":[
+                        {
+                         "name":"Team",
+                         "type":"int",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"1",
+                 "visible":true,
+                 "width":336,
+                 "x":1988.48812664908,
+                 "y":0
+                }, 
+                {
+                 "height":209,
+                 "id":45,
+                 "name":"Face",
+                 "properties":[
+                        {
+                         "name":"Team",
+                         "type":"int",
+                         "value":2
+                        }],
+                 "rotation":0,
+                 "type":"2",
+                 "visible":true,
+                 "width":336,
+                 "x":3262.07915567282,
+                 "y":0
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"boxes",
          "objects":[
@@ -209,8 +254,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":39,
+ "nextlayerid":9,
+ "nextobjectid":46,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.5.0",
