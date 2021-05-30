@@ -186,8 +186,12 @@ class GameScene extends Scene {
 
     // Add faces
     levelMap.getObjectLayer('faces')['objects'].forEach(face => {
-      const team = find(face.properties, {name: 'Team'})
-      this.facesGroup.add(new Face(this, this.getID(), face.x + face.width / 2, face.y + face.height / 2, team.value))
+      const team = find(face.properties, {name: 'Team'}).value
+      const flipY = find(face.properties, {name: 'FlipY'}).value
+      const angle = find(face.properties, {name: 'Angle'}).value
+      const faceSprite = new Face(this, this.getID(), face.x + face.width / 2, face.y + face.height / 2, team)
+      faceSprite.setAngle(angle).setFlipY(flipY)
+      this.facesGroup.add(faceSprite)
     })
 
     // Add ingredient boxes

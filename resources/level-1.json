@@ -33,6 +33,16 @@
                  "name":"Face",
                  "properties":[
                         {
+                         "name":"Angle",
+                         "type":"int",
+                         "value":90
+                        }, 
+                        {
+                         "name":"FlipY",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
                          "name":"Team",
                          "type":"int",
                          "value":1
@@ -49,6 +59,16 @@
                  "id":45,
                  "name":"Face",
                  "properties":[
+                        {
+                         "name":"Angle",
+                         "type":"int",
+                         "value":90
+                        }, 
+                        {
+                         "name":"FlipY",
+                         "type":"bool",
+                         "value":true
+                        }, 
                         {
                          "name":"Team",
                          "type":"int",

@@ -12,11 +12,6 @@ class Face extends Phaser.Physics.Arcade.Sprite {
     this.type = SpriteType.FACE
     this.entityID = entityID
     this.body.setSize(336, 209)
-
-    this.angle = 90
-    if (team === 2) {
-      this.flipY = true
-    }
   }
 
   postUpdate() {}
