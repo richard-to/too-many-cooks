@@ -173,7 +173,7 @@ class Cow extends Ingredient {
     this.body.angularVelocity = 500
     this.setVelocityY(Phaser.Math.Between(-600, -1000))
 
-    // Random pick velocity and also randomly pick direction of velocity
+    // Randomly pick velocity and also randomly pick direction of velocity
     this.setVelocityX(Phaser.Math.Between(200, 600) * (Phaser.Math.Between(0, 1) ? 1 : -1))
   }
 
