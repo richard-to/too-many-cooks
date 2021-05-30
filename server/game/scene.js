@@ -5,7 +5,7 @@ const { find } = require('lodash')
 const { Scene } = require('phaser')
 
 const { Settings, SpriteType } = require('./enums')
-
+const Orders = require('./orders')
 const SpriteItems = require('./sprites/items')
 const {
   Bun,
@@ -40,7 +40,6 @@ const ingredientsSet = new Set([
 ])
 
 const burgersSet = new Set([
-  SpriteType.BUN,
   SpriteType.BURGER_BEEF,
   SpriteType.BURGER_BEEF_LETTUCE,
   SpriteType.BURGER_BEEF_TOMATO,
@@ -226,6 +225,8 @@ class GameScene extends Scene {
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
+    this.orders = new Orders(Array.from(burgersSet))
+
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
         console.log('Disconnect user ' + channel.id)
@@ -278,9 +279,6 @@ class GameScene extends Scene {
   }
 
   feedFace(initiator, _face) {
-    // TODO: Replace placeholder logic.
-    // For now we remove any burger regardless of order list or teams
-    // Also the score is not updated
     if (initiator.type !== SpriteType.PLAYER) {
       return
     }
@@ -289,19 +287,23 @@ class GameScene extends Scene {
       return
     }
 
-    if (!burgersSet.has(initiator.item.type)) {
+    // Cannot deliver items that were not in the order list
+    if (!this.orders.remove(initiator.item)) {
       return
     }
 
     const item = initiator.item
     initiator.item = null
 
+    // Clean up delivered items
     this.io.room().emit('removePlayer', item.entityID)
-
-    // Clean up merged items
     item.removeEvents()
     this.itemsGroup.remove(item)
     item.destroy()
+
+    // Update order list with new item
+    this.orders.fill()
+    this.io.room().emit('updateOrders', this.orders.toArray())
   }
 
   pushCloner(initiator, cloner) {
@@ -356,7 +358,7 @@ class GameScene extends Scene {
       const item = sprite.item
       let BurgerClass
       // TODO: Refactor this ugly conditional
-      if (ingredientsSet.has(item.type) && burgersSet.has(ingredient.type)) {
+      if (ingredientsSet.has(item.type) && (ingredient.type === SpriteType.BUN || burgersSet.has(ingredient.type))) {
         if (item.type === SpriteType.COW && ingredient.type === SpriteType.BUN) {
           BurgerClass = BurgerBeef
         } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {

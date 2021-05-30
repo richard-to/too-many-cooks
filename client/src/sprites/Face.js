@@ -8,7 +8,7 @@ export class Face extends Phaser.GameObjects.Sprite {
     this.type = SpriteType.FACE
     this.entityID = entityID
     scene.add.existing(this)
-
+    this.setDepth(1)
     // Define face animation
     this.animFaceKey = `face${team}`
     const frames = [

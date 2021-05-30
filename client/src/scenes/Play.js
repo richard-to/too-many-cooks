@@ -86,15 +86,8 @@ class Play extends Phaser.Scene {
     const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
     levelMap.createStaticLayer('platform', tiles)
 
-    // Add fake orders for now to display in the left top corner
-    this.orders = [
-      OrderType.BURGER_BEEF,
-      OrderType.BURGER_TOMATO,
-      OrderType.BURGER_BEEF_TOMATO_LETTUCE,
-      OrderType.BURGER_BEEF_LETTUCE
-    ]
-
-    this.createOrdersContainer()
+    // Initialize list of orders
+    this.orders = []
 
     const parseUpdates = updates => {
       if (!updates) {
@@ -212,6 +205,10 @@ class Play extends Phaser.Scene {
       this.updatePlayerStreams()
     })
 
+    this.channel.on('updateOrders', orders => {
+      console.log(orders)
+    })
+
     this.channel.on('updateEntities', updates => updatesHandler(parseUpdates(updates[0])))
 
     this.channel.on('removePlayer', entityID => {
@@ -221,6 +218,11 @@ class Play extends Phaser.Scene {
       } catch (error) {
         console.error(error.message)
       }
+    })
+
+    this.channel.on('updateOrders', (orders) => {
+      this.parseOrders(orders)
+      this.updateOrdersContainer()
     })
 
     try {
@@ -235,6 +237,10 @@ class Play extends Phaser.Scene {
 
       // Sync parsed gameState
       updatesHandler(parsedUpdates)
+
+      // Parse orders
+      this.parseOrders(res.data.orders)
+      this.updateOrdersContainer()
 
       // Set player ID from server
       this.channel.on('getID', playerID36 => {
@@ -293,7 +299,11 @@ class Play extends Phaser.Scene {
     }
   }
 
-  createOrdersContainer() {
+  parseOrders(orders) {
+    this.orders = orders.map(o => OrderType[o.toString()])
+  }
+
+  updateOrdersContainer() {
     this.ordersDisplay = new OrdersDisplay(this, 0, 0, this.orders)
   }
 }

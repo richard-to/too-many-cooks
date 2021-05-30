@@ -55,25 +55,25 @@ export const SpriteType = deepFreeze({
 })
 
 export const OrderType = deepFreeze({
-  BURGER_BEEF: {
+  [SpriteType.BURGER_BEEF]: {
     frame: 'burger-beef.png',
   },
-  BURGER_BEEF_TOMATO: {
+  [SpriteType.BURGER_BEEF_TOMATO]: {
     frame: 'burger-beef-tomato.png',
   },
-  BURGER_BEEF_LETTUCE: {
+  [SpriteType.BURGER_BEEF_LETTUCE]: {
     frame: 'burger-beef-lettuce.png',
   },
-  BURGER_BEEF_TOMATO_LETTUCE: {
+  [SpriteType.BURGER_BEEF_TOMATO_LETTUCE]: {
     frame: 'burger-beef-tomato-lettuce.png',
   },
-  BURGER_TOMATO: {
+  [SpriteType.BURGER_TOMATO]: {
     frame: 'burger-tomato.png',
   },
-  BURGER_TOMATO_LETTUCE: {
+  [SpriteType.BURGER_TOMATO_LETTUCE]: {
     frame: 'burger-tomato-lettuce.png',
   },
-  BURGER_LETTUCE: {
+  [SpriteType.BURGER_LETTUCE]: {
     frame: 'burger-lettuce.png',
   },
 })
