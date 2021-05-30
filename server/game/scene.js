@@ -220,7 +220,7 @@ class GameScene extends Scene {
     this.physics.add.collider(this.ingredientsGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.boxesGroup, this.grabItemFromBlock, null, this)
-    this.physics.add.collider(this.playersGroup, this.facesGroup)
+    this.physics.add.collider(this.playersGroup, this.facesGroup, this.feedFace, null, this)
     this.physics.add.collider(this.ingredientsGroup, this.cowClonerGroup)
     this.physics.add.collider(this.playersGroup, this.cowClonerGroup, this.pushCloner, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)
@@ -275,6 +275,33 @@ class GameScene extends Scene {
       await new Promise(resolve => setTimeout(resolve, 500))
       channel.emit('ready')
     })
+  }
+
+  feedFace(initiator, _face) {
+    // TODO: Replace placeholder logic.
+    // For now we remove any burger regardless of order list or teams
+    // Also the score is not updated
+    if (initiator.type !== SpriteType.PLAYER) {
+      return
+    }
+
+    if (!initiator.item) {
+      return
+    }
+
+    if (!burgersSet.has(initiator.item.type)) {
+      return
+    }
+
+    const item = initiator.item
+    initiator.item = null
+
+    this.io.room().emit('removePlayer', item.entityID)
+
+    // Clean up merged items
+    item.removeEvents()
+    this.itemsGroup.remove(item)
+    item.destroy()
   }
 
   pushCloner(initiator, cloner) {
