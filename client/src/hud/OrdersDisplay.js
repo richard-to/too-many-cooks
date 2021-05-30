@@ -20,15 +20,22 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
     this.setPosition(leftTopCorner.x + this.topPadding, leftTopCorner.y + this.leftPadding)
     this.setScrollFactor(0)
     this.setDepth(2)
-    this.setupOrders()
+    this._setupOrders()
   }
 
-  setupOrders() {
-    const ordersBoard = this.createOrdersBoard()
-    this.add([ordersBoard])
+  updateOrders(orders) {
+    this.orders = orders
+    this._setupOrders()
   }
 
-  createOrdersBoard() {
+  _setupOrders() {
+    // For now clear sprites in container first before update order board
+    this._clearOrdersBoard()
+    const ordersBoard = this._createOrdersBoard()
+    this.add(ordersBoard)
+  }
+
+  _createOrdersBoard() {
     const orderContainers = []
 
     // Add Orders Text
@@ -45,8 +52,11 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
       )
       horizontalSpace += this.horizontalSpace
     })
+    return orderContainers
+  }
 
-    return this.scene.add.container(0, 0, orderContainers).setName('ordersBoard')
+  _clearOrdersBoard() {
+    this.removeAll(true)
   }
 }
 

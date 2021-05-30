@@ -64,7 +64,6 @@ class Play extends Phaser.Scene {
     this.channelEntityMap = {}
     this.entities = {}
     this.playerID = undefined
-    this.orders = []
     this.score = 0
   }
 
@@ -88,7 +87,7 @@ class Play extends Phaser.Scene {
     levelMap.createStaticLayer('platform', tiles)
 
     // Initialize list of orders
-    this.orders = []
+    this.ordersDisplay = new OrdersDisplay(this, 0, 0, [])
 
     const parseUpdates = updates => {
       if (!updates) {
@@ -220,7 +219,6 @@ class Play extends Phaser.Scene {
 
     this.channel.on('updateOrders', (orders) => {
       this.parseOrders(orders)
-      this.updateOrdersContainer()
     })
 
     this.channel.on('updateScore', (score) => {
@@ -245,7 +243,6 @@ class Play extends Phaser.Scene {
 
       // Parse orders
       this.parseOrders(res.data.orders)
-      this.updateOrdersContainer()
 
       // Set score
       this.score = res.data.score
@@ -308,11 +305,9 @@ class Play extends Phaser.Scene {
   }
 
   parseOrders(orders) {
-    this.orders = orders.map(o => OrderType[o.toString()])
-  }
-
-  updateOrdersContainer() {
-    this.ordersDisplay = new OrdersDisplay(this, 0, 0, this.orders)
+    // Convert sprite IDs to image name
+    const orderImages = orders.map(o => OrderType[o.toString()])
+    this.ordersDisplay.updateOrders(orderImages)
   }
 }
 
