@@ -8,7 +8,7 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
 
     this.orders = orders
 
-    this.horizontalSpace = 150
+    this.horizontalSpace = 140
     this.leftPadding = 20
     this.topPadding = 20
     this.fontSize = 36
@@ -40,10 +40,11 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
     const orderContainers = []
 
     // Add HUD box
+    // TODO: Fix hardcoded numbers
     const rect = this.scene.add.graphics()
     rect.fillStyle(0x222, 0.5)
-    rect.fillRoundedRect(0, 0, 430, 175, 5)
-    rect.strokeRoundedRect(0, 0, 430, 175, 5)
+    rect.fillRoundedRect(0, 0, 425, 175, 5)
+    rect.strokeRoundedRect(0, 0, 425, 175, 5)
     rect.lineStyle(2, 0x222, 1)
     orderContainers.push(rect)
 
@@ -64,7 +65,7 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
     let horizontalSpace = 15
     this.orders.forEach(order => {
       orderContainers.push(
-        this.scene.add.image(horizontalSpace, 150, 'assets', order.frame)
+        this.scene.add.image(horizontalSpace, 160, 'assets', order.frame)
         .setOrigin(0, 1)
         .setScale(0.8)
       )
