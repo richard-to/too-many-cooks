@@ -39,19 +39,25 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
   _createOrdersBoard() {
     const orderContainers = []
 
+    const padding = 15
+    const width = this.horizontalSpace * this.orders.length
+    const height = 160
+    const cornerRadius = 5
+    const bgColor = 0x222
+
     // Add HUD box
     // TODO: Fix hardcoded numbers
     const rect = this.scene.add.graphics()
-    rect.fillStyle(0x222, 0.5)
-    rect.fillRoundedRect(0, 0, 425, 175, 5)
-    rect.strokeRoundedRect(0, 0, 425, 175, 5)
-    rect.lineStyle(2, 0x222, 1)
+    rect.fillStyle(bgColor, 0.5)
+    rect.fillRoundedRect(0, 0, padding + width, padding + height, cornerRadius)
+    rect.strokeRoundedRect(0, 0, padding + width, padding + height, cornerRadius)
+    rect.lineStyle(2, bgColor, 1)
     orderContainers.push(rect)
 
     // Add Orders Text
     const scoreText = this.scene.add.text(
-      15,
-      15,
+      padding,
+      padding,
       'orders:',
       {
         fill: this.textColor,
@@ -62,10 +68,10 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
     orderContainers.push(scoreText)
 
     // Add orders with Burger sprites for every order
-    let horizontalSpace = 15
+    let horizontalSpace = padding
     this.orders.forEach(order => {
       orderContainers.push(
-        this.scene.add.image(horizontalSpace, 160, 'assets', order.frame)
+        this.scene.add.image(horizontalSpace, height, 'assets', order.frame)
         .setOrigin(0, 1)
         .setScale(0.8)
       )
