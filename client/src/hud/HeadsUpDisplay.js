@@ -27,13 +27,15 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
   }
 
   createScoreBoard() {
+    const fontSize = 40
+
     const margin = 10
     const padding = 15
     const spacer = 10
     const width = 175
-    const height = this.fontSize + margin
+    const height = fontSize + margin
 
-    const fontSize = '40px'
+
 
     const scoreBgColor = 0xFFFFFF
     const scoreBgAlpha = 0.8
@@ -43,7 +45,7 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
 
     // Font style for the team name label
     const teamFontStyle = {
-      fontSize: fontSize,
+      fontSize: `${fontSize}px`,
       color: '#FFF',
       fontFamily: Settings.UI_FONT,
     }
@@ -51,7 +53,7 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
     // Font style for the team score label
     const scoreFontStyle = {
       align: 'center',
-      fontSize: fontSize,
+      fontSize: `${fontSize}px`,
       color: '#555',
       fontFamily: Settings.UI_FONT,
       fixedWidth: scoreBgWidth - padding,
@@ -59,7 +61,7 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
 
     // Team 1 Score UI
     const t1LabelBg = this.scene.add.graphics()
-      .fillStyle(Settings.TEAM1_COLOR, scoreBgAlpha)
+      .fillStyle(Settings.TEAM1_COLOR, 1)
       .fillRect(0, 0, padding + width, padding + height)
 
     const t1ScoreBg = this.scene.add.graphics()
@@ -72,8 +74,8 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
 
     // Team 2 Score UI
     const t2LabelBg = this.scene.add.graphics()
-    t2LabelBg.fillStyle(Settings.TEAM2_COLOR, scoreBgAlpha)
-    t2LabelBg.fillRect(0, padding + margin + height, padding + width, padding + height)
+      .fillStyle(Settings.TEAM2_COLOR, scoreBgAlpha)
+      .fillRect(0, padding + margin + height, padding + width, padding + height)
 
     const t2ScoreBg = this.scene.add.graphics()
       .fillStyle(scoreBgColor, scoreBgAlpha)

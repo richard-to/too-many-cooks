@@ -64,7 +64,7 @@ class Play extends Phaser.Scene {
     this.channelEntityMap = {}
     this.entities = {}
     this.playerID = undefined
-    this.score = 0
+    this.scores = [0, 0]
   }
 
   init({ channel }) {
