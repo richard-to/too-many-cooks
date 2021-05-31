@@ -8,12 +8,9 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
 
     this.orders = orders
 
-    this.horizontalSpace = 140
+    this.hudLabel = 'Orders'
     this.leftPadding = 20
     this.topPadding = 20
-    this.fontSize = 36
-    this.textColor = '#FFFFFF'
-    this.backgroundColor = '#ECECEC'
 
     scene.add.existing(this)
 
@@ -38,34 +35,31 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
 
   _createOrdersBoard() {
     const orderContainers = []
-
+    const horizontalSpacer = 140
     const padding = 15
-    const width = this.horizontalSpace * this.orders.length
-    const height = 160
+    const width = horizontalSpacer * this.orders.length
+    const height = 150
     const cornerRadius = 5
-    const bgColor = 0x222
+    const hudBgAlpha = 0.5
+    const hudBgColor = 0x222
 
-    // Add HUD box
-    // TODO: Fix hardcoded numbers
-    const rect = this.scene.add.graphics()
-    rect.fillStyle(bgColor, 0.5)
-    rect.fillRoundedRect(0, 0, padding + width, padding + height, cornerRadius)
-    rect.strokeRoundedRect(0, 0, padding + width, padding + height, cornerRadius)
-    rect.lineStyle(2, bgColor, 1)
-    orderContainers.push(rect)
+    const ordersFontStyle = {
+      color: '#FFF',
+      fontFamily: Settings.UI_FONT,
+      fontSize: '36px',
+    }
+
+    // Add background for orders HUD
+    const hudBg = this.scene.add.graphics()
+      .fillStyle(hudBgColor, hudBgAlpha)
+      .fillRoundedRect(0, 0, padding + width, padding + height, cornerRadius)
+      .lineStyle(2, hudBgColor, 1)
+      .strokeRoundedRect(0, 0, padding + width, padding + height, cornerRadius)
+    orderContainers.push(hudBg)
 
     // Add Orders Text
-    const scoreText = this.scene.add.text(
-      padding,
-      padding,
-      'orders:',
-      {
-        fill: this.textColor,
-        fontFamily: 'Arial',
-        fontSize: `${this.fontSize}px`,
-      },
-    )
-    orderContainers.push(scoreText)
+    const ordersLabel = this.scene.add.text(padding, padding, this.hudLabel, ordersFontStyle)
+    orderContainers.push(ordersLabel)
 
     // Add orders with Burger sprites for every order
     let horizontalSpace = padding
@@ -75,7 +69,7 @@ class OrdersDisplay extends Phaser.GameObjects.Container {
         .setOrigin(0, 1)
         .setScale(0.8)
       )
-      horizontalSpace += this.horizontalSpace
+      horizontalSpace += horizontalSpacer
     })
     return orderContainers
   }

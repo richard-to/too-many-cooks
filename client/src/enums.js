@@ -16,6 +16,10 @@ export const Settings = deepFreeze({
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   SERVER_PORT: parseInt(process.env.EXTERNAL_SERVER_PORT),
+  TEAM1_NAME: 'Gwuart',
+  TEAM1_COLOR: 0xdec136,
+  TEAM2_NAME: 'Blorgk',
+  TEAM2_COLOR: 0x14de86,
   TILE_HEIGHT: 30,
   TILE_WIDTH: 160,
   RIGHT_TOP_CORNER: {
@@ -25,7 +29,8 @@ export const Settings = deepFreeze({
   LEFT_TOP_CORNER: {
     x: (SCREEN_WIDTH - (SCREEN_WIDTH / SCALE )) / 2,
     y: (SCREEN_HEIGHT - (SCREEN_HEIGHT / SCALE )) / 2,
-  }
+  },
+  UI_FONT: 'arial',
 })
 
 export const SpriteType = deepFreeze({

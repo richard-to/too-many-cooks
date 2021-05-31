@@ -226,7 +226,8 @@ class GameScene extends Scene {
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
     this.orders = new Orders(Array.from(burgersSet))
-    this.score = 0
+    // 0 -> Team 1; 1 -> Team 2
+    this.scores = [0, 0]
 
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
@@ -279,7 +280,7 @@ class GameScene extends Scene {
     })
   }
 
-  feedFace(initiator, _face) {
+  feedFace(initiator, face) {
     if (initiator.type !== SpriteType.PLAYER) {
       return
     }
@@ -306,8 +307,8 @@ class GameScene extends Scene {
     this.orders.fill()
     this.io.room().emit('updateOrders', this.orders.toArray())
     // TODO: Handle scoring for different teams and also different orders
-    this.score += 1
-    this.io.room().emit('updateScore', this.score)
+    this.scores[face.team - 1] += 1
+    this.io.room().emit('updateScores', this.scores)
   }
 
   pushCloner(initiator, cloner) {

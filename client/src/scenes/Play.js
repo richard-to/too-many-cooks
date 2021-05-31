@@ -160,7 +160,7 @@ class Play extends Phaser.Scene {
               if (this.channel.stream) {
                 newEntity.sprite.setStream(this.channel.stream)
               }
-              newEntity.sprite.hud.updateScoreBoard(this.score)
+              newEntity.sprite.hud.updateScoreBoard(...this.scores)
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
             }
@@ -221,10 +221,10 @@ class Play extends Phaser.Scene {
       this.parseOrders(orders)
     })
 
-    this.channel.on('updateScore', (score) => {
-      this.score = score
+    this.channel.on('updateScores', (scores) => {
+      this.scores = scores
       if (this.entities[this.playerID]) {
-        this.entities[this.playerID].sprite.hud.updateScoreBoard(this.score)
+        this.entities[this.playerID].sprite.hud.updateScoreBoard(...this.scores)
       }
     })
 
@@ -244,8 +244,8 @@ class Play extends Phaser.Scene {
       // Parse orders
       this.parseOrders(res.data.orders)
 
-      // Set score
-      this.score = res.data.score
+      // Set scores
+      this.scores = res.data.scores
 
       // Set player ID from server
       this.channel.on('getID', playerID36 => {
