@@ -14,6 +14,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.type = SpriteType.PLAYER
     this.entityID = entityID
     this.body.setSize(Settings.PLAYER_WIDTH, Settings.PLAYER_HEIGHT)
+    this.body.onWorldBounds = true
 
     this.prevNoMovement = true
     this.prevX = -1
@@ -25,6 +26,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.anim = false
     this.move = {}
     this.item = null
+
+    this.respawning = false
+    this.respawnDelay = 3000
+    this.respawnTime = null
 
     this.chopping = false
     this.jumpCount = 0
@@ -40,7 +45,36 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.events.off('update', this.update, this)
   }
 
-  setMove(data) {
+  respawn() {
+    // When respawning occurs, player is temporarily out of game and must wait
+    // until they have finished respawning.
+    this.respawning = true
+    this.scene.playersGroup.remove(this)
+    this.scene.respawnGroup.add(this)
+    // Reposition player off screen
+    this.x = -100
+    this.y = -200
+  }
+
+  _respawn() {
+    // Called when respawn time has been reached, which means
+    // player can enter game.
+    this.respawning = false
+
+    // Randomly drop player back on map
+    this.x = Phaser.Math.RND.integerInRange(0, Settings.LEVEL_WIDTH)
+    this.y = 0
+
+    // Reset in-progress movement
+    this.setVelocityX(0)
+    this.setVelocityY(0)
+    this.setMove()
+
+    this.scene.respawnGroup.remove(this)
+    this.scene.playersGroup.add(this)
+  }
+
+  setMove(data = '32') {
     let m = parseInt(data, Settings.RADIX)
 
     let move = {
@@ -55,8 +89,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.move = move
   }
 
-  update() {
+  update(time) {
     const onFloor = this.body.onFloor()
+
+    // Manage respawn logic
+    if (this.respawning) {
+     if (!this.respawnTime) {
+        // If a respawn time has not been set, then that means the player has begun the respawn process
+       this.respawnTime = time + this.respawnDelay
+     } else if(this.respawnTime <= time) {
+       // Once respawn time has completed, the player can be respawned into the game
+       this.respawnTime = null
+       this._respawn()
+     }
+     return
+    }
 
     // Player cannot move if they are chopping
     if (this.chopping) {

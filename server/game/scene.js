@@ -77,7 +77,7 @@ class GameScene extends Scene {
     const y = Math.round(e.y).toString(Settings.RADIX)
     const j = e.body.velocity.y < Settings.SHOW_ROCKET_VY ? 1:0 // is jumping
     const t = e.team ? e.team : 0
-    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.anim ? 1:0},${j},${e.item ? 1:0},${t},`
+    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.alpha},${e.anim ? 1:0},${j},${e.item ? 1:0},${t},`
   }
 
   /**
@@ -152,6 +152,11 @@ class GameScene extends Scene {
       collideWorldBounds: true,
     })
 
+    this.respawnGroup = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
+    })
+
     this.movingPlatforms = this.physics.add.group({
       allowGravity: false,
       immovable: true,
@@ -167,14 +172,15 @@ class GameScene extends Scene {
 
     // Keep track of all groups so we can apply game state updates more easily
     this.groups = [
-      this.facesGroup,
       this.boxesGroup,
-      this.itemsGroup,
-      this.ingredientsGroup,
-      this.knivesGroup,
-      this.playersGroup,
-      this.movingPlatforms,
       this.cowClonerGroup,
+      this.facesGroup,
+      this.ingredientsGroup,
+      this.itemsGroup,
+      this.knivesGroup,
+      this.movingPlatforms,
+      this.playersGroup,
+      this.respawnGroup,
     ]
 
     const levelMap = this.make.tilemap({ key: 'map' })
@@ -211,6 +217,12 @@ class GameScene extends Scene {
     levelMap.getObjectLayer('cow_cloners')['objects'].forEach(cloner => {
       this.cowClonerGroup.add(new CowCloner(this, this.getID(), cloner.x + cloner.width / 2, cloner.y + cloner.height / 2))
     })
+
+    // Event to handle falling into pits
+    //
+    // Technically it may be better to use an invisible hit box instead, but we'll go
+    // with this for now.
+    this.physics.world.on('worldbounds', this.onWorldBounds, this)
 
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
@@ -278,6 +290,33 @@ class GameScene extends Scene {
       await new Promise(resolve => setTimeout(resolve, 500))
       channel.emit('ready')
     })
+  }
+
+  onWorldBounds(body, _up, down, _left, _right) {
+    // Handle events where player falls through a pit (bottom world bounds)
+    if (!down) {
+      return
+    }
+    // Get the sprite
+    const sprite = body.gameObject
+    if (sprite.type === SpriteType.PLAYER) {
+      // When a player falls through a pit and respawns, items will be lost.
+      if (sprite.item) {
+        const item = sprite.item
+        sprite.item = null
+        this.io.room().emit('removeEntity', item.entityID)
+        item.removeEvents()
+        this.itemsGroup.remove(item)
+        item.destroy()
+      }
+      sprite.respawn()
+    } else {
+      // Remove ingredients that fall through pit
+      this.io.room().emit('removeEntity', sprite.entityID)
+      sprite.removeEvents()
+      this.ingredientsGroup.remove(sprite)
+      sprite.destroy()
+    }
   }
 
   feedFace(initiator, face) {

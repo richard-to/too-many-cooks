@@ -57,6 +57,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this)
 
     this.setCollideWorldBounds(true)
+    this.body.onWorldBounds = true
 
     this.entityID = entityID
 

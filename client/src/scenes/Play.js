@@ -94,7 +94,7 @@ class Play extends Phaser.Scene {
         return []
       }
 
-      const numParams = 11
+      const numParams = 12
 
       // parse
       const updateParts = updates.split(',')
@@ -115,6 +115,7 @@ class Play extends Phaser.Scene {
           flipX: updateParts[i++] === "1" ? true : false,
           flipY: updateParts[i++] === "1" ? true : false,
           angle: parseInt(updateParts[i++]),
+          alpha: parseInt(updateParts[i++]),
           anim: updateParts[i++] === "1" ? true : false,
           isJumping: updateParts[i++] === "1" ? true : false,
           hasItem: updateParts[i++] === "1" ? true : false,
@@ -127,6 +128,7 @@ class Play extends Phaser.Scene {
     const updatesHandler = updates => {
       updates.forEach(entityData => {
         const {
+          alpha,
           angle,
           entityID,
           flipX,
@@ -141,7 +143,7 @@ class Play extends Phaser.Scene {
         if (has(this.entities, entityID)) {
           // if the entityData does already exist, update the entity
           let sprite = this.entities[entityID].sprite
-          sprite.setPosition(x, y).setFlip(flipX, flipY).setAngle(angle)
+          sprite.setPosition(x, y).setFlip(flipX, flipY).setAngle(angle).setAlpha(alpha)
           if (sprite.type === SpriteType.PLAYER) {
             sprite.setIsJumping(isJumping).setHasItem(hasItem)
           }
@@ -169,14 +171,14 @@ class Play extends Phaser.Scene {
               sprite: new spriteMap[spriteType](this, entityID, x, y, team),
               entityID: entityID,
             }
-            newEntity.sprite.setFlip(flipX, flipY).setAngle(angle)
+            newEntity.sprite.setFlip(flipX, flipY).setAngle(angle).setAlpha(alpha)
             this.entities[entityID] = newEntity
           } else if (spriteType > SpriteType.PLAYER) {
             let newEntity = {
               sprite: new spriteMap[spriteType](this, entityID, x, y),
               entityID: entityID,
             }
-            newEntity.sprite.setFlip(flipX, flipY).setAngle(angle)
+            newEntity.sprite.setFlip(flipX, flipY).setAngle(angle).setAlpha(alpha)
             this.entities[entityID] = newEntity
           }
         }
