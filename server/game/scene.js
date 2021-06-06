@@ -5,7 +5,8 @@ const { find } = require('lodash')
 const { Scene } = require('phaser')
 
 const { Settings, SpriteType } = require('./enums')
-const Orders = require('./orders')
+const Orders = require('./Orders')
+const ScoreTracker = require('./ScoreTracker')
 const SpriteItems = require('./sprites/items')
 const {
   Bun,
@@ -238,8 +239,10 @@ class GameScene extends Scene {
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
     this.orders = new Orders(Array.from(burgersSet))
-    // 0 -> Team 1; 1 -> Team 2
-    this.scores = [0, 0]
+
+    let teamNames = []
+    this.facesGroup.children.iterate(obj => teamNames.push(obj.team))
+    this.scores = new ScoreTracker(teamNames)
 
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
@@ -329,12 +332,17 @@ class GameScene extends Scene {
     }
 
     // Cannot deliver items that were not in the order list
-    if (!this.orders.remove(initiator.item)) {
-      return
-    }
+    const [validOrder, isInOrder] = this.orders.remove(initiator.item)
 
     const item = initiator.item
     initiator.item = null
+
+    // Update score
+    if (validOrder) {
+      this.scores.increaseScore(face.team, item, isInOrder)
+    } else {
+      this.scores.decreaseScore(face.team)
+    }
 
     // Clean up delivered items
     this.io.room().emit('removeEntity', item.entityID)
@@ -344,10 +352,9 @@ class GameScene extends Scene {
 
     // Update order list with new item
     this.orders.fill()
+
     this.io.room().emit('updateOrders', this.orders.toArray())
-    // TODO: Handle scoring for different teams and also different orders
-    this.scores[face.team - 1] += 1
-    this.io.room().emit('updateScores', this.scores)
+    this.io.room().emit('updateScores', this.scores.toArray())
   }
 
   pushCloner(initiator, cloner) {

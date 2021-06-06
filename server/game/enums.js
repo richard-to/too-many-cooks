@@ -42,7 +42,14 @@ const SpriteType = deepFreeze({
   FACE: 22,
 })
 
+BurgerPoints = {
+  EASY: 5,
+  MEDIUM: 7,
+  HARD: 12,
+}
+
 module.exports = {
+  BurgerPoints,
   Settings,
   SpriteType,
 }

@@ -39,7 +39,7 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
 
     const scoreBgColor = 0xFFFFFF
     const scoreBgAlpha = 0.8
-    const scoreBgWidth = 70
+    const scoreBgWidth = 90
 
     const defaultScore = '0'
 

@@ -25,12 +25,16 @@ class Orders {
 
   remove(item) {
     // Removes an order from the queue if it is valid
+    // The first element is if the order was found
+    // The second element is if the order was in order
     const index = this.orders.findIndex(o => o === item.type)
+    let isInOrder = false
     if (index >= 0) {
       this.orders.splice(index, 1)
-      return true
+      isInOrder = index === 0
+      return [true, isInOrder]
     }
-    return false
+    return [false, isInOrder]
   }
 }
 
