@@ -235,7 +235,7 @@ class GameScene extends Scene {
     this.physics.add.collider(this.playersGroup, this.facesGroup, this.feedFace, null, this)
     this.physics.add.collider(this.ingredientsGroup, this.cowClonerGroup)
     this.physics.add.collider(this.playersGroup, this.cowClonerGroup, this.pushCloner, null, this)
-    this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupIngredient, null, this)
+    this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupItem, null, this)
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
 
     this.orders = new Orders(Array.from(burgersSet))
@@ -399,40 +399,47 @@ class GameScene extends Scene {
     }
   }
 
-  pickupIngredient = (sprite, ingredient) => {
+  pickupItem = (sprite, freeItem) => {
     if (sprite.type !== SpriteType.PLAYER) {
       return
     }
 
     if (sprite.item && sprite.move.x) {
       sprite.move.x = false
-      const item = sprite.item
+      const playerItem = sprite.item
+
+      // Swap ingredient / burger so that it doesn't matter which type the player is holding
+      // All that matters is that the player is one of the items is a valid ingredient and the
+      // other is a valid burger (including bun)
+      const ingredient = ingredientsSet.has(playerItem.type) ? playerItem : freeItem
+      const burger = !ingredientsSet.has(playerItem.type) ? playerItem : freeItem
+
       let BurgerClass
       // TODO: Refactor this ugly conditional
-      if (ingredientsSet.has(item.type) && (ingredient.type === SpriteType.BUN || burgersSet.has(ingredient.type))) {
-        if (item.type === SpriteType.COW && ingredient.type === SpriteType.BUN) {
+      if (ingredientsSet.has(ingredient.type) && (burger.type === SpriteType.BUN || burgersSet.has(burger.type))) {
+        if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BUN) {
           BurgerClass = BurgerBeef
-        } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_LETTUCE) {
+        } else if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BURGER_LETTUCE) {
           BurgerClass = BurgerBeefLettuce
-        } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO) {
+        } else if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BURGER_TOMATO) {
           BurgerClass = BurgerBeefTomato
-        } else if (item.type === SpriteType.COW && ingredient.type === SpriteType.BURGER_TOMATO_LETTUCE) {
+        } else if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BURGER_TOMATO_LETTUCE) {
           BurgerClass = BurgerBeefTomatoLettuce
-        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BUN) {
+        } else if (ingredient.type === SpriteType.CHOPPED_LETTUCE && burger.type === SpriteType.BUN) {
           BurgerClass = BurgerLettuce
-        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BURGER_BEEF) {
+        } else if (ingredient.type === SpriteType.CHOPPED_LETTUCE && burger.type === SpriteType.BURGER_BEEF) {
           BurgerClass = BurgerBeefLettuce
-        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BURGER_TOMATO) {
+        } else if (ingredient.type === SpriteType.CHOPPED_LETTUCE && burger.type === SpriteType.BURGER_TOMATO) {
           BurgerClass = BurgerTomatoLettuce
-        } else if (item.type === SpriteType.CHOPPED_LETTUCE && ingredient.type === SpriteType.BURGER_BEEF_TOMATO) {
+        } else if (ingredient.type === SpriteType.CHOPPED_LETTUCE && burger.type === SpriteType.BURGER_BEEF_TOMATO) {
           BurgerClass = BurgerBeefTomatoLettuce
-        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BUN) {
+        } else if (ingredient.type === SpriteType.CHOPPED_TOMATO && burger.type === SpriteType.BUN) {
           BurgerClass = BurgerTomato
-        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BURGER_BEEF) {
+        } else if (ingredient.type === SpriteType.CHOPPED_TOMATO && burger.type === SpriteType.BURGER_BEEF) {
           BurgerClass = BurgerBeefTomato
-        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BURGER_LETTUCE) {
+        } else if (ingredient.type === SpriteType.CHOPPED_TOMATO && burger.type === SpriteType.BURGER_LETTUCE) {
           BurgerClass = BurgerTomatoLettuce
-        } else if (item.type === SpriteType.CHOPPED_TOMATO && ingredient.type === SpriteType.BURGER_BEEF_LETTUCE) {
+        } else if (ingredient.type === SpriteType.CHOPPED_TOMATO && burger.type === SpriteType.BURGER_BEEF_LETTUCE) {
           BurgerClass = BurgerBeefTomatoLettuce
         }
       }
@@ -443,18 +450,18 @@ class GameScene extends Scene {
         this.itemsGroup.add(newItem)
         sprite.item = newItem
 
-        this.io.room().emit('removeEntity', item.entityID)
-        this.io.room().emit('removeEntity', ingredient.entityID)
+        this.io.room().emit('removeEntity', playerItem.entityID)
+        this.io.room().emit('removeEntity', freeItem.entityID)
 
         // Clean up merged items
-        item.removeEvents()
-        ingredient.removeEvents()
+        playerItem.removeEvents()
+        freeItem.removeEvents()
 
-        this.itemsGroup.remove(item)
-        this.ingredientsGroup.remove(ingredient)
+        this.itemsGroup.remove(playerItem)
+        this.ingredientsGroup.remove(freeItem)
 
-        item.destroy()
-        ingredient.destroy()
+        playerItem.destroy()
+        freeItem.destroy()
       }
       return
     }
@@ -463,13 +470,13 @@ class GameScene extends Scene {
       sprite.move.space = false
 
       // Remove it from the ingredient physics group
-      this.ingredientsGroup.remove(ingredient)
+      this.ingredientsGroup.remove(freeItem)
       // Add it to the item physics group which has different behavior
-      this.itemsGroup.add(ingredient)
-      ingredient.positionOnPlayer(sprite)
-      ingredient.setFlipY(false)
+      this.itemsGroup.add(freeItem)
+      freeItem.positionOnPlayer(sprite)
+      freeItem.setFlipY(false)
 
-      sprite.item = ingredient
+      sprite.item = freeItem
       return
     }
   }
