@@ -445,6 +445,32 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">oven-1.png</key>
+            <key type="filename">oven-10.png</key>
+            <key type="filename">oven-11.png</key>
+            <key type="filename">oven-12.png</key>
+            <key type="filename">oven-2.png</key>
+            <key type="filename">oven-3.png</key>
+            <key type="filename">oven-4.png</key>
+            <key type="filename">oven-5.png</key>
+            <key type="filename">oven-6.png</key>
+            <key type="filename">oven-7.png</key>
+            <key type="filename">oven-8.png</key>
+            <key type="filename">oven-9.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>116,59,232,118</rect>
+                <key>scale9Paddings</key>
+                <rect>116,59,232,118</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">rocket.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -506,6 +532,18 @@
             <filename>face2-1.png</filename>
             <filename>face2-2.png</filename>
             <filename>face2-3.png</filename>
+            <filename>oven-1.png</filename>
+            <filename>oven-10.png</filename>
+            <filename>oven-11.png</filename>
+            <filename>oven-12.png</filename>
+            <filename>oven-2.png</filename>
+            <filename>oven-3.png</filename>
+            <filename>oven-4.png</filename>
+            <filename>oven-5.png</filename>
+            <filename>oven-6.png</filename>
+            <filename>oven-7.png</filename>
+            <filename>oven-8.png</filename>
+            <filename>oven-9.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
