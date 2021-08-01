@@ -16,6 +16,7 @@ import {
   BurgerTomatoLettuce,
   ChoppedLettuce,
   ChoppedTomato,
+  CookedBeef,
   Cow,
   CowBox,
   CowCloner,
@@ -24,6 +25,7 @@ import {
   Knife,
   Lettuce,
   LettuceBox,
+  Oven,
   Player,
   Tomato,
   TomatoBox,
@@ -43,6 +45,7 @@ const spriteMap = {
   [SpriteType.BURGER_LETTUCE]: BurgerLettuce,
   [SpriteType.CHOPPED_LETTUCE]: ChoppedLettuce,
   [SpriteType.CHOPPED_TOMATO]: ChoppedTomato,
+  [SpriteType.COOKED_BEEF]: CookedBeef,
   [SpriteType.COW]: Cow,
   [SpriteType.COW_BOX]: CowBox,
   [SpriteType.COW_CLONER]: CowCloner,
@@ -51,6 +54,7 @@ const spriteMap = {
   [SpriteType.KNIFE]: Knife,
   [SpriteType.LETTUCE]: Lettuce,
   [SpriteType.LETTUCE_BOX]: LettuceBox,
+  [SpriteType.OVEN]: Oven,
   [SpriteType.TOMATO]: Tomato,
   [SpriteType.TOMATO_BOX]: TomatoBox,
 }
@@ -129,6 +133,7 @@ class Play extends Phaser.Scene {
       updates.forEach(entityData => {
         const {
           alpha,
+          anim,
           angle,
           entityID,
           flipX,
@@ -146,6 +151,10 @@ class Play extends Phaser.Scene {
           sprite.setPosition(x, y).setFlip(flipX, flipY).setAngle(angle).setAlpha(alpha)
           if (sprite.type === SpriteType.PLAYER) {
             sprite.setIsJumping(isJumping).setHasItem(hasItem)
+          }
+          // TODO: Make updating animations more generic
+          if (sprite.type === SpriteType.OVEN) {
+            sprite.setAnim(anim)
           }
         } else {
           // if the entityData does NOT exist, create a new entity

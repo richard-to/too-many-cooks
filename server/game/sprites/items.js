@@ -235,6 +235,15 @@ class Tomato extends Ingredient {
   }
 }
 
+class CookedBeef extends Ingredient {
+  constructor(scene, entityID, x = -100, y = -100) {
+    super(scene, entityID, x, y)
+    this.type = SpriteType.COOKED_BEEF
+    this.body.setSize(120, 34)
+    this.yPad = 40
+  }
+}
+
 class BurgerBeef extends Ingredient {
   constructor(scene, entityID, x = -100, y = -100) {
     super(scene, entityID, x, y)
@@ -406,6 +415,7 @@ module.exports = {
   BurgerTomatoLettuce,
   ChoppedLettuce,
   ChoppedTomato,
+  CookedBeef,
   Cow,
   CowBox,
   Knife,

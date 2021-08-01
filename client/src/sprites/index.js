@@ -19,6 +19,7 @@ export {
   Bun,
   ChoppedLettuce,
   ChoppedTomato,
+  CookedBeef,
   Cow,
   Lettuce,
   Tomato,
@@ -27,5 +28,5 @@ export { CowCloner } from './CowCloner'
 export { Escalator } from './Escalator'
 export { Face } from './Face'
 export { Knife } from './Knife'
+export { Oven } from './Oven'
 export { Player } from './Player'
-

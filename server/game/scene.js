@@ -17,6 +17,7 @@ const {
   BurgerLettuce,
   BurgerTomato,
   BurgerTomatoLettuce,
+  CookedBeef,
   ChoppedLettuce,
   ChoppedTomato,
   Knife,
@@ -27,6 +28,7 @@ const Player = require('./sprites/player')
 const Escalator = require('./sprites/escalator')
 const Face = require('./sprites/face')
 const CowCloner = require('./sprites/cow_cloner')
+const Oven = require('./sprites/oven')
 
 const boxMap = {
   [SpriteType.BUN_BOX]: Bun,
@@ -37,7 +39,7 @@ const boxMap = {
 const ingredientsSet = new Set([
   SpriteType.CHOPPED_LETTUCE,
   SpriteType.CHOPPED_TOMATO,
-  SpriteType.COW,
+  SpriteType.COOKED_BEEF,
 ])
 
 const burgersSet = new Set([
@@ -171,6 +173,13 @@ class GameScene extends Scene {
       collideWorldBounds: true,
     })
 
+    this.ovensGroup = this.physics.add.group({
+      allowGravity: false,
+      angularVelocity: 0,
+      collideWorldBounds: true,
+      immovable: true,
+    })
+
     // Keep track of all groups so we can apply game state updates more easily
     this.groups = [
       this.boxesGroup,
@@ -180,6 +189,7 @@ class GameScene extends Scene {
       this.itemsGroup,
       this.knivesGroup,
       this.movingPlatforms,
+      this.ovensGroup,
       this.playersGroup,
       this.respawnGroup,
     ]
@@ -219,6 +229,14 @@ class GameScene extends Scene {
       this.cowClonerGroup.add(new CowCloner(this, this.getID(), cloner.x + cloner.width / 2, cloner.y + cloner.height / 2))
     })
 
+    // Add ovens
+    levelMap.getObjectLayer('ovens')['objects'].forEach(oven => {
+      const flipX = find(oven.properties, {name: 'FlipX'}).value
+      const ovenSprite = new Oven(this, this.getID(), oven.x + oven.width / 2, oven.y + oven.height / 2)
+      ovenSprite.setFlipX(flipX)
+      this.ovensGroup.add(ovenSprite)
+    })
+
     // Event to handle falling into pits
     //
     // Technically it may be better to use an invisible hit box instead, but we'll go
@@ -228,7 +246,9 @@ class GameScene extends Scene {
     this.physics.add.collider(this.ingredientsGroup, worldLayer)
     this.physics.add.collider(this.playersGroup, worldLayer)
     this.physics.add.collider(this.cowClonerGroup, worldLayer)
+    this.physics.add.collider(this.ovensGroup, worldLayer)
     this.physics.add.collider(this.ingredientsGroup, this.boxesGroup)
+    this.physics.add.collider(this.ingredientsGroup, this.ovensGroup)
     this.physics.add.collider(this.ingredientsGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.movingPlatforms, this.onEscalatorLanding, null, this);
     this.physics.add.collider(this.playersGroup, this.boxesGroup, this.grabItemFromBlock, null, this)
@@ -237,6 +257,7 @@ class GameScene extends Scene {
     this.physics.add.collider(this.playersGroup, this.cowClonerGroup, this.pushCloner, null, this)
     this.physics.add.overlap(this.playersGroup, this.ingredientsGroup, this.pickupItem, null, this)
     this.physics.add.overlap(this.playersGroup, this.knivesGroup, this.cutIngredient, null, this)
+    this.physics.add.collider(this.playersGroup, this.ovensGroup, this.cookBeef, null, this)
 
     this.orders = new Orders(Array.from(burgersSet))
 
@@ -399,6 +420,32 @@ class GameScene extends Scene {
     }
   }
 
+  cookBeef = (sprite, oven) => {
+    if (sprite.type !== SpriteType.PLAYER) {
+      return
+    }
+
+    // If the oven is cooking something, we need to wait until it is finished
+    if (oven.cookStartTime) {
+      return
+    }
+
+    const item = sprite.item
+    if (item && item.type === SpriteType.COW && sprite.move.x) {
+      sprite.move.x = false
+      sprite.item = null
+
+      // Clean up cow since it is cooking
+      this.io.room().emit('removeEntity', item.entityID)
+      item.removeEvents()
+      this.itemsGroup.remove(item)
+      item.destroy()
+
+      // Set player to cooking state
+      oven.setCooker(sprite)
+    }
+  }
+
   pickupItem = (sprite, freeItem) => {
     if (sprite.type !== SpriteType.PLAYER) {
       return
@@ -417,13 +464,13 @@ class GameScene extends Scene {
       let BurgerClass
       // TODO: Refactor this ugly conditional
       if (ingredientsSet.has(ingredient.type) && (burger.type === SpriteType.BUN || burgersSet.has(burger.type))) {
-        if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BUN) {
+        if (ingredient.type === SpriteType.COOKED_BEEF && burger.type === SpriteType.BUN) {
           BurgerClass = BurgerBeef
-        } else if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BURGER_LETTUCE) {
+        } else if (ingredient.type === SpriteType.COOKED_BEEF && burger.type === SpriteType.BURGER_LETTUCE) {
           BurgerClass = BurgerBeefLettuce
-        } else if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BURGER_TOMATO) {
+        } else if (ingredient.type === SpriteType.COOKED_BEEF && burger.type === SpriteType.BURGER_TOMATO) {
           BurgerClass = BurgerBeefTomato
-        } else if (ingredient.type === SpriteType.COW && burger.type === SpriteType.BURGER_TOMATO_LETTUCE) {
+        } else if (ingredient.type === SpriteType.COOKED_BEEF && burger.type === SpriteType.BURGER_TOMATO_LETTUCE) {
           BurgerClass = BurgerBeefTomatoLettuce
         } else if (ingredient.type === SpriteType.CHOPPED_LETTUCE && burger.type === SpriteType.BUN) {
           BurgerClass = BurgerLettuce

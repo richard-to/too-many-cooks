@@ -40,6 +40,8 @@ const SpriteType = deepFreeze({
   CHOPPED_LETTUCE: 20,
   COW_CLONER: 21,
   FACE: 22,
+  OVEN: 23,
+  COOKED_BEEF: 24,
 })
 
 BurgerPoints = {

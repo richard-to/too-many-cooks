@@ -32,6 +32,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.respawnTime = null
 
     this.chopping = false
+    this.cooking = false
     this.jumpCount = 0
     this.consecutiveJumps = 1
 
@@ -105,9 +106,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      return
     }
 
-    // Player cannot move if they are chopping
-    if (this.chopping) {
-      // Reset sprite params to fix bug where a player activates chopping while jumping or moving
+    // Player cannot move if they are chopping/cooking
+    if (this.chopping || this.cooking) {
+      // Reset sprite params to fix bug where a player activates chopping/cooking while jumping or moving
       this.setVelocityX(0)
       this.anim = false
       this.jumpCount = 0
