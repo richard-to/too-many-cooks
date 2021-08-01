@@ -3,8 +3,7 @@
     {
      "export":
         {
-         "format":"json",
-         "target":"level-1.json"
+         "format":"json"
         }
     },
  "height":85,
@@ -19,6 +18,51 @@
          "type":"tilelayer",
          "visible":true,
          "width":35,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":9,
+         "name":"ovens",
+         "objects":[
+                {
+                 "height":236,
+                 "id":46,
+                 "name":"Oven",
+                 "properties":[
+                        {
+                         "name":"FlipX",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":464,
+                 "x":1132,
+                 "y":2255
+                }, 
+                {
+                 "height":236,
+                 "id":48,
+                 "name":"Oven",
+                 "properties":[
+                        {
+                         "name":"FlipX",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":464,
+                 "x":3996,
+                 "y":2255
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -274,8 +318,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":9,
- "nextobjectid":46,
+ "nextlayerid":10,
+ "nextobjectid":49,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.5.0",
@@ -284,7 +328,7 @@
         {
          "columns":1,
          "firstgid":1,
-         "image":"platform.png",
+         "image":"..\/Projects\/too-many-cooks\/dist\/assets\/platform.png",
          "imageheight":30,
          "imagewidth":160,
          "margin":0,
