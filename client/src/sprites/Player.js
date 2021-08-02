@@ -12,18 +12,18 @@ export class Player extends Phaser.GameObjects.Container {
     this.entityID = entityID
     scene.add.existing(this)
 
-    const shell = scene.add.sprite(0, 0, 'assets', 'container.png')
-    shell.active = false
-    this.add(shell)
+    this.shell = scene.add.sprite(0, 0, 'assets', 'container.png')
+    this.shell.active = false
+    this.add(this.shell)
 
     this.magnet = scene.add.sprite(0, 0, 'assets', 'magnet.png')
-    this.magnet.y = (shell.height / -2) + (this.magnet.height / -2)
+    this.magnet.y = (this.shell.height / -2) + (this.magnet.height / -2)
     this.magnet.active = false
     this.magnet.visible = false
     this.add(this.magnet)
 
     this.rocket = scene.add.sprite(0, 0, 'assets', 'rocket.png')
-    this.rocket.y = (shell.height / 2) + (this.rocket.height / 2)
+    this.rocket.y = (this.shell.height / 2) + (this.rocket.height / 2)
     this.rocket.active = false
     this.rocket.visible = false
     this.add(this.rocket)
