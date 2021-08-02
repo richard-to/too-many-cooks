@@ -3,7 +3,7 @@ const { SpriteType } = require('../enums')
 
 
 class Oven extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, entityID, x = -100, y = -100, animDelay = 6000) {
+  constructor(scene, entityID, x = -100, y = -100, animDelay = 5000) {
     super(scene, x, y, '')
     this.scene = scene
     scene.add.existing(this)

@@ -35,11 +35,6 @@ export class Oven extends Phaser.GameObjects.Sprite {
       { key: 'assets', frame: 'oven-9.png' },
       { key: 'assets', frame: 'oven-10.png' },
       { key: 'assets', frame: 'oven-11.png' },
-      { key: 'assets', frame: 'oven-9.png' },
-      { key: 'assets', frame: 'oven-10.png' },
-      { key: 'assets', frame: 'oven-11.png' },
-      { key: 'assets', frame: 'oven-12.png' },
-      { key: 'assets', frame: 'oven-12.png' },
       { key: 'assets', frame: 'oven-12.png' },
     ]
     scene.anims.create({ key: this.animOvenKey, frames: frames, frameRate: 5 })
