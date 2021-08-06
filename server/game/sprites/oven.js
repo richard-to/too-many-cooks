@@ -26,7 +26,7 @@ class Oven extends Phaser.Physics.Arcade.Sprite {
 
   setCooker(player) {
     this.cooker = player
-    this.cooker.cooking = true
+    this.cooker.movementDisabled = true
   }
 
   update(time) {
@@ -39,7 +39,7 @@ class Oven extends Phaser.Physics.Arcade.Sprite {
     // Once the anim delay has elapsed, stop animation
     if (this.cooker && this.cookStartTime + this.animDelay <= time) {
       this.anim = false
-      this.cooker.cooking = false
+      this.cooker.movementDisabled = false
 
       // Add cooked beef as player item
       const beef = new CookedBeef(this.scene, this.scene.getID())

@@ -5,6 +5,7 @@ const { find } = require('lodash')
 const { Scene } = require('phaser')
 
 const { Settings, SpriteType } = require('./enums')
+const MatchState = require('./MatchState')
 const Orders = require('./Orders')
 const ScoreTracker = require('./ScoreTracker')
 const SpriteItems = require('./sprites/items')
@@ -17,7 +18,6 @@ const {
   BurgerLettuce,
   BurgerTomato,
   BurgerTomatoLettuce,
-  CookedBeef,
   ChoppedLettuce,
   ChoppedTomato,
   Knife,
@@ -111,6 +111,9 @@ class GameScene extends Scene {
 
   create() {
     this.physics.world.setBounds(0, 0, Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
+
+    // Tracks match state
+    this.matchState = new MatchState()
 
     this.facesGroup = this.physics.add.group({
       allowGravity: false,
@@ -263,7 +266,7 @@ class GameScene extends Scene {
 
     let teamNames = []
     this.facesGroup.children.iterate(obj => teamNames.push(obj.team))
-    this.scores = new ScoreTracker(teamNames)
+    this.scores = new ScoreTracker(teamNames, Settings.MIN_SCORE_TO_WIN_GAME)
 
     this.io.onConnection(async (channel) => {
       channel.onDisconnect(() => {
@@ -275,9 +278,8 @@ class GameScene extends Scene {
           }
         })
         if (disconnectedPlayer) {
-          this.playersGroup.remove(disconnectedPlayer)
           disconnectedPlayer.removeEvents()
-          disconnectedPlayer.destroy()
+          this.playersGroup.remove(disconnectedPlayer, true, true)
         }
         channel.room.emit('removeEntity', channel.entityID)
       })
@@ -330,16 +332,14 @@ class GameScene extends Scene {
         sprite.item = null
         this.io.room().emit('removeEntity', item.entityID)
         item.removeEvents()
-        this.itemsGroup.remove(item)
-        item.destroy()
+        this.itemsGroup.remove(item, true, true)
       }
       sprite.respawn()
     } else {
       // Remove ingredients that fall through pit
       this.io.room().emit('removeEntity', sprite.entityID)
       sprite.removeEvents()
-      this.ingredientsGroup.remove(sprite)
-      sprite.destroy()
+      this.ingredientsGroup.remove(sprite, true, true)
     }
   }
 
@@ -368,14 +368,17 @@ class GameScene extends Scene {
     // Clean up delivered items
     this.io.room().emit('removeEntity', item.entityID)
     item.removeEvents()
-    this.itemsGroup.remove(item)
-    item.destroy()
+    this.itemsGroup.remove(item, true, true)
 
     // Update order list with new item
     this.orders.fill()
 
     this.io.room().emit('updateOrders', this.orders.toArray())
     this.io.room().emit('updateScores', this.scores.toArray())
+
+    if (this.scores.hasWinner()) {
+      this.matchState.setEnded(this.scores.getLeadingTeamName())
+    }
   }
 
   pushCloner(initiator, cloner) {
@@ -398,7 +401,7 @@ class GameScene extends Scene {
     }
 
     // If the knife is chopping, we need to wait until it is finished
-    if (knife.chopping) {
+    if (knife.chopper) {
       return
     }
 
@@ -415,8 +418,7 @@ class GameScene extends Scene {
       // Clean up item since it has now been replaced with the chopped version
       this.io.room().emit('removeEntity', item.entityID)
       item.removeEvents()
-      this.itemsGroup.remove(item)
-      item.destroy()
+      this.itemsGroup.remove(item, true, true)
     }
   }
 
@@ -438,8 +440,7 @@ class GameScene extends Scene {
       // Clean up cow since it is cooking
       this.io.room().emit('removeEntity', item.entityID)
       item.removeEvents()
-      this.itemsGroup.remove(item)
-      item.destroy()
+      this.itemsGroup.remove(item, true, true)
 
       // Set player to cooking state
       oven.setCooker(sprite)
@@ -504,11 +505,8 @@ class GameScene extends Scene {
         playerItem.removeEvents()
         freeItem.removeEvents()
 
-        this.itemsGroup.remove(playerItem)
-        this.ingredientsGroup.remove(freeItem)
-
-        playerItem.destroy()
-        freeItem.destroy()
+        this.itemsGroup.remove(playerItem, true, true)
+        this.ingredientsGroup.remove(freeItem, true, true)
       }
       return
     }
@@ -542,8 +540,46 @@ class GameScene extends Scene {
     }
   }
 
-  update() {
+  update(time) {
     let updates = ''
+
+    if (this.matchState.hasEnded()) {
+      if (this.matchState.isEndMatchTransitionReady()) {
+        this.matchState.startEndMatchTransition(time)
+        this.io.room().emit('updateMatchState', this.matchState.getState())
+        // Freeze all players once the game has ended
+        this.playersGroup.children.iterate(p => p.movementDisabled = true)
+      } else if (this.matchState.isEndMatchTransitionDone(time)) {
+        this.matchState.setActive()
+        this.io.room().emit('updateMatchState', this.matchState.getState())
+
+        // Reset game state
+
+        // Remove player items
+        this.playersGroup.children.each(player => {
+          const item = player.item
+          if (item) {
+            this.io.room().emit('removeEntity', item.entityID)
+            this.itemsGroup.remove(item, true, true)
+          }
+        })
+
+        // Remove ingredients
+        this.ingredientsGroup.children.each(ingredient => {
+          this.io.room().emit('removeEntity', ingredient.entityID)
+          ingredient.removeEvents()
+          this.ingredientsGroup.remove(ingredient, true, true)
+        }, this)
+
+        // Generate new orders
+        this.orders.reset()
+        this.io.room().emit('updateOrders', this.orders.toArray())
+
+        // Reset score
+        this.scores.reset()
+        this.io.room().emit('updateScores', this.scores.toArray())
+      }
+    }
 
     const syncSpriteData = (sprite) => {
       if (sprite.needsSync()) {

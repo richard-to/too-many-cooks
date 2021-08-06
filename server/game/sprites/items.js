@@ -368,7 +368,7 @@ class Knife extends Phaser.Physics.Arcade.Sprite {
     if (this.chopCount === this.maxChopCount) {
       this.choppedItem.positionOnPlayer(this.chopper)
       this.chopper.item = this.choppedItem
-      this.chopper.chopping = false
+      this.chopper.movementDisabled = false
       this.chopper = null
       this.chopCount = 0
     }
@@ -395,7 +395,7 @@ class Knife extends Phaser.Physics.Arcade.Sprite {
 
   setChopper(player, choppedItem) {
     this.chopper = player
-    this.chopper.chopping = true
+    this.chopper.movementDisabled = true
     this.choppedItem = choppedItem
     // TODO(richard-to): Fix hardcoded values
     this.choppedItem.y = this.y + 20

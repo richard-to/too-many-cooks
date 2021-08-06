@@ -31,8 +31,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.respawnDelay = 3000
     this.respawnTime = null
 
-    this.chopping = false
-    this.cooking = false
+    this.movementDisabled = false
     this.jumpCount = 0
     this.consecutiveJumps = 1
 
@@ -106,12 +105,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      return
     }
 
-    // Player cannot move if they are chopping/cooking
-    if (this.chopping || this.cooking) {
+    // Player cannot move if they are chopping/cooking or if the game has ended
+    if (this.movementDisabled) {
       // Reset sprite params to fix bug where a player activates chopping/cooking while jumping or moving
-      this.setVelocityX(0)
-      this.anim = false
-      this.jumpCount = 0
+      // This bug can also occur if the player is moving when the game has ended.
+      this.disableMovement()
       return
     }
 
@@ -151,6 +149,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.scene.itemsGroup.remove(this.item)
       this.item = null
     }
+  }
+
+  disableMovement() {
+    this.setVelocityX(0)
+    this.jumpCount = 0
+    this.anim = false
   }
 
   postUpdate() {

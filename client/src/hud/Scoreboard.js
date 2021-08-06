@@ -35,8 +35,6 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
     const width = 175
     const height = fontSize + margin
 
-
-
     const scoreBgColor = 0xFFFFFF
     const scoreBgAlpha = 0.8
     const scoreBgWidth = 90
@@ -97,7 +95,7 @@ class HeadsUpDisplay extends Phaser.GameObjects.Container {
     ]
   }
 
-  updateScoreBoard(t1Score, t2Score) {
+  updateScores(t1Score, t2Score) {
     this.t1Score.setText(t1Score)
     this.t2Score.setText(t2Score)
   }

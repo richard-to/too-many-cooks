@@ -29,10 +29,11 @@ app.get('/getState', (_req, res) => {
   try {
     let gameScene = game.scene.keys['GameScene']
     return res.json({
-      state: gameScene.getState(),
       channelEntityMap: gameScene.getChannelEntityMap(),
+      matchState: gameScene.matchState.getState(),
       orders: gameScene.orders.toArray(),
       scores: gameScene.scores.toArray(),
+      state: gameScene.getState(),
     })
   } catch (error) {
     console.error(error)

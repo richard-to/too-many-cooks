@@ -5,6 +5,7 @@ const Settings = deepFreeze({
   ENABLE_VIDEO: parseInt(process.env.ENABLE_VIDEO),
   LEVEL_HEIGHT: 2550,
   LEVEL_WIDTH: 5600,
+  MIN_SCORE_TO_WIN_GAME: 15,
   PLAYER_WIDTH: 150,
   PLAYER_HEIGHT: 200,
   RADIX: 36,
@@ -44,14 +45,21 @@ const SpriteType = deepFreeze({
   COOKED_BEEF: 24,
 })
 
-BurgerPoints = {
+const BurgerPoints = deepFreeze({
   EASY: 5,
   MEDIUM: 7,
   HARD: 12,
-}
+})
+
+const MatchStates = deepFreeze({
+  LOADING: 0,
+  ACTIVE: 1,
+  ENDED: 2,
+})
 
 module.exports = {
   BurgerPoints,
+  MatchStates,
   Settings,
   SpriteType,
 }

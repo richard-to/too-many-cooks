@@ -36,6 +36,11 @@ class Orders {
     }
     return [false, isInOrder]
   }
+
+  reset() {
+    this.orders = []
+    this.fill()
+  }
 }
 
 module.exports = Orders

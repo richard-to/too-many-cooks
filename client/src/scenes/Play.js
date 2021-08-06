@@ -3,6 +3,8 @@ import { has } from 'lodash'
 import Phaser from 'phaser'
 
 import OrdersDisplay from '../hud/OrdersDisplay'
+import Scoreboard from '../hud/Scoreboard'
+import WinMatchScreen from '../hud/WinMatchScreen'
 
 import {
   Bun,
@@ -30,7 +32,7 @@ import {
   Tomato,
   TomatoBox,
 } from '../sprites'
-import { OrderType, Settings, SpriteType } from '../enums'
+import { MatchStates, OrderType, Settings, SpriteType } from '../enums'
 import Controls from '../cursors'
 
 const spriteMap = {
@@ -69,6 +71,10 @@ class Play extends Phaser.Scene {
     this.entities = {}
     this.playerID = undefined
     this.scores = [0, 0]
+    this.matchState = {
+      state: MatchStates.LOADING,
+      team: null,
+    }
   }
 
   init({ channel }) {
@@ -92,6 +98,7 @@ class Play extends Phaser.Scene {
 
     // Initialize list of orders
     this.ordersDisplay = new OrdersDisplay(this, 0, 0, [])
+    this.scoreboard = new Scoreboard(this, 0, 0)
 
     const parseUpdates = updates => {
       if (!updates) {
@@ -171,7 +178,6 @@ class Play extends Phaser.Scene {
               if (this.channel.stream) {
                 newEntity.sprite.setStream(this.channel.stream)
               }
-              newEntity.sprite.hud.updateScoreBoard(...this.scores)
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
             }
@@ -219,6 +225,8 @@ class Play extends Phaser.Scene {
 
     this.channel.on('updateEntities', updates => updatesHandler(parseUpdates(updates[0])))
 
+    this.channel.on('updateMatchState', matchState => this.updateMatchState(matchState))
+
     this.channel.on('removeEntity', entityID => {
       try {
         this.entities[entityID].sprite.destroy()
@@ -234,9 +242,7 @@ class Play extends Phaser.Scene {
 
     this.channel.on('updateScores', (scores) => {
       this.scores = scores
-      if (this.entities[this.playerID]) {
-        this.entities[this.playerID].sprite.hud.updateScoreBoard(...this.scores)
-      }
+      this.scoreboard.updateScores(...this.scores)
     })
 
     try {
@@ -255,8 +261,12 @@ class Play extends Phaser.Scene {
       // Parse orders
       this.parseOrders(res.data.orders)
 
+      // Update match state
+      this.updateMatchState(res.data.matchState)
+
       // Set scores
       this.scores = res.data.scores
+      this.scoreboard.updateScores(...this.scores)
 
       // Set player ID from server
       this.channel.on('getID', playerID36 => {
@@ -320,6 +330,26 @@ class Play extends Phaser.Scene {
     const orderImages = orders.map(o => OrderType[o.toString()])
     this.ordersDisplay.updateOrders(orderImages)
   }
+
+  updateMatchState(matchState) {
+    if (this.matchState.state === matchState.state) {
+      return
+    }
+
+    if (matchState.state === MatchStates.ENDED) {
+      const teamName = (matchState.team) === 1 ? Settings.TEAM1_NAME : Settings.TEAM2_NAME
+      // TODO: Fix this when teams are set up
+      const winningPlayers = Object.values(this.entities).map(e => e.sprite).filter(s => s.type === SpriteType.PLAYER)
+      this.winMatchScreen = new WinMatchScreen(this, teamName, winningPlayers)
+    } else if (matchState.state === MatchStates.ACTIVE && this.winMatchScreen) {
+      this.winMatchScreen.destroy()
+      this.winMatchScreen = null
+    }
+
+    this.matchState = matchState
+  }
+
+
 }
 
 export default Play;

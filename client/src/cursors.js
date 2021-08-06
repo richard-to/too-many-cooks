@@ -1,7 +1,8 @@
-import { Settings } from './enums'
+import { MatchStates, Settings } from './enums'
 
 export default class Cursors {
   constructor(scene, channel) {
+    this.scene = scene
     this.channel = channel
     this.cursors = scene.input.keyboard.createCursorKeys()
     this.space = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
@@ -17,6 +18,10 @@ export default class Cursors {
       space: false,
       x: false,
       none: true,
+    }
+
+    if (this.scene.matchState.state !== MatchStates.ACTIVE) {
+      return
     }
 
     if (this.cursors.left.isDown) {

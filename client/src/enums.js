@@ -85,3 +85,9 @@ export const OrderType = deepFreeze({
     frame: 'burger-lettuce.png',
   },
 })
+
+export const MatchStates = deepFreeze({
+  LOADING: 0,
+  ACTIVE: 1,
+  ENDED: 2,
+})
