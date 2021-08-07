@@ -1,7 +1,7 @@
 const { Settings, SpriteType } = require('../enums')
 
 class Player extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, entityID, x = 200, y = 200) {
+  constructor(scene, entityID, team, x = 200, y = 200) {
     super(scene, x, y, '')
 
     this.scene = scene
@@ -11,6 +11,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.setCollideWorldBounds(true)
 
+    this.team = team
     this.type = SpriteType.PLAYER
     this.entityID = entityID
     this.body.setSize(Settings.PLAYER_WIDTH, Settings.PLAYER_HEIGHT)

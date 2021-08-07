@@ -167,7 +167,7 @@ class Play extends Phaser.Scene {
           // if the entityData does NOT exist, create a new entity
           if (spriteType === SpriteType.PLAYER) {
             let newEntity = {
-              sprite: new Player(this, entityID, x, y),
+              sprite: new Player(this, entityID, team, x, y),
               entityID: entityID,
             }
             newEntity.sprite.setFlip(flipX, flipY)
@@ -338,8 +338,10 @@ class Play extends Phaser.Scene {
 
     if (matchState.state === MatchStates.ENDED) {
       const teamName = (matchState.team) === 1 ? Settings.TEAM1_NAME : Settings.TEAM2_NAME
-      // TODO: Fix this when teams are set up
-      const winningPlayers = Object.values(this.entities).map(e => e.sprite).filter(s => s.type === SpriteType.PLAYER)
+      const winningPlayers = Object.values(this.entities)
+        .map(e => e.sprite)
+        .filter(s => s.type === SpriteType.PLAYER)
+        .filter(s => s.team === matchState.team)
       this.winMatchScreen = new WinMatchScreen(this, teamName, winningPlayers)
     } else if (matchState.state === MatchStates.ACTIVE && this.winMatchScreen) {
       this.winMatchScreen.destroy()

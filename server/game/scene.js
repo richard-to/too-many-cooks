@@ -51,10 +51,12 @@ const burgersSet = new Set([
   SpriteType.BURGER_LETTUCE,
 ])
 
+
 class GameScene extends Scene {
   constructor() {
     super({ key: 'GameScene' })
     this.entityID = 1
+    this.team = 0
   }
 
   init() {
@@ -73,6 +75,12 @@ class GameScene extends Scene {
 
   getID() {
     return this.entityID++
+  }
+
+  getTeam() {
+    // If the team increment is even, then the player will be assigned team 2, otherwise team 1
+    this.team++
+    return (this.team % 2) ? 1 : 2
   }
 
   prepareToSync(e) {
@@ -305,6 +313,7 @@ class GameScene extends Scene {
           new Player(
             this,
             channel.entityID,
+            this.getTeam(),
             Phaser.Math.RND.integerInRange(0, Settings.LEVEL_WIDTH),
           )
         )

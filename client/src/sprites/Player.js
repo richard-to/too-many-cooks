@@ -5,13 +5,15 @@ import { SpriteType } from '../enums'
 import { PlayerVideo } from './video/Player'
 
 export class Player extends Phaser.GameObjects.Container {
-  constructor(scene, entityID, x, y) {
+  constructor(scene, entityID, team, x, y) {
     super(scene, x, y)
     this.type = SpriteType.PLAYER
     this.entityID = entityID
     scene.add.existing(this)
 
-    this.shell = scene.add.sprite(0, 0, 'assets', 'container.png')
+    this.team = team
+
+    this.shell = scene.add.sprite(0, 0, 'assets', `container${team}.png`)
     this.shell.active = false
     this.add(this.shell)
 
@@ -21,7 +23,7 @@ export class Player extends Phaser.GameObjects.Container {
     this.magnet.visible = false
     this.add(this.magnet)
 
-    this.rocket = scene.add.sprite(0, 0, 'assets', 'rocket.png')
+    this.rocket = scene.add.sprite(0, 0, 'assets', `rocket${team}.png`)
     this.rocket.y = (this.shell.height / 2) + (this.rocket.height / 2)
     this.rocket.active = false
     this.rocket.visible = false

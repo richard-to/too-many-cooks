@@ -96,7 +96,9 @@ class ScoreTracker {
   getLeadingTeamName() {
     // Gets the name of the team that currently has the lead in the game
     const [team, _] = maxBy(Object.entries(this.scores), (e) => e[1].score)
-    return team
+    // The team name is stored as an string when added a key to the object, which
+    // is why we need to convert it to an integer
+    return parseInt(team)
   }
 }
 

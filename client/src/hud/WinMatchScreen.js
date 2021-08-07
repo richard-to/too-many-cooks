@@ -23,7 +23,7 @@ class WinMatchScreen extends Phaser.GameObjects.Container {
     const defaultShellHeight = 210
     const shellWidth = (players.length) ? players[0].shell.width : defaultShellWidth
     const shellHeight = (players.length) ? players[0].shell.height : defaultShellHeight
-    const bgAlpha = 0.9
+    const bgAlpha = 0.8
     const bgColor = (teamName === Settings.TEAM1_NAME) ? Settings.TEAM1_COLOR : Settings.TEAM2_COLOR
     const cornerRadius = 5
     const fontSize = 72
@@ -33,7 +33,7 @@ class WinMatchScreen extends Phaser.GameObjects.Container {
     const playerHorizontalSpace = shellWidth * players.length
     const playerRowSpace = fontSize + padding + padding + shellHeight / 2
     const width = horizontalSpacer * Settings.PLAYERS_PER_TEAM
-    const height = players[0].shell.height + fontSize + padding + padding
+    const height = shellHeight + fontSize + padding + padding
 
     const fontStyle = {
       color: '#FFF',
@@ -57,7 +57,7 @@ class WinMatchScreen extends Phaser.GameObjects.Container {
     // Add winning players to second row (centered)
     let horizontalSpace = (width - playerHorizontalSpace) / 2 + padding + shellWidth / 2
     players.forEach(player => {
-      const playerClone = new Player(this.scene, player.entityID, horizontalSpace, playerRowSpace)
+      const playerClone = new Player(this.scene, player.entityID, player.team, horizontalSpace, playerRowSpace)
       playerClone.setStream(player.video.video.srcObject)
       gameObjects.push(playerClone)
       horizontalSpace += horizontalSpacer
