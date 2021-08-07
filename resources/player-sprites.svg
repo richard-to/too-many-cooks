@@ -6,7 +6,7 @@
    version="1.1"
    id="svg5"
    inkscape:version="1.1-alpha (d4b03b3, 2021-03-04)"
-   sodipodi:docname="drawing-1.svg"
+   sodipodi:docname="player-sprites.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -26,11 +26,11 @@
      showgrid="false"
      inkscape:zoom="0.95307318"
      inkscape:cx="375.10236"
-     inkscape:cy="96.00522"
+     inkscape:cy="-72.397379"
      inkscape:window-width="1440"
-     inkscape:window-height="847"
+     inkscape:window-height="900"
      inkscape:window-x="0"
-     inkscape:window-y="34"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1"
      showguides="true"
@@ -1053,6 +1053,78 @@
        sodipodi:nodetypes="ccccc"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#24de8d;fill-opacity:1;stroke:#178c59;stroke-width:0.933;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect5583-7"
+       width="41.400654"
+       height="54.629822"
+       x="25.105444"
+       y="-62.293861"
+       rx="1.3269441"
+       ry="1.8209939"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/container2.png" />
+    <rect
+       style="fill:#dec340;fill-opacity:1;stroke:#9b882d;stroke-width:0.932678;stroke-opacity:1"
+       id="rect5583-2"
+       width="41.400654"
+       height="54.629822"
+       x="91.732018"
+       y="-62.293861"
+       rx="1.3269441"
+       ry="1.8209939"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/container1.png" />
+    <path
+       style="fill:#e89052;fill-opacity:0.96371;stroke:#da874d;stroke-width:0.310269;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 161.82216,-36.120085 h 7.19545 l 2.76749,8.302442 -3.32098,-0.5535 1.93723,6.64195 -3.87446,0.27675 -1.93725,4.42796 -1.93723,-5.53495 -1.10699,3.04421 -0.55349,-7.74893 -2.49074,3.59773 z"
+       id="path26798-7-3"
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/rocket1.png" />
+    <path
+       style="fill:#e8dc52;fill-opacity:0.677419;stroke:#e1ae0b;stroke-width:0.310269;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.988235"
+       d="m 163.33845,-35.928124 h 3.7785 l 2.32522,5.813071 -2.61588,-0.14533 2.03457,7.26633 -2.32522,-2.03457 -1.45327,4.21447 -1.16262,-6.5397 -1.81769,4.1442 c 0.0969,-1.93769 -0.54022,-2.0273 0.0738,-6.03345 l -1.98178,1.25009 z"
+       id="path26798-4-8-7"
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/rocket1.png" />
+    <path
+       style="fill:#dec340;fill-opacity:1;stroke:#9b882d;stroke-width:0.79375;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 160.62035,-39.079745 h 9.74392 l 1.29919,4.547162 h -12.90494 z"
+       id="path24594-7-8"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/rocket1.png" />
+    <path
+       style="fill:#e89052;fill-opacity:0.96371;stroke:#da874d;stroke-width:0.310269;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 168.20719,-68.87815 h 7.19545 l 2.76749,8.302442 -3.32098,-0.5535 1.93723,6.64195 -3.87446,0.27675 -1.93725,4.42796 -1.93723,-5.53495 -1.10699,3.04421 -0.55349,-7.74893 -2.49074,3.59773 z"
+       id="path26798-7-3-3"
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/rocket2.png" />
+    <path
+       style="fill:#e8dc52;fill-opacity:0.677419;stroke:#e1ae0b;stroke-width:0.310269;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.988235"
+       d="m 169.72348,-68.686189 h 3.7785 l 2.32522,5.813071 -2.61588,-0.14533 2.03457,7.26633 -2.32522,-2.03457 -1.45327,4.21447 -1.16262,-6.5397 -1.81769,4.1442 c 0.0969,-1.93769 -0.54022,-2.0273 0.0738,-6.03345 l -1.98178,1.25009 z"
+       id="path26798-4-8-7-9"
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/rocket2.png" />
+    <path
+       style="fill:#24de8d;fill-opacity:1;stroke:#178c59;stroke-width:0.79375;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 167.00538,-71.83781 h 9.74392 l 1.29919,4.547162 h -12.90494 z"
+       id="path24594-7-8-2"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/Users/richard/Desktop/rocket2.png" />
   </g>
   <g
      inkscape:groupmode="layer"

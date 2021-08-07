@@ -351,6 +351,8 @@
                 <false/>
             </struct>
             <key type="filename">container.png</key>
+            <key type="filename">container1.png</key>
+            <key type="filename">container2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -487,6 +489,8 @@
                 <false/>
             </struct>
             <key type="filename">rocket.png</key>
+            <key type="filename">rocket1.png</key>
+            <key type="filename">rocket2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -560,6 +564,10 @@
             <filename>oven-8.png</filename>
             <filename>oven-9.png</filename>
             <filename>cooked-beef.png</filename>
+            <filename>container1.png</filename>
+            <filename>container2.png</filename>
+            <filename>rocket1.png</filename>
+            <filename>rocket2.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
