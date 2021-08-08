@@ -1,6 +1,7 @@
-import { Scene } from 'phaser';
-import { Settings } from '../enums';
-import geckos from '@geckos.io/client';
+import { Scene } from 'phaser'
+import { Settings } from '../enums'
+import geckos from '@geckos.io/client'
+
 
 class Boot extends Scene {
   constructor() {

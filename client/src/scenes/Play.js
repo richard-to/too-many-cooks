@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { has } from 'lodash'
+import { defaultTo, has } from 'lodash'
 import Phaser from 'phaser'
 
 import OrdersDisplay from '../hud/OrdersDisplay'
@@ -176,7 +176,8 @@ class Play extends Phaser.Scene {
             // If this is the player's sprite, set the camera to follow the sprite
             if (this.playerID && this.playerID.toString() === entityID) {
               if (this.channel.stream) {
-                newEntity.sprite.setStream(this.channel.stream)
+                // Always mute the current player's stream
+                newEntity.sprite.setStream(this.channel.stream, true)
               }
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
@@ -285,20 +286,30 @@ class Play extends Phaser.Scene {
   }
 
   async updatePlayerStreams() {
-    // TODO: Handle audio tracks
+
     try {
       // Get a mapping of tracks to channels so we know which player to associate audio/video to
       let res = await axios.post(`${this.serverURL}/.wrtc/v1/connections/${this.channel.id}/streams`)
 
+      // Keep track of video/audio tracks associated with a player. We need to add both
+      // video/audio tracks to the stream at teh same time.
+      let tracksByEntityID = {}
+
       // Loop through the audio/video tracks the client is receiving and try to match it up with
       // the channel mapping
       this.channel.tracks.forEach(transceiver => {
+        let channelID = null
+        if (has(res.data.video, transceiver.mid)) {
+          channelID = res.data.video[transceiver.mid].toString()
+        } else if (has(res.data.audio, transceiver.mid)) {
+          channelID = res.data.audio[transceiver.mid].toString()
+        }
+
         // Sometimes the audio/video track may not exist yet or we're looping through our own tracks
-        if (!has(res.data.video, transceiver.mid)) {
+        if (channelID === null) {
           return
         }
 
-        const channelID = res.data.video[transceiver.mid].toString()
         if (!has(this.channelEntityMap, channelID)) {
           console.debug(`Channel ID ${channelID} not found in channelEntityMap`)
           return
@@ -315,11 +326,17 @@ class Play extends Phaser.Scene {
           return
         }
 
-        // Only add a stream if the entity is not already connected to video
-        if (!this.entities[entityID].sprite.hasStream()) {
-          this.entities[entityID].sprite.setStream(new MediaStream([transceiver.receiver.track]))
-        }
+        let tracks = defaultTo(tracksByEntityID[entityID], [])
+        tracks.push(transceiver.receiver.track)
+        tracksByEntityID[entityID] = tracks
       })
+
+      for (const [entityID, tracks] of Object.entries(tracksByEntityID)) {
+        // Only add a stream if the entity is not already connected to video/audio
+        if (!this.entities[entityID].sprite.hasStream()) {
+          this.entities[entityID].sprite.setStream(new MediaStream(tracks))
+        }
+      }
     } catch (error) {
       console.error(error)
     }
