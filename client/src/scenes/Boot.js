@@ -59,6 +59,7 @@ class Boot extends Scene {
     playerVideo.width = stream.getVideoTracks()[0].getSettings().width
     playerVideo.height = stream.getVideoTracks()[0].getSettings().height
     playerVideo.autoplay = true
+    playerVideo.muted = true
 
     // Canvas to hold our optimized and cropped stream
     const playerCanvas = document.createElement('canvas')

@@ -37,9 +37,10 @@ export class Player extends Phaser.GameObjects.Container {
    * Set the player's video stream
    *
    * @param {MediaStream} stream
+   * @param {bool} muted
    */
-  setStream(stream) {
-    this.video.setStream(stream)
+  setStream(stream, muted) {
+    this.video.setStream(stream, muted)
     return this
   }
 
