@@ -24,16 +24,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7077011"
-     inkscape:cx="-387.36774"
-     inkscape:cy="2396.4551"
+     inkscape:cx="-353.84152"
+     inkscape:cy="475.73891"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
      inkscape:window-width="1440"
-     inkscape:window-height="847"
+     inkscape:window-height="900"
      inkscape:window-x="0"
-     inkscape:window-y="25"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      objecttolerance="10.0"
      gridtolerance="10.0"
@@ -3762,6 +3762,82 @@
        id="path1063-4-3-1-3-4"
        sodipodi:nodetypes="ssscs"
        inkscape:export-filename="/Users/richard/Desktop/cooked-beef.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#9da6b9;fill-opacity:1;stroke:#5c6673;stroke-width:1;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1256"
+       width="10.599756"
+       height="20.474749"
+       x="-27.139055"
+       y="62.498363"
+       rx="4.894043"
+       ry="4.6009946"
+       inkscape:export-filename="/Users/richard/Desktop/mute-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect3849"
+       style="fill:#9da6b9;fill-opacity:1;stroke:#5c6673;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -32.81603,76.585505 v 7.227347 c 0,1.983844 1.59726,3.580734 3.581104,3.580734 h 5.090008 v 4.152912 h 4.725459 v -4.152912 h 4.747665 c 1.983844,0 3.581105,-1.59689 3.581105,-3.580734 v -7.227347 h -3.296495 v 4.531155 c 0,1.982366 -1.108861,3.578143 -2.485976,3.578143 h -10.108957 c -1.377115,0 -2.485973,-1.595777 -2.485973,-3.578143 v -4.531155 z"
+       inkscape:export-filename="/Users/richard/Desktop/mute-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#d15048;fill-opacity:1;stroke:#a64140;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1256-3"
+       width="10.599756"
+       height="20.474749"
+       x="-28.24593"
+       y="106.97136"
+       rx="4.894043"
+       ry="4.6009946"
+       inkscape:export-filename="/Users/richard/Desktop/muted-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect3849-6"
+       style="fill:#d15048;fill-opacity:1;stroke:#a64140;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -33.922904,121.0585 v 7.22734 c 0,1.98384 1.59726,3.58073 3.581104,3.58073 h 5.090008 v 4.15291 h 4.725459 v -4.15291 h 4.747665 c 1.983844,0 3.581105,-1.59689 3.581105,-3.58073 v -7.22734 h -3.296495 v 4.53115 c 0,1.98236 -1.108861,3.57814 -2.485976,3.57814 h -10.108957 c -1.377115,0 -2.485973,-1.59578 -2.485973,-3.57814 v -4.53115 z"
+       inkscape:export-filename="/Users/richard/Desktop/muted-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#9da6b9;fill-opacity:1;stroke:#5c6673;stroke-width:0.6;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1256-7"
+       width="5.0399089"
+       height="9.7352114"
+       x="-65.309471"
+       y="63.308266"
+       rx="2.3269904"
+       ry="2.1876535"
+       inkscape:export-filename="/Users/richard/Desktop/xs-mute-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect3849-7"
+       style="fill:#9da6b9;fill-opacity:1;stroke:#5c6673;stroke-width:0.6;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -68.008724,70.006335 v 3.436418 c 0,0.943264 0.759455,1.702544 1.702722,1.702544 h 2.420166 v 1.974597 h 2.246833 v -1.974597 h 2.257392 c 0.943266,0 1.702722,-0.75928 1.702722,-1.702544 v -3.436418 h -1.567398 v 2.154445 c 0,0.942565 -0.527234,1.701317 -1.182017,1.701317 h -4.806546 c -0.654783,0 -1.182016,-0.758752 -1.182016,-1.701317 v -2.154445 z"
+       inkscape:export-filename="/Users/richard/Desktop/xs-mute-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <rect
+       style="fill:#d15048;fill-opacity:1;stroke:#a64140;stroke-width:0.6;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1256-3-9"
+       width="5.0399089"
+       height="9.7352114"
+       x="-58.403419"
+       y="108.51464"
+       rx="2.3269904"
+       ry="2.1876535"
+       inkscape:export-filename="/Users/richard/Desktop/xs-muted-icon.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <path
+       id="rect3849-6-6"
+       style="fill:#d15048;fill-opacity:1;stroke:#a64140;stroke-width:0.6;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m -61.102672,115.2127 v 3.43642 c 0,0.94326 0.759456,1.70254 1.702722,1.70254 h 2.420166 v 1.9746 h 2.246833 v -1.9746 h 2.257392 c 0.943266,0 1.702722,-0.75928 1.702722,-1.70254 v -3.43642 h -1.567397 v 2.15445 c 0,0.94256 -0.527235,1.70131 -1.182018,1.70131 h -4.806546 c -0.654782,0 -1.182016,-0.75875 -1.182016,-1.70131 v -2.15445 z"
+       inkscape:export-filename="/Users/richard/Desktop/xs-muted-icon.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
   </g>

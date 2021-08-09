@@ -462,6 +462,22 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">mute-icon.png</key>
+            <key type="filename">muted-icon.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>22,29,43,57</rect>
+                <key>scale9Paddings</key>
+                <rect>22,29,43,57</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">oven-1.png</key>
             <key type="filename">oven-10.png</key>
             <key type="filename">oven-11.png</key>
@@ -520,6 +536,22 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">xs-mute-icon.png</key>
+            <key type="filename">xs-muted-icon.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>10,14,21,27</rect>
+                <key>scale9Paddings</key>
+                <rect>10,14,21,27</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileList</key>
         <array>
@@ -568,6 +600,10 @@
             <filename>container2.png</filename>
             <filename>rocket1.png</filename>
             <filename>rocket2.png</filename>
+            <filename>mute-icon.png</filename>
+            <filename>muted-icon.png</filename>
+            <filename>xs-mute-icon.png</filename>
+            <filename>xs-muted-icon.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
