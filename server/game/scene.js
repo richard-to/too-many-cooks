@@ -1,7 +1,7 @@
 const path = require('path')
 
 const geckos = require('@geckos.io/server').default
-const { find } = require('lodash')
+const { defaultTo, find } = require('lodash')
 const { Scene } = require('phaser')
 
 const { Settings, SpriteType } = require('./enums')
@@ -88,7 +88,8 @@ class GameScene extends Scene {
     const y = Math.round(e.y).toString(Settings.RADIX)
     const j = e.body.velocity.y < Settings.SHOW_ROCKET_VY ? 1:0 // is jumping
     const t = e.team ? e.team : 0
-    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.alpha},${e.anim ? 1:0},${j},${e.item ? 1:0},${t},`
+    const m = defaultTo(e.muted, false) ? 1 : 0
+    return `${e.type},${e.entityID},${x},${y},${e.flipX ? 1:0},${e.flipY ? 1:0},${e.angle},${e.alpha},${e.anim ? 1:0},${j},${e.item ? 1:0},${t},${m},`
   }
 
   /**

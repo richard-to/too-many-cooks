@@ -22,6 +22,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.prevY = -1
     this.prevVelocityY = 0
     this.prevHasItem = false
+    this.prevMuted = false
     this.flipX = false
 
     this.anim = false
@@ -38,6 +39,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.defaultVelocity = 300
     this.cowVelocity = 150
+
+    this.muted = false
 
     scene.events.on('update', this.update, this)
   }
@@ -75,19 +78,23 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.playersGroup.add(this)
   }
 
-  setMove(data = '32') {
+  setMove(data = '64') {
     let m = parseInt(data, Settings.RADIX)
-
     let move = {
-      left: m === 1 || m === 5 || m === 9 || m === 13 || m === 17 || m === 21,
-      right: m === 2 || m === 6 || m === 10 || m === 14|| m === 18 || m === 22,
-      up: m === 4 || m === 6 || m === 5 || m === 12 || m === 13 || m === 14 || m === 20 || m === 21 || m === 22,
-      space: m === 8 || m === 9 || m === 10 || m === 12 || m === 13 || m === 14,
-      x: m === 16 || m === 17 || m === 18 || m === 20 || m === 21 || m === 22,
-      none: m === 32,
+      left: [1, 5, 9, 13, 17, 21, 33, 37].includes(m),
+      right:[2, 6, 10, 14, 18, 22, 34, 38].includes(m),
+      up: [4, 5, 6, 12, 13, 14, 20, 21, 22, 36, 37, 38].includes(m),
+      space: [8, 9, 10, 12, 13, 14].includes(m),
+      x: [16, 17, 18, 20, 21, 22].includes(m),
+      m: [32, 33, 34, 36, 37, 38].includes(m),
+      none: m === 64,
     }
-
     this.move = move
+  }
+
+  toggleMuted() {
+    this.muted = !this.muted
+    return this
   }
 
   update(time) {
@@ -116,6 +123,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     // If a player is holding a cow, they will move slower
     const velocity = (this.item && this.item.type === SpriteType.COW) ? this.cowVelocity : this.defaultVelocity
+
+    if (this.move.m) {
+      this.toggleMuted()
+    }
 
     if (this.move.left) {
       this.setFlipX(true)
@@ -163,6 +174,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.prevY = this.y
     this.prevVelocityY = this.body.velocity.y
     this.prevHasItem = this.item !== null
+    this.prevMuted = this.muted
   }
 
   needsSync() {
@@ -172,8 +184,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       (this.prevVelocityY >= Settings.SHOW_ROCKET_VY && this.body.velocity.y < Settings.SHOW_ROCKET_VY) ||
       (this.prevVelocityY < Settings.SHOW_ROCKET_VY && this.body.velocity.y >= Settings.SHOW_ROCKET_VY)
     )
-    const i = this.prevHasItem !== (this.item !== null)
-    return (x || y || vy || i)
+    const hasItem = this.prevHasItem !== (this.item !== null)
+    const muted = this.prevMuted !== this.muted
+    return (x || y || vy || hasItem || muted)
   }
 }
 

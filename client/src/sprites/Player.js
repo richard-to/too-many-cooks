@@ -13,42 +13,60 @@ export class Player extends Phaser.GameObjects.Container {
 
     this.team = team
 
+    this.muted = false
+
     this.shell = scene.add.sprite(0, 0, 'assets', `container${team}.png`)
     this.shell.active = false
     this.add(this.shell)
 
     this.magnet = scene.add.sprite(0, 0, 'assets', 'magnet.png')
-    this.magnet.y = (this.shell.height / -2) + (this.magnet.height / -2)
+    this.magnet.y = (this.shell.displayHeight / -2) + (this.magnet.displayHeight / -2)
     this.magnet.active = false
     this.magnet.visible = false
     this.add(this.magnet)
 
     this.rocket = scene.add.sprite(0, 0, 'assets', `rocket${team}.png`)
-    this.rocket.y = (this.shell.height / 2) + (this.rocket.height / 2)
+    this.rocket.y = (this.shell.displayHeight / 2) + (this.rocket.displayHeight / 2)
     this.rocket.active = false
     this.rocket.visible = false
     this.add(this.rocket)
 
     this.video = new PlayerVideo(scene, entityID, 1, 1)
     this.add(this.video)
+
+    const padding = 15
+    this.mutedIcon = scene.add.sprite(0, 0, 'assets', 'xs-muted-icon.png')
+    this.mutedIcon.y = (this.shell.displayHeight / 2) - (this.mutedIcon.displayHeight / 2) - padding
+    this.mutedIcon.x = (this.shell.displayWidth / 2) - (this.mutedIcon.displayWidth / 2) - padding
+    this.mutedIcon.active = false
+    this.mutedIcon.visible = false
+    this.add(this.mutedIcon)
   }
 
   /**
-   * Set the player's video stream
+   * Set the player's video/audio streams
    *
-   * @param {MediaStream} stream
-   * @param {bool} muted
+   * @param {MediaStream} videoStream
+   * @param {MediaStream} videoAudioStream
    */
-  setStream(stream, muted) {
-    this.video.setStream(stream, muted)
+  setStreams(videoStream, videoAudioStream) {
+    this.video.setStreams(videoStream, videoAudioStream)
+    this.setMuted(this.muted)
     return this
   }
 
   /**
-   * Checks if the player has a video stream set or not
+   * Checks if the player has video/audio streams set or not
    */
-  hasStream() {
+  hasStreams() {
     return !isNil(this.video.video)
+  }
+
+  setMuted(muted) {
+    this.muted = muted
+    this.video.setMutedStream(this.muted)
+    this.mutedIcon.visible = this.muted
+    return this
   }
 
   setFlip(flip) {

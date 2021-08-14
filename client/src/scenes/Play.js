@@ -1,8 +1,9 @@
 import axios from 'axios'
-import { defaultTo, has } from 'lodash'
+import { defaultTo, has, values } from 'lodash'
 import Phaser from 'phaser'
 
 import OrdersDisplay from '../hud/OrdersDisplay'
+import PlayerMute from '../hud/PlayerMute'
 import Scoreboard from '../hud/Scoreboard'
 import WinMatchScreen from '../hud/WinMatchScreen'
 
@@ -77,8 +78,10 @@ class Play extends Phaser.Scene {
     }
   }
 
-  init({ channel }) {
+  init({ channel, playerVideoStream }) {
     this.channel = channel
+    // Optimized video (no audio) stream for the current player
+    this.playerVideoStream = playerVideoStream
   }
 
   async create() {
@@ -96,16 +99,17 @@ class Play extends Phaser.Scene {
     const tiles = levelMap.addTilesetImage('platform', 'platform', Settings.TILE_WIDTH, Settings.TILE_HEIGHT)
     levelMap.createStaticLayer('platform', tiles)
 
-    // Initialize list of orders
+    // HUDs
     this.ordersDisplay = new OrdersDisplay(this, 0, 0, [])
     this.scoreboard = new Scoreboard(this, 0, 0)
+    this.playerMute = new PlayerMute(this)
 
     const parseUpdates = updates => {
       if (!updates) {
         return []
       }
 
-      const numParams = 12
+      const numParams = 13
 
       // parse
       const updateParts = updates.split(',')
@@ -123,14 +127,15 @@ class Play extends Phaser.Scene {
           entityID: updateParts[i++],
           x: parseInt(updateParts[i++], Settings.RADIX),
           y: parseInt(updateParts[i++], Settings.RADIX),
-          flipX: updateParts[i++] === "1" ? true : false,
-          flipY: updateParts[i++] === "1" ? true : false,
+          flipX: updateParts[i++] === '1' ? true : false,
+          flipY: updateParts[i++] === '1' ? true : false,
           angle: parseInt(updateParts[i++]),
           alpha: parseInt(updateParts[i++]),
-          anim: updateParts[i++] === "1" ? true : false,
-          isJumping: updateParts[i++] === "1" ? true : false,
-          hasItem: updateParts[i++] === "1" ? true : false,
+          anim: updateParts[i++] === '1' ? true : false,
+          isJumping: updateParts[i++] === '1' ? true : false,
+          hasItem: updateParts[i++] === '1' ? true : false,
           team: parseInt(updateParts[i++]),
+          muted: updateParts[i++] === '1' ? true : false ,
         })
       }
       return parsedUpdates
@@ -147,6 +152,7 @@ class Play extends Phaser.Scene {
           flipY,
           hasItem,
           isJumping,
+          muted,
           spriteType,
           team,
           x,
@@ -157,7 +163,11 @@ class Play extends Phaser.Scene {
           let sprite = this.entities[entityID].sprite
           sprite.setPosition(x, y).setFlip(flipX, flipY).setAngle(angle).setAlpha(alpha)
           if (sprite.type === SpriteType.PLAYER) {
-            sprite.setIsJumping(isJumping).setHasItem(hasItem)
+            sprite.setIsJumping(isJumping).setHasItem(hasItem).setMuted(muted)
+            // Update HUD mute icon for current player
+            if (this.playerID && this.playerID.toString() === entityID) {
+              this.playerMute.setMuted(muted)
+            }
           }
           // TODO: Make updating animations more generic
           if (sprite.type === SpriteType.OVEN) {
@@ -170,14 +180,15 @@ class Play extends Phaser.Scene {
               sprite: new Player(this, entityID, team, x, y),
               entityID: entityID,
             }
-            newEntity.sprite.setFlip(flipX, flipY)
+            newEntity.sprite.setFlip(flipX, flipY).setMuted(muted)
             this.entities[entityID] = newEntity
 
             // If this is the player's sprite, set the camera to follow the sprite
             if (this.playerID && this.playerID.toString() === entityID) {
-              if (this.channel.stream) {
-                // Always mute the current player's stream
-                newEntity.sprite.setStream(this.channel.stream, true)
+              if (this.playerVideoStream) {
+                // We don't want audio to play for the current player, so we pass in a video
+                // only stream as the second parameter
+                newEntity.sprite.setStreams(this.playerVideoStream, this.playerVideoStream)
               }
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
@@ -292,17 +303,20 @@ class Play extends Phaser.Scene {
       let res = await axios.post(`${this.serverURL}/.wrtc/v1/connections/${this.channel.id}/streams`)
 
       // Keep track of video/audio tracks associated with a player. We need to add both
-      // video/audio tracks to the stream at teh same time.
+      // video/audio tracks to the stream at the same time.
       let tracksByEntityID = {}
 
       // Loop through the audio/video tracks the client is receiving and try to match it up with
       // the channel mapping
       this.channel.tracks.forEach(transceiver => {
         let channelID = null
+        let channelType = null
         if (has(res.data.video, transceiver.mid)) {
           channelID = res.data.video[transceiver.mid].toString()
+          channelType = "video"
         } else if (has(res.data.audio, transceiver.mid)) {
           channelID = res.data.audio[transceiver.mid].toString()
+          channelType = "audio"
         }
 
         // Sometimes the audio/video track may not exist yet or we're looping through our own tracks
@@ -326,15 +340,18 @@ class Play extends Phaser.Scene {
           return
         }
 
-        let tracks = defaultTo(tracksByEntityID[entityID], [])
-        tracks.push(transceiver.receiver.track)
+        let tracks = defaultTo(tracksByEntityID[entityID], {})
+        tracks[channelType] = transceiver.receiver.track
         tracksByEntityID[entityID] = tracks
       })
 
       for (const [entityID, tracks] of Object.entries(tracksByEntityID)) {
-        // Only add a stream if the entity is not already connected to video/audio
-        if (!this.entities[entityID].sprite.hasStream()) {
-          this.entities[entityID].sprite.setStream(new MediaStream(tracks))
+        // Only add streams if the entity is not already connected to video/audio
+        if (!this.entities[entityID].sprite.hasStreams()) {
+          this.entities[entityID].sprite.setStreams(
+            new MediaStream([tracks.video]),
+            new MediaStream(values(tracks)),
+          )
         }
       }
     } catch (error) {
