@@ -69,8 +69,8 @@ export class Player extends Phaser.GameObjects.Container {
     return this
   }
 
-  setFlip(flip) {
-    this.video.setFlip(flip)
+  setFlip(flipX, flipY) {
+    // Noop since we do not want to flip the video and the reset sprite images are symmetric
     return this
   }
 
