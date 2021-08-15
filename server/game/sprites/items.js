@@ -78,6 +78,8 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
     this.maxAngularVelocity = 550
     this.minVelocityX = 250
     this.maxVelocityX = 450
+    this.minVelocityY = 200
+    this.maxVelocityY = 300
 
     scene.events.on('update', this.update, this)
   }
@@ -95,6 +97,7 @@ class Ingredient extends Phaser.Physics.Arcade.Sprite {
 
   throw(playerFlipX) {
     this.body.angularVelocity = Phaser.Math.Between(this.minAngularVelocity, this.maxAngularVelocity)
+    this.setVelocityY(-Phaser.Math.Between(this.minVelocityY, this.maxVelocityY))
     if (playerFlipX) {
       this.setVelocityX(-Phaser.Math.Between(this.minVelocityX, this.maxVelocityX))
     } else {
