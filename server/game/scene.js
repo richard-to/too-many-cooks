@@ -287,10 +287,17 @@ class GameScene extends Scene {
           }
         })
         if (disconnectedPlayer) {
+          const item = disconnectedPlayer.item
+          disconnectedPlayer.item = null
+
+          channel.room.emit('removeEntity', item.entityID)
+          item.removeEvents()
+          this.itemsGroup.remove(item, true, true)
+
           disconnectedPlayer.removeEvents()
           this.playersGroup.remove(disconnectedPlayer, true, true)
+          channel.room.emit('removeEntity', channel.entityID)
         }
-        channel.room.emit('removeEntity', channel.entityID)
       })
 
       channel.on('getID', () => {
