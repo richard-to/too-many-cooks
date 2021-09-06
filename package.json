@@ -23,7 +23,7 @@
     "@geckos.io/client": "^2.0.0",
     "@geckos.io/phaser-on-nodejs": "^1.2.3",
     "@geckos.io/server": "^2.0.0",
-    "axios": "^0.21.1",
+    "axios": "0.21.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "deep-freeze-strict": "^1.1.1",
@@ -33,8 +33,8 @@
     "mediasoup": "^3.8.3",
     "mediasoup-client": "^3.6.37",
     "phaser": "3.23.0",
-    "protoo-client": "^4.0.6",
-    "protoo-server": "^4.0.6"
+    "protoo-client": "4.0.6",
+    "protoo-server": "4.0.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.7",
