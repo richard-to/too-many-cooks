@@ -11,35 +11,54 @@ export class PlayerVideo extends Phaser.GameObjects.Video {
     this.entityID = entityID
     scene.add.existing(this)
 
+    this.videoTrack = null
+    this.audioTrack = null
+
     this.videoStream = null
-    this.videoAudioStream = null
   }
 
-  /**
-   * Set the player's video/audio streams
-   *
-   * We use two streams. One stream is video only. The other is video + audio. The reason we need
-   * to do this is because muting the video sprite causes the video to render as a black screen.
-   *
-   * To workaround that issue we will swap streams depending on if the person is muted or
-   * not. This a temporary solution.
-   *
-   * @param {MediaStream} videoStream
-   * @param {MediaStream} videoAudioStream
-   */
-  setStreams(videoStream, videoAudioStream) {
+  hasStreams() {
+    if (Settings.ENABLE_AUDIO && !this.audioTrack) {
+      return false
+    }
+    if (Settings.ENABLE_VIDEO && !this.video) {
+      return false
+    }
+    return true
+  }
+
+  setStreamsFromConsumers(consumers) {
+    consumers.forEach(consumer => {
+      if (!this.videoTrack && consumer._track.kind === 'video') {
+        this.videoTrack = consumer._track
+      } else if (!this.audioTrack && consumer._track.kind === 'audio') {
+        this.audioTrack = consumer._track
+      }
+    })
+    if (this.videoTrack && this.audioTrack) {
+      this.videoStream = new MediaStream([this.videoTrack, this.audioTrack])
+      this._setStream()
+    } else if (this.videoTrack) {
+      this.videoStream = new MediaStream([this.videoTrack])
+      this._setStream()
+    }
+  }
+
+  setLocalStream(videoStream) {
     this.videoStream = videoStream
-    this.videoAudioStream = videoAudioStream
+    this._setStream()
+  }
 
-    const stream = (this.muted) ? this.videoStream : this.videoAudioStream
-
+  _setStream() {
     this.video = document.createElement('video')
     this.video.playsInline = true
-    this.video.srcObject = stream
+    this.video.srcObject = this.videoStream
     this.video.width = Settings.PLAYER_WIDTH
     this.video.height = Settings.PLAYER_HEIGHT
     this.video.autoplay = true
-
+    if (this.muted) {
+      this.video.volume = 0
+    }
     return this
   }
 
@@ -47,11 +66,10 @@ export class PlayerVideo extends Phaser.GameObjects.Video {
     if (!this.video) {
       return
     }
-
     if (muted) {
-      this.video.srcObject = this.videoStream
+      this.video.volume = 0
     } else {
-      this.video.srcObject = this.videoAudioStream
+      this.video.volume = 1
     }
   }
 }

@@ -36,6 +36,7 @@ export const Settings = deepFreeze({
     y: (SCREEN_HEIGHT - (SCREEN_HEIGHT / SCALE )) / 2,
   },
   UI_FONT: 'arial',
+  WEBSOCKET_SERVER_URL: process.env.EXTERNAL_WEBSOCKET_SERVER_URL,
 })
 
 export const SpriteType = deepFreeze({

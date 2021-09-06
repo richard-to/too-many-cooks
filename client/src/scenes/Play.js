@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { defaultTo, has, values } from 'lodash'
+import { has } from 'lodash'
 import Phaser from 'phaser'
 
 import OrdersDisplay from '../hud/OrdersDisplay'
@@ -66,9 +66,6 @@ class Play extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' })
     this.serverURL = `${location.protocol}//${location.hostname}:${Settings.SERVER_PORT}`
-    // Map channel IDs to entity IDs. This is used for mapping video streams to the entity in the game
-    // since streams are mapped to channels.
-    this.channelEntityMap = {}
     this.entities = {}
     this.playerID = undefined
     this.scores = [0, 0]
@@ -78,10 +75,15 @@ class Play extends Phaser.Scene {
     }
   }
 
-  init({ channel, playerVideoStream }) {
+  init({ channel, videoClient }) {
     this.channel = channel
-    // Optimized video (no audio) stream for the current player
-    this.playerVideoStream = playerVideoStream
+    this.playerVideoStream = videoClient.localVideoStream
+    this.videoClient = videoClient
+    this.videoClient.onJoin = peer => {
+      if (this.entities[peer.id]) {
+        this.entities[peer.id].sprite.setStreamsFromConsumers(peer.consumers)
+      }
+    }
   }
 
   async create() {
@@ -186,9 +188,7 @@ class Play extends Phaser.Scene {
             // If this is the player's sprite, set the camera to follow the sprite
             if (this.playerID && this.playerID.toString() === entityID) {
               if (this.playerVideoStream) {
-                // We don't want audio to play for the current player, so we pass in a video
-                // only stream as the second parameter
-                newEntity.sprite.setStreams(this.playerVideoStream, this.playerVideoStream)
+                newEntity.sprite.setLocalStream(this.playerVideoStream)
               }
               this.cameras.main.startFollow(newEntity.sprite, true)
               this.cameras.main.setZoom(Settings.SCALE)
@@ -211,29 +211,6 @@ class Play extends Phaser.Scene {
         }
       })
     }
-
-    // When a new player has joined the game, that means that a new stream will be added.
-    // In order to retrieve these streams we will need to renegotiate the WebRTC connection
-    // with the server.
-    //
-    // We will also log the player's channel ID with the entity ID so we can match the
-    // streams.
-    this.channel.on('joinGame', (data) => {
-      const [channelID, entityID] = data.split(',')
-      this.channelEntityMap[channelID] = parseInt(entityID)
-      this.channel.reconnect()
-    })
-
-    this.channel.on('addTrack', async () => {
-      // - Listen for add track event which is forwarded by the channel
-      // - Since this event listener is added after connection, we will miss the first few events, which is OK
-      //   since we call this.updatePlayerStreams() during initialization
-
-      // We wait 1 second before updating the player streams since there seems to be a small delay between when
-      // the ontrack event is triggered and when the connection/stream map is updated on the server.
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      this.updatePlayerStreams()
-    })
 
     this.channel.on('updateEntities', updates => updatesHandler(parseUpdates(updates[0])))
 
@@ -261,9 +238,6 @@ class Play extends Phaser.Scene {
       // Load current game state
       let res = await axios.get(`${this.serverURL}/getState`)
 
-      // Sync channel/entity map
-      this.channelEntityMap = res.data.channelEntityMap
-
       // Parse game state
       let parsedUpdates = parseUpdates(res.data.state)
 
@@ -281,8 +255,9 @@ class Play extends Phaser.Scene {
       this.scoreboard.updateScores(...this.scores)
 
       // Set player ID from server
-      this.channel.on('getID', playerID36 => {
+      this.channel.on('getID', async (playerID36) => {
         this.playerID = parseInt(playerID36, Settings.RADIX)
+        await this.videoClient.join(this.playerID)
         this.channel.emit('addPlayer')
       })
 
@@ -290,72 +265,6 @@ class Play extends Phaser.Scene {
       this.channel.emit('getID')
     } catch (error) {
       console.error(error.message)
-    }
-
-    // Retrieve video streams for existing players
-    this.updatePlayerStreams()
-  }
-
-  async updatePlayerStreams() {
-
-    try {
-      // Get a mapping of tracks to channels so we know which player to associate audio/video to
-      let res = await axios.post(`${this.serverURL}/.wrtc/v1/connections/${this.channel.id}/streams`)
-
-      // Keep track of video/audio tracks associated with a player. We need to add both
-      // video/audio tracks to the stream at the same time.
-      let tracksByEntityID = {}
-
-      // Loop through the audio/video tracks the client is receiving and try to match it up with
-      // the channel mapping
-      this.channel.tracks.forEach(transceiver => {
-        let channelID = null
-        let channelType = null
-        if (has(res.data.video, transceiver.mid)) {
-          channelID = res.data.video[transceiver.mid].toString()
-          channelType = "video"
-        } else if (has(res.data.audio, transceiver.mid)) {
-          channelID = res.data.audio[transceiver.mid].toString()
-          channelType = "audio"
-        }
-
-        // Sometimes the audio/video track may not exist yet or we're looping through our own tracks
-        if (channelID === null) {
-          return
-        }
-
-        if (!has(this.channelEntityMap, channelID)) {
-          console.debug(`Channel ID ${channelID} not found in channelEntityMap`)
-          return
-        }
-
-        const entityID = this.channelEntityMap[channelID]
-        if (!has(this.entities, entityID)) {
-          console.debug(`Entity ID ${entityID} not found in entities`)
-          return
-        }
-
-        // We're using the player's local video stream so don't need to use the incoming stream
-        if (entityID === this.playerID) {
-          return
-        }
-
-        let tracks = defaultTo(tracksByEntityID[entityID], {})
-        tracks[channelType] = transceiver.receiver.track
-        tracksByEntityID[entityID] = tracks
-      })
-
-      for (const [entityID, tracks] of Object.entries(tracksByEntityID)) {
-        // Only add streams if the entity is not already connected to video/audio
-        if (!this.entities[entityID].sprite.hasStreams()) {
-          this.entities[entityID].sprite.setStreams(
-            new MediaStream([tracks.video]),
-            new MediaStream(values(tracks)),
-          )
-        }
-      }
-    } catch (error) {
-      console.error(error)
     }
   }
 
@@ -384,8 +293,6 @@ class Play extends Phaser.Scene {
 
     this.matchState = matchState
   }
-
-
 }
 
 export default Play;

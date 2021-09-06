@@ -1,6 +1,5 @@
 const path = require('path')
 
-const geckos = require('@geckos.io/server').default
 const { defaultTo, find } = require('lodash')
 const { Scene } = require('phaser')
 
@@ -59,20 +58,6 @@ class GameScene extends Scene {
     this.team = 0
   }
 
-  init() {
-    this.io = geckos({
-      enableAudio: Settings.ENABLE_AUDIO,
-      enableVideo: Settings.ENABLE_VIDEO,
-      iceServers: [
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' },
-        { urls: 'stun:stun3.l.google.com:19302' },
-        { urls: 'stun:stun4.l.google.com:19302' },
-      ],
-    })
-    this.io.addServer(this.game.server)
-  }
-
   getID() {
     return this.entityID++
   }
@@ -119,6 +104,16 @@ class GameScene extends Scene {
   }
 
   create() {
+    this.io = this.game.geckos({
+      iceServers: [
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+      ],
+    })
+    this.io.addServer(this.game.server)
+
     this.physics.world.setBounds(0, 0, Settings.LEVEL_WIDTH, Settings.LEVEL_HEIGHT)
 
     // Tracks match state

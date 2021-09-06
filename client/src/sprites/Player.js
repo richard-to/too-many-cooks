@@ -43,14 +43,14 @@ export class Player extends Phaser.GameObjects.Container {
     this.add(this.mutedIcon)
   }
 
-  /**
-   * Set the player's video/audio streams
-   *
-   * @param {MediaStream} videoStream
-   * @param {MediaStream} videoAudioStream
-   */
-  setStreams(videoStream, videoAudioStream) {
-    this.video.setStreams(videoStream, videoAudioStream)
+  setLocalStream(videoStream) {
+    this.video.setLocalStream(videoStream)
+    this.setMuted(this.muted)
+    return this
+  }
+
+  setStreamsFromConsumers(consumers) {
+    this.video.setStreamsFromConsumers(consumers)
     this.setMuted(this.muted)
     return this
   }
@@ -59,10 +59,13 @@ export class Player extends Phaser.GameObjects.Container {
    * Checks if the player has video/audio streams set or not
    */
   hasStreams() {
-    return !isNil(this.video.video)
+    return this.video.hasStreams()
   }
 
   setMuted(muted) {
+    if (this.muted === muted) {
+      return this
+    }
     this.muted = muted
     this.video.setMutedStream(this.muted)
     this.mutedIcon.visible = this.muted

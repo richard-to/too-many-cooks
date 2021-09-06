@@ -14,6 +14,7 @@ const config = {
   scene: [PreloadScene, BootScene, PlayScene],
 }
 
-window.addEventListener('load', () => {
+document.getElementById('home-screen').addEventListener('click', (e) => {
+  e.target.remove()
   new Game(config)
 })

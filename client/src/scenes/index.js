@@ -1,6 +1,6 @@
-import Play from './Play';
-import Preload from './Preload';
-import Boot from './Boot';
+import Play from './Play'
+import Preload from './Preload'
+import Boot from './Boot'
 
 export {
   Play as PlayScene,
