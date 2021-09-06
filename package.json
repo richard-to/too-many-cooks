@@ -4,7 +4,7 @@
   "description": "Multiplayer platformer game",
   "scripts": {
     "start": "parcel client/public/index.html client/public/assets/* -p 8000",
-    "server:start": "nodemon server",
+    "game_server:start": "nodemon game_server",
     "video_server:start": "nodemon video_server",
     "build": "parcel build client/public/index.html client/public/assets/*",
     "test": "echo \"Error: no test specified\" && exit 1"

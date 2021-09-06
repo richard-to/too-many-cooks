@@ -1,6 +1,14 @@
 const EventEmitter = require('events').EventEmitter
 const protoo = require('protoo-server')
 
+
+// The Room class handles the WebRTC setup process using a WebSocket server.
+// The WebRTC is set up using a mediasoup worker. This means we need to setup
+// broadcasters, transports (WebRTC only), consumers, and producers.
+//
+// This class only provides basic video/audio support. Data channels are not
+// enabled. Other features found in the mediasoup demo example are also not
+// included to keep things simple for now.
 class Room extends EventEmitter {
   static async create({ mediasoupWorker, webrtc_listen_ip }) {
     const room = new protoo.Room()

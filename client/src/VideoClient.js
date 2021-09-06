@@ -2,6 +2,14 @@ import protooClient from 'protoo-client'
 import * as mediasoupClient from 'mediasoup-client'
 
 
+// The VideoClient class connects the game client with the video server to
+// establish basic WebRTC video/audio support for Too Many Cooks.
+//
+// The client uses WebSockets to perform the WebRTC handshaking with the video
+// server.
+//
+// This client does not provide all the features as seen in the mediasoup demo
+// app yet. It only provides the basics for now.
 export default class VideoClient {
   constructor(clientUrl, videoWidth, videoHeight, enableVideo = true, enableAudio = false, iceServers = []) {
     this.clientUrl = clientUrl

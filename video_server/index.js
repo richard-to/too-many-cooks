@@ -1,3 +1,14 @@
+/*
+The video server manages video/audio over WebRTC. A websocket server
+is used for managing the WebRTC handshake process.
+
+The video server is decoupled from the game server to improve scalability.
+It also has the benefit of allow using to add features or improve performance
+of the game or video servers separately.
+
+Currently the video server is only handles one room. This is because the game
+server also only supports one room at the moment.
+*/
 require('dotenv').config()
 
 const http = require('http')
@@ -57,6 +68,7 @@ async function runMediasoupWorker() {
     setTimeout(() => process.exit(1), 2000)
   })
 
+  // TODO: Create one room for now. In the future we should handle multiple rooms dynamically
   room = await Room.create({ mediasoupWorker, webrtc_listen_ip: WEBRTC_LISTEN_IP })
   room.on('close', () => {
     console.warn('Room closed')
@@ -64,25 +76,10 @@ async function runMediasoupWorker() {
 }
 
 async function createAppServer() {
+  // The Express App server is not currently being used. All requests go through web sockets
   console.info('Running app server...')
-
   appServer = express()
   appServer.use(express.json())
-
-  appServer.get('/room', (req, res) => {
-    res.status(200).json(room.getRouterRtpCapabilities())
-  })
-
-  appServer.use((error, req, res, next) => {
-    if (error) {
-      console.warn('App server error: %s', String(error))
-      error.status = error.status || (error.name === 'TypeError' ? 400 : 500)
-      res.statusMessage = error.message
-      res.status(error.status).send(String(error))
-    } else {
-      next()
-    }
-  })
 }
 
 async function runHttpServer() {

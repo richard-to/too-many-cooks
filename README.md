@@ -22,7 +22,7 @@ Run game server
 yarn start
 
 # Start game server (window 2)
-yarn server:start
+yarn game_server:start
 
 # Start video server (window 3)
 yarn video_server:start
