@@ -10,21 +10,21 @@ const protoo = require('protoo-server')
 // enabled. Other features found in the mediasoup demo example are also not
 // included to keep things simple for now.
 class Room extends EventEmitter {
-  static async create({ mediasoupWorker, webrtc_listen_ip }) {
+  static async create({ mediasoupWorker, webrtc_listen_ip, webrtc_announced_ip }) {
     const room = new protoo.Room()
     const { mediaCodecs } = getRouterOptions()
     const mediasoupRouter = await mediasoupWorker.createRouter({ mediaCodecs })
-    return new Room({ room, mediasoupRouter, webrtc_listen_ip })
+    return new Room({ room, mediasoupRouter, webrtc_listen_ip, webrtc_announced_ip })
   }
 
-  constructor({ room, mediasoupRouter, webrtc_listen_ip }) {
+  constructor({ room, mediasoupRouter, webrtc_listen_ip, webrtc_announced_ip }) {
     super()
     this.setMaxListeners(Infinity)
-
     this._closed = false
     this._room = room
     this._mediasoupRouter = mediasoupRouter
     this._webrtc_listen_ip = webrtc_listen_ip
+    this._webrtc_announced_ip = webrtc_announced_ip
 
     // Map of broadcasters indexed by id. Each Object has:
     // - {String} id
@@ -171,7 +171,8 @@ class Room extends EventEmitter {
     const webRtcTransportOptions = {
       listenIps: [
         {
-          ip: this._webrtc_listen_ip
+          ip: this._webrtc_listen_ip,
+          announcedIp: this._webrtc_announced_ip,
         }
       ],
       initialAvailableOutgoingBitrate : 1000000,
@@ -356,6 +357,7 @@ class Room extends EventEmitter {
           listenIps: [
             {
               ip: this._webrtc_listen_ip,
+              announcedIp: this._webrtc_announced_ip,
             }
           ],
           initialAvailableOutgoingBitrate: 1000000,

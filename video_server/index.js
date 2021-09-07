@@ -19,7 +19,8 @@ const protoo = require('protoo-server')
 
 const Room = require('./room')
 
-const WEBRTC_LISTEN_IP = process.env.INTERNAL_WEBSOCKET_LISTEN_IP
+const WEBRTC_ANNOUNCED_IP = process.env.INTERNAL_WEBRTC_ANNOUNCED_IP
+const WEBRTC_LISTEN_IP = process.env.INTERNAL_WEBRTC_LISTEN_IP
 const WEBSOCKET_PORT = process.env.INTERNAL_WEBSOCKET_PORT
 
 let httpServer
@@ -69,7 +70,11 @@ async function runMediasoupWorker() {
   })
 
   // TODO: Create one room for now. In the future we should handle multiple rooms dynamically
-  room = await Room.create({ mediasoupWorker, webrtc_listen_ip: WEBRTC_LISTEN_IP })
+  room = await Room.create({
+    mediasoupWorker,
+    webrtc_listen_ip: WEBRTC_LISTEN_IP,
+    webrtc_announced_ip: WEBRTC_ANNOUNCED_IP,
+  })
   room.on('close', () => {
     console.warn('Room closed')
   })
