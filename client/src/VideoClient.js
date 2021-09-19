@@ -24,8 +24,9 @@ export default class VideoClient {
     this.consumers = new Map()
     this.peers = {}
     this.onJoin = null
-    this.localVideoTrack = null
-    this.localAudioTrack = null
+    this.onUpdateLocalVideoStream = null
+    this.localVideoStream = null
+    this.localAudioStream = null
     this.enableVideo = enableVideo
     this.enableAudio = enableAudio
     self.iceServers = iceServers
@@ -162,60 +163,100 @@ export default class VideoClient {
   }
 
   async enableMediaStream() {
+    console.debug('Attempting to enable media streams')
     if (!this.localVideoStream && this.enableVideo) {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true })
       this.localVideoStream = this.makeOptimizedStreams(stream)
+      console.debug('Video stream enabled:', this.localVideoStream)
+      if (this.onUpdateLocalVideoStream) {
+        this.onUpdateLocalVideoStream(this.localVideoStream)
+      }
     }
     if (!this.localAudioStream && this.enableAudio) {
       this.localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      console.debug('Audio stream enabled:', this.localAudioStream)
     }
   }
 
-  async enableMic() {
+  async enableMic(retry) {
     if (!this.enableAudio) {
       return
     }
     try {
-      this.enableMediaStream()
-      this.micProducer = await this.sendTransport.produce({
-        track: this.localAudioStream.getAudioTracks()[0],
-        codecOptions: {
-          opusStereo: 1,
-          opusDtx: 1,
+      await this.enableMediaStream()
+
+      if (this.localAudioStream && this.localAudioStream.getAudioTracks()[0].readyState === 'ended') {
+        console.debug('Audio track state (ended):', this.localAudioStream.getAudioTracks()[0], retry)
+        if (retry) {
+          console.debug('Retrying audio track')
+          this.localAudioStream = null
+          setTimeout(() => this.enableMic(false), 200)
         }
-      })
-      this.micProducer.on('transportclose', () => {
-        this.micProducer = null
-      })
+        return
+      }
+
+      if (this.localAudioStream) {
+        console.debug('Audio track state:', this.localAudioStream.getAudioTracks()[0])
+        this.micProducer = await this.sendTransport.produce({
+          track: this.localAudioStream.getAudioTracks()[0],
+          codecOptions: {
+            opusStereo: 1,
+            opusDtx: 1,
+          }
+        })
+        this.micProducer.on('transportclose', () => {
+          console.debug('Mic producer closed')
+          this.micProducer = null
+        })
+      }
     } catch (error) {
       console.error('enableMic() | failed:%o', error)
       if (this.localAudioStream) {
+        console.debug('Audio stream stopped')
         this.localAudioStream.getAudioTracks()[0].stop()
+        this.localAudioStream = null
       }
     }
   }
 
-  async enableVideoStream() {
+  async enableVideoStream(retry) {
     if (!this.enableVideo) {
       return
     }
     try {
-      this.enableMediaStream()
-      const codecOptions = {
-        videoGoogleStartBitrate: 1000,
-      }
-      this.webcamProducer = await this.sendTransport.produce({
-        track: this.localVideoStream.getVideoTracks()[0],
-        codecOptions,
-      })
+      await this.enableMediaStream()
 
-      this.webcamProducer.on('transportclose', () => {
-        this.webcamProducer = null
-      })
+      if (this.localVideoStream && this.localVideoStream.getVideoTracks()[0].readyState === 'ended') {
+        console.debug('Video track state (ended):', this.localVideoStream.getVideoTracks()[0], retry)
+        if (retry) {
+          console.debug('Retrying video track')
+          this.localVideoStream = null
+          setTimeout(() => this.enableVideoStream(false), 200)
+        }
+        return
+      }
+
+      if (this.localVideoStream) {
+        console.debug('Video track state:', this.localVideoStream.getVideoTracks()[0])
+        const codecOptions = {
+          videoGoogleStartBitrate: 1000,
+        }
+        this.webcamProducer = await this.sendTransport.produce({
+          track: this.localVideoStream.getVideoTracks()[0],
+          codecOptions,
+        })
+
+        this.webcamProducer.on('transportclose', () => {
+          console.debug('Webcam producer closed')
+          this.webcamProducer = null
+        })
+      }
     } catch (error) {
       console.error('enableWebcam() | failed:%o', error)
       if (this.localVideoStream) {
+        console.debug('Video stream stopped')
         this.localVideoStream.getVideoTracks()[0].stop()
+        this.localVideoStream = null
       }
     }
   }
@@ -306,8 +347,8 @@ export default class VideoClient {
         this.peers[peer.id] = {...peer, consumers: []}
       }
 
-      this.enableMic()
-      this.enableVideoStream()
+      this.enableMic(true)
+      this.enableVideoStream(true)
 
       this.sendTransport.on('connectionstatechange', (connectionState) => {
         console.debug('Connection state changed')

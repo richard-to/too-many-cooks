@@ -29,9 +29,9 @@ export class PlayerVideo extends Phaser.GameObjects.Video {
 
   setStreamsFromConsumers(consumers) {
     consumers.forEach(consumer => {
-      if (!this.videoTrack && consumer._track.kind === 'video') {
+      if ((!this.videoTrack || this.videoTrack.readyState === 'ended') && consumer._track.kind === 'video') {
         this.videoTrack = consumer._track
-      } else if (!this.audioTrack && consumer._track.kind === 'audio') {
+      } else if ((!this.audioTrack || this.audioTrack.readyState === 'ended') && consumer._track.kind === 'audio') {
         this.audioTrack = consumer._track
       }
     })
@@ -50,12 +50,17 @@ export class PlayerVideo extends Phaser.GameObjects.Video {
   }
 
   _setStream() {
-    this.video = document.createElement('video')
-    this.video.playsInline = true
-    this.video.srcObject = this.videoStream
-    this.video.width = Settings.PLAYER_WIDTH
-    this.video.height = Settings.PLAYER_HEIGHT
-    this.video.autoplay = true
+    console.debug("_setStream:", this.videoStream.getVideoTracks()[0])
+    if (this.video) {
+      this.video.srcObject = this.videoStream
+    } else {
+      this.video = document.createElement('video')
+      this.video.playsInline = true
+      this.video.srcObject = this.videoStream
+      this.video.width = Settings.PLAYER_WIDTH
+      this.video.height = Settings.PLAYER_HEIGHT
+      this.video.autoplay = true
+    }
     if (this.muted) {
       this.video.volume = 0
     }

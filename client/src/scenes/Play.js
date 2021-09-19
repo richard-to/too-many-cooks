@@ -79,7 +79,13 @@ class Play extends Phaser.Scene {
     this.channel = channel
     this.playerVideoStream = videoClient.localVideoStream
     this.videoClient = videoClient
+    this.videoClient.onUpdateLocalVideoStream = localVideoStream => {
+      console.debug("Update local video stream:", localVideoStream.getVideoTracks()[0])
+      this.playerVideoStream = localVideoStream
+      this.entities[this.playerID].sprite.setLocalStream(this.playerVideoStream)
+    }
     this.videoClient.onJoin = peer => {
+      console.debug('Peer joined:', peer)
       if (this.entities[peer.id]) {
         this.entities[peer.id].sprite.setStreamsFromConsumers(peer.consumers)
       }
