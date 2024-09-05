@@ -29,3 +29,7 @@ yarn video_server:start
 ```
 
 You should be able to play game at localhost:1444.
+
+## Screenshot
+
+<img width="1055" alt="p3-gameplay" src="https://github.com/user-attachments/assets/a67024bb-16b6-4417-8099-30c41bdf7177">
